@@ -1,7 +1,7 @@
 <?php
 $pageTitle = 'Software Solutions - InoSakti';
 $pageDesc = 'Pengembangan sistem perangkat lunak end-to-end, mencakup enterprise apps & web systems berskala industri.';
-include __DIR__ . '/../../inc/header.php';
+include __DIR__.'/../../inc/header.php';
 ?>
 
 <main class="max-w-7xl mx-auto px-6 py-28"> <!-- add padding top for fixed header -->
@@ -181,4 +181,4 @@ include __DIR__ . '/../../inc/header.php';
     </section>
 </main>
 
-<?php include __DIR__ . '/../../inc/footer.php'; ?>
+<?php include __DIR__.'/../../inc/footer.php'; ?>

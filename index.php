@@ -41,7 +41,7 @@ include __DIR__.'/inc/header.php';
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">psychology</span></div>
 <h3 class="text-xl font-bold mb-4">AI-Driven Systems</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Solusi berbasis Artificial Intelligence untuk computer vision, predictive analytics, dan pengambilan keputusan cerdas.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/aidriven.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">memory</span></div>
