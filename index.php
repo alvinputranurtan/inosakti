@@ -66,12 +66,12 @@
 <div class="container mx-auto px-6 h-16 flex items-center justify-between">
 <div class="flex items-center gap-2">
 <div class="flex items-center gap-2">
-                    <img src="assets/img/logo_inosakti.png" alt="InoSakti" class="h-16 w-auto" />
+                    <img src="assets/img/logo_inosakti.png" alt="InoSakti" class="h-20 w-auto" />
                 </div>
 </div>
 <nav class="hidden lg:flex items-center gap-6 font-bold text-sm">
 <a class="hover:text-primary transition-colors" href="#">Home</a>
-<a class="hover:text-primary transition-colors" href="#">Belanja</a>
+<a class="hover:text-primary transition-colors" href="pages/products/shop.php?category=all">Belanja</a>
 <a class="hover:text-primary transition-colors" href="#blog">Blog</a>
 <a class="hover:text-primary transition-colors" href="#">Konsultasi</a>
 <a class="hover:text-primary transition-colors" href="#">Login</a>
@@ -193,7 +193,7 @@
 <div class="product-thumb"><img alt="P6" class="w-full h-full object-cover" src="assets/img/produk_6.png"/></div>
 </div>
 <p class="text-slate-500 text-sm mb-4">Lini produk sistem teknologi terapan yang dirancang untuk implementasi industri, komersial, dan edukasi profesional.</p>
-<a class="text-primary font-bold" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold" href="pages/products/shop.php?category=smart-systems">Lihat lebih lanjut →</a>
 </div>
 <div class="text-center">
 <h3 class="text-2xl font-bold mb-6">Electronic Components &amp; Technology Supply</h3>
@@ -206,10 +206,10 @@
 <div class="product-thumb"><img alt="C6" class="w-full h-full object-cover" src="assets/img/electronic_6.png"/></div>
 </div>
 <p class="text-slate-500 text-sm mb-4">Penyediaan komponen dan perangkat elektronik berkualitas untuk kebutuhan pengembangan dan integrasi sistem.</p>
-<a class="text-primary font-bold" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold" href="pages/products/shop.php?category=electronic">Lihat lebih lanjut →</a>
 </div>
 <div class="text-center pt-8">
-<button class="px-10 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-all">Belanja Sekarang</button>
+<a href="pages/products/shop.php?category=all" class="px-10 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-all inline-block">Belanja Sekarang</a>
 </div>
 </div>
 </div>
@@ -388,7 +388,7 @@
 <div>
 <div class="flex items-center gap-2 mb-8">
 <span class="text-3xl font-black tracking-tighter text-primary dark:text-white flex items-center gap-2">
-<img src="assets/img/logo_inosakti.png" alt="InoSakti" class="h-14 w-auto" />
+<img src="assets/img/logo_inosakti.png" alt="InoSakti" class="h-25 w-auto" />
                         </span>
 </div>
 <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Maps</h4>
