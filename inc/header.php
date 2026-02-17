@@ -1,7 +1,9 @@
 <?php
 // header.php - reusable header with opening <html>, <head> and navigation
 // expects optional variables: $pageTitle, $pageDesc, $basePath
-$basePath = $basePath ?? '/inosakti.com';
+// Auto-detect basePath: if running in /inosakti.com subfolder use it, otherwise use root ''
+$req = $_SERVER['REQUEST_URI'] ?? '/';
+$basePath = $basePath ?? (strpos($req, '/inosakti.com') === 0 ? '/inosakti.com' : '');
 ?>
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
