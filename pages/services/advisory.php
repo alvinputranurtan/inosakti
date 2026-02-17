@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Technology Advisory & Lifecycle Services - InoSakti';
-$pageDesc = 'Panduan teknis strategis di setiap tahapan siklus hidup teknologi: arsitektur, audit, upgrade, optimasi performa, dokumentasi, SOP, hingga dukungan jangka panjang.';
+$pageDesc = 'Panduan teknis strategis end-to-end: konsultasi, review arsitektur, audit, optimasi performa, dokumentasi, SOP, hingga dukungan teknis jangka panjang.';
 include __DIR__.'/../../inc/header.php';
 ?>
 
@@ -18,7 +18,7 @@ include __DIR__.'/../../inc/header.php';
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 md:p-12 shadow-xl shadow-slate-200/50 dark:shadow-none flex flex-col lg:flex-row gap-12 items-center">
 
             <div class="w-full lg:w-1/2">
-                <div class="inline-flex items-center justify-center p-4 bg-accent/10 rounded-2xl mb-8 icon-box transition-transform duration-300">
+                <div class="inline-flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl mb-8 icon-box transition-transform duration-300">
                     <span class="material-symbols-outlined text-accent text-5xl">partner_reports</span>
                 </div>
 
@@ -27,21 +27,15 @@ include __DIR__.'/../../inc/header.php';
                 </h1>
 
                 <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
-                    Kami memberikan panduan teknis strategis di setiap tahapan siklus hidup teknologi Anda.
-                    Mulai dari perencanaan arsitektur, audit infrastruktur, hingga optimalisasi performa dan dukungan jangka panjang
-                    untuk memastikan investasi teknologi Anda memberikan nilai bisnis maksimal.
+                    Kami memberikan panduan teknis strategis di setiap tahapan siklus hidup teknologi Anda. Mulai dari perencanaan arsitektur,
+                    audit infrastruktur, hingga optimalisasi performa dan dukungan jangka panjang untuk memastikan investasi teknologi Anda
+                    memberikan nilai bisnis maksimal.
                 </p>
 
                 <div class="flex flex-wrap gap-4">
-                    <span class="px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-semibold border border-accent/20">
-                        Strategic Consulting
-                    </span>
-                    <span class="px-4 py-2 bg-emerald-500/10 text-emerald-600 rounded-full text-sm font-semibold border border-emerald-500/20">
-                        Lifecycle Support
-                    </span>
-                    <span class="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-full text-sm font-semibold border border-amber-500/20">
-                        Audit &amp; Compliance
-                    </span>
+                    <span class="px-4 py-2 bg-accent/10 text-accent rounded-full text-sm font-semibold">Strategic Consulting</span>
+                    <span class="px-4 py-2 bg-emerald-500/10 text-emerald-600 rounded-full text-sm font-semibold">Lifecycle Support</span>
+                    <span class="px-4 py-2 bg-amber-500/10 text-amber-600 rounded-full text-sm font-semibold">Audit &amp; Compliance</span>
                 </div>
             </div>
 
@@ -66,88 +60,116 @@ include __DIR__.'/../../inc/header.php';
         </div>
     </section>
 
-    <!-- specialized services -->
-    <section class="animate-slide-up stagger-3">
-
-        <!-- ✅ same layout: title → line → short desc -->
+    <!-- specialized services (✅ title + line + short desc) -->
+    <section class="animate-slide-up stagger-3 mb-24">
         <div class="text-center mb-12">
             <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Our Specialized Services</h2>
             <div class="w-20 h-1.5 bg-accent mx-auto rounded-full mb-4"></div>
             <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
-                Layanan konsultasi dan pendampingan teknis untuk memastikan sistem Anda aman, efisien, scalable, dan mudah dioperasikan.
+                Layanan advisory yang praktis dan bisa dieksekusi: audit, improvement, dokumentasi, SOP, hingga dukungan operasional jangka panjang.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-accent">help_clinic</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Technology Consulting</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Technology Consulting</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Konsultasi strategi teknologi dan roadmap implementasi agar selaras dengan target bisnis dan growth.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">account_tree</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Architecture Design Review</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Architecture Design Review</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Review desain sistem untuk memastikan skalabilitas, keamanan, reliability, dan maintainability.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">build_circle</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Maintenance &amp; Repair System</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Maintenance &amp; Repair System</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Stabilitas operasional lewat preventive maintenance, patching, dan respons insiden yang cepat.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">upgrade</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Modification &amp; Upgrade</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Modification &amp; Upgrade</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Modernisasi sistem (feature/stack/infra) agar tetap kompetitif dan sesuai kebutuhan enterprise.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">speed</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Performance Optimization</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Performance Optimization</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Tuning performa aplikasi, database, dan infrastruktur untuk latency rendah dan efisiensi resource.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">fact_check</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Infrastructure Audit</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Infrastructure Audit</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Audit keamanan & kinerja untuk mengidentifikasi risiko, bottleneck, serta rekomendasi perbaikan.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">rocket_launch</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Deployment Assistance</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Deployment Assistance</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Bantuan implementasi, migrasi, dan rollout dengan downtime minimal untuk sistem kritikal.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">description</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Technical Documentation</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Technical Documentation</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Dokumentasi sistem, runbook, dan manual teknis untuk knowledge management dan continuity.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">assignment_turned_in</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Operational SOP Development</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Operational SOP Development</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Penyusunan SOP operasional agar workflow konsisten, aman, dan mudah diaudit.
+                </p>
             </div>
 
             <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">support_agent</span>
                 </div>
-                <h3 class="font-bold text-md text-slate-900 dark:text-white leading-tight">Long-Term Technical Support</h3>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Long-Term Technical Support</h3>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                    Dukungan berkelanjutan melalui kanal support, SLA, serta monitoring & improvement berkala.
+                </p>
             </div>
 
         </div>
@@ -169,9 +191,14 @@ include __DIR__.'/../../inc/header.php';
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25"
-                       href="<?php echo $basePath; ?>/index.php#konsultasi">Consult Now</a>
+                       href="<?php echo $basePath; ?>/index.php#konsultasi">
+                        Consult Now
+                    </a>
+
                     <a class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20"
-                       href="<?php echo $basePath; ?>/pages/downloads/service-overview.php">Download Service Overview</a>
+                       href="<?php echo $basePath; ?>/pages/services/overview.php">
+                        Download Service Overview
+                    </a>
                 </div>
             </div>
         </div>
