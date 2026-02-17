@@ -47,49 +47,49 @@ include __DIR__.'/inc/header.php';
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">memory</span></div>
 <h3 class="text-xl font-bold mb-4">Embedded, IoT &amp; AIoT Engineering</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Perancangan sistem embedded dan perangkat terhubung dengan implementasi edge intelligence untuk kontrol cerdas.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/aiot.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">settings_input_antenna</span></div>
 <h3 class="text-xl font-bold mb-4">Advanced Network &amp; RF Engineering</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Perencanaan dan pengujian sistem jaringan serta rekayasa RF untuk kebutuhan komunikasi data infrastruktur tinggi.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/rf.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">developer_board</span></div>
 <h3 class="text-xl font-bold mb-4">Electronics &amp; Hardware Engineering</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Desain sistem elektronik, PCB development, prototyping, dan fabrikasi perangkat teknologi standar industri.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/electronics.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">wb_sunny</span></div>
 <h3 class="text-xl font-bold mb-4">Renewable &amp; Sustainable Energy Engineering</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Perencanaan sistem energi terbarukan, solar power, dan micro-hydropower beserta monitoring performanya.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/renewable.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">biotech</span></div>
 <h3 class="text-xl font-bold mb-4">Research, Innovation &amp; Prototyping</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Riset terapan, pengembangan prototipe, dan validasi teknologi untuk mendukung inovasi industri.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/prototyping.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">school</span></div>
 <h3 class="text-xl font-bold mb-4">Education</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Program pelatihan berbasis praktik dan proyek nyata di bidang software engineering, AI, IoT, dan lainnya.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/education.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">support_agent</span></div>
 <h3 class="text-xl font-bold mb-4">Technology Advisory &amp; Lifecycle Services</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Konsultasi teknis, audit sistem, pemeliharaan, dan peningkatan performa infrastruktur teknologi.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/advisory.php">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group lg:col-start-2">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">menu_book</span></div>
 <h3 class="text-xl font-bold mb-4">Academic Research Publication</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Bimbingan penulisan proposal hibah riset, skripsi, tesis, disertasi, paten dan publikasi scopus.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="#">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="pages/services/research.php">Lihat lebih lanjut →</a>
 </div>
 </div>
 <div class="text-center">
