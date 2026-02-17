@@ -11,9 +11,9 @@ $basePath = $basePath ?? '';
       <div>
 <div class="flex items-center justify-center lg:justify-start gap-2 mb-8">
   <span class="text-3xl font-black tracking-tighter text-primary dark:text-white flex items-center">
-    <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png"
-         alt="InoSakti"
-         class="h-[8rem] sm:h-[10rem] lg:h-[11rem] w-auto mx-auto lg:mx-0" />
+<img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png"
+     alt="InoSakti"
+     class="block mx-auto lg:mx-0 max-h-[11rem] h-auto w-auto max-w-full object-contain" />
   </span>
 </div>
 
