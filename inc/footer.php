@@ -84,6 +84,14 @@ $basePath = $basePath ?? '/inosakti.com';
         </div>
     </div>
 </footer>
+<?php
+// allow pages to add scripts before closing body
+if (!empty($extraScripts)) {
+    echo $extraScripts;
+}
+?>
+</body>
+</html>
 
 <script>
     window.addEventListener('scroll', () => {

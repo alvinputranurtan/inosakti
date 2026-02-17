@@ -100,6 +100,12 @@ $basePath = $basePath ?? (strpos($req, '/inosakti.com') === 0 ? '/inosakti.com' 
         .stagger-3 { animation-delay: 0.3s; }
         .service-card:hover .icon-box { transform: scale(1.1) rotate(5deg); }
     </style>
+    <?php
+    // allow pages to inject additional head content (styles, scripts, meta tags)
+    if (!empty($extraHead)) {
+        echo $extraHead;
+    }
+    ?>
 </head>
 
 <body class="bg-[#fdfdfd] dark:bg-background-dark text-slate-900 dark:text-slate-100 font-sans transition-colors duration-300">
@@ -128,6 +134,54 @@ $basePath = $basePath ?? (strpos($req, '/inosakti.com') === 0 ? '/inosakti.com' 
                     IND <span class="material-symbols-outlined text-xs">expand_more</span>
                 </button>
             </div>
+
+            <!-- mobile hamburger -->
+            <div class="lg:hidden">
+                <button id="hamburgerBtn" class="p-2 focus:outline-none">
+                    <span class="material-symbols-outlined text-3xl">menu</span>
+                </button>
+            </div>
         </div>
     </div>
 </header>
+
+<!-- mobile menu overlay + sidebar -->
+<div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+<div id="mobileMenu" class="fixed inset-y-0 left-0 w-64 z-50 transform -translate-x-full transition-transform duration-300 bg-white dark:bg-background-dark shadow-xl">
+    <div class="flex items-center justify-between px-6 h-16 border-b border-slate-200 dark:border-slate-700">
+        <span class="font-bold text-lg">Menu</span>
+        <button id="closeMenuBtn" class="p-2 focus:outline-none">
+            <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+    </div>
+    <nav class="px-6 py-8 space-y-4">
+        <a href="<?php echo $basePath; ?>/" class="block text-lg font-semibold hover:text-primary">Home</a>
+        <a href="<?php echo $basePath; ?>/pages/products/shop.php?category=all" class="block text-lg font-semibold hover:text-primary">Belanja</a>
+        <a href="<?php echo $basePath; ?>/index.php#blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
+        <a href="https://wa.me/+6288207085761" class="block text-lg font-semibold hover:text-primary">Konsultasi</a>
+        <a href="#" class="block text-lg font-semibold hover:text-primary">Login</a>
+    </nav>
+</div>
+
+<!-- mobile menu script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var menu = document.getElementById('mobileMenu');
+        var overlay = document.getElementById('mobileOverlay');
+        var openBtn = document.getElementById('hamburgerBtn');
+        var closeBtn = document.getElementById('closeMenuBtn');
+
+        function openMenu() {
+            menu.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        }
+        function closeMenu() {
+            menu.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        openBtn.addEventListener('click', openMenu);
+        closeBtn.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+    });
+</script>

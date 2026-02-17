@@ -7,7 +7,7 @@ include __DIR__.'/../../inc/header.php';
 <main class="max-w-7xl mx-auto px-6 py-28"> <!-- add padding top for fixed/sticky header -->
     <!-- breadcrumb -->
     <nav class="flex mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 animate-slide-up stagger-1">
-        <a class="hover:text-accent transition-colors" href="../../index.php#layanan">Services</a>
+        <a class="hover:text-accent transition-colors" href="<?php echo $basePath; ?>/index.php#layanan">Services</a>
         <span class="mx-2">/</span>
         <span class="text-slate-900 dark:text-white">AI-Driven Systems</span>
     </nav>
