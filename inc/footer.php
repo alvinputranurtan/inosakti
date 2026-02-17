@@ -1,7 +1,7 @@
 <?php
 // footer.php
 // reuse the same basePath logic from config
-require_once __DIR__ . '/config.php';
+require_once __DIR__.'/config.php';
 $basePath = $basePath ?? '';
 ?>
 
@@ -9,29 +9,54 @@ $basePath = $basePath ?? '';
   <div class="container mx-auto px-6">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-20">
       <div>
-        <div class="flex items-center gap-2 mb-8">
-          <span class="text-3xl font-black tracking-tighter text-primary dark:text-white flex items-center gap-2">
-            <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png" alt="InoSakti" class="h-21 sm:h-25 w-auto" />
-          </span>
-        </div>
+<div class="flex items-center justify-center lg:justify-start gap-2 mb-8">
+  <span class="text-3xl font-black tracking-tighter text-primary dark:text-white flex items-center">
+    <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png"
+         alt="InoSakti"
+         class="h-[8rem] sm:h-[10rem] lg:h-[11rem] w-auto mx-auto lg:mx-0" />
+  </span>
+</div>
+
         <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Maps</h4>
-        <div class="mb-8 overflow-hidden rounded-xl h-48 border border-slate-200 dark:border-slate-700">
-          <iframe allowfullscreen height="100%" loading="lazy"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3959.954641957262!2d110.4391!3d-7.0142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMDAnNTEuMSJTIDExMMKwMjYnMjAuOCJF!5e0!3m2!1sen!2sid!4v1620000000000!5m2!1sen!2sid"
-            style="border:0;" width="100%"></iframe>
+
+        <!-- Open-source Interactive Map (Leaflet + OpenStreetMap) -->
+        <div class="mb-8 overflow-hidden rounded-xl h-[15rem] border border-slate-200 dark:border-slate-700">
+          <div id="inosaktiMap" class="h-full w-full"></div>
         </div>
       </div>
 
       <div>
         <h4 class="font-bold mb-8 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Lokasi</h4>
         <ul class="space-y-6 text-sm text-slate-600 dark:text-slate-400">
-          <li class="flex gap-3">
-            <span class="material-symbols-outlined text-primary">location_on</span>
-            <span>Alamat Office and Workshop : Jalan Dinar Mas Utara IV No.5, Meteseh, Tembalang, Kota Semarang, Jawa Tengah</span>
+          <li>
+            <div class="flex gap-3 mb-3 cursor-pointer hover:text-primary transition-colors hover:font-semibold" id="locationOffice">
+              <span class="material-symbols-outlined text-primary shrink-0">location_on</span>
+              <span>Alamat Office and Workshop : Jalan Dinar Mas Utara IV No.5, Meteseh, Tembalang, Kota Semarang, Jawa Tengah</span>
+            </div>
+            <button
+              type="button"
+              id="btnOffice"
+              class="ml-8 px-3 py-1.5 rounded text-xs font-bold border border-slate-200 dark:border-slate-700
+                     bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200
+                     hover:bg-primary hover:text-white hover:border-primary transition"
+            >
+              Lihat di Peta
+            </button>
           </li>
-          <li class="flex gap-3">
-            <span class="material-symbols-outlined text-primary">location_on</span>
-            <span>Alamat Workshop : Jalan Bukit Leyangan Damai No.66, Leyangan, Ungaran Timur, Kab. Semarang, Jawa Tengah</span>
+          <li>
+            <div class="flex gap-3 mb-3 cursor-pointer hover:text-primary transition-colors hover:font-semibold" id="locationWorkshop">
+              <span class="material-symbols-outlined text-primary shrink-0">location_on</span>
+              <span>Alamat Workshop : Jalan Bukit Leyangan Damai No.66, Leyangan, Ungaran Timur, Kab. Semarang, Jawa Tengah</span>
+            </div>
+            <button
+              type="button"
+              id="btnWorkshop"
+              class="ml-8 px-3 py-1.5 rounded text-xs font-bold border border-slate-200 dark:border-slate-700
+                     bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200
+                     hover:bg-primary hover:text-white hover:border-primary transition"
+            >
+              Lihat di Peta
+            </button>
           </li>
         </ul>
 
@@ -88,6 +113,19 @@ $basePath = $basePath ?? '';
     echo $extraScripts;
 } ?>
 
+<!-- Leaflet (Open-source Interactive Map) -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+></script>
+
 <script>
   // header shadow
   window.addEventListener('scroll', () => {
@@ -120,6 +158,92 @@ $basePath = $basePath ?? '';
         scope: "<?php echo $basePath; ?>/"
       }).catch(console.error);
     });
+  })();
+
+  // Open-source map init (Leaflet + OpenStreetMap)
+  (function () {
+    const el = document.getElementById("inosaktiMap");
+    if (!el || typeof L === "undefined") return;
+
+    const officeWorkshop = [-7.0648307486354325, 110.46269434635737];
+    const workshop = [-7.146174401697758, 110.43531104630142];
+
+    // Map init
+    const map = L.map("inosaktiMap", {
+      zoomControl: true,
+      scrollWheelZoom: false, // avoid stealing scroll in footer
+    });
+
+    // Light-mode tiles (OSM)
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Button-style link used in popups
+    const btnStyle = `
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:10px;
+      background:#1d4ed8;color:#fff;font-weight:800;font-size:12px;
+      text-decoration:none;
+    `;
+
+    const m1 = L.marker(officeWorkshop).addTo(map).bindPopup(`
+      <div style="font-weight:900;margin-bottom:6px;">Office & Workshop</div>
+      <div style="font-size:12px;line-height:1.45;opacity:.92;">
+        Jalan Dinar Mas Utara IV No.5, Meteseh, Tembalang, Kota Semarang, Jawa Tengah
+      </div>
+      <div style="margin-top:10px;">
+        <a href="https://maps.app.goo.gl/fF8L3uR1WTSrykv97" target="_blank" rel="noopener" style="${btnStyle}">
+          <span style="font-size:14px;line-height:0;">📍</span>
+          Buka di Google Maps
+        </a>
+      </div>
+    `);
+
+    const m2 = L.marker(workshop).addTo(map).bindPopup(`
+      <div style="font-weight:900;margin-bottom:6px;">Workshop</div>
+      <div style="font-size:12px;line-height:1.45;opacity:.92;">
+        Jalan Bukit Leyangan Damai No.66, Leyangan, Ungaran Timur, Kab. Semarang, Jawa Tengah
+      </div>
+      <div style="margin-top:10px;">
+        <a href="https://maps.app.goo.gl/DbBHCQYmYoY6Ldzv8" target="_blank" rel="noopener" style="${btnStyle}">
+          <span style="font-size:14px;line-height:0;">📍</span>
+          Buka di Google Maps
+        </a>
+      </div>
+    `);
+
+    // Fit both points
+    const bounds = L.latLngBounds([officeWorkshop, workshop]);
+    map.fitBounds(bounds, { padding: [18, 18] });
+
+    // Fix tile sizing after layout settles
+    setTimeout(() => map.invalidateSize(), 150);
+
+    // Optional: open first popup by default
+    setTimeout(() => m1.openPopup(), 350);
+
+    // Quick buttons
+    const btnOffice = document.getElementById("btnOffice");
+    const btnWorkshop = document.getElementById("btnWorkshop");
+
+    if (btnOffice) {
+      btnOffice.addEventListener("click", () => {
+        map.flyTo(officeWorkshop, 16, { duration: 0.8 });
+        setTimeout(() => m1.openPopup(), 200);
+      });
+    }
+    if (btnWorkshop) {
+      btnWorkshop.addEventListener("click", () => {
+        map.flyTo(workshop, 16, { duration: 0.8 });
+        setTimeout(() => m2.openPopup(), 200);
+      });
+    }
+
+    // Optional: enable scroll zoom only when user interacts with map
+    map.getContainer().addEventListener("mouseenter", () => map.scrollWheelZoom.enable());
+    map.getContainer().addEventListener("mouseleave", () => map.scrollWheelZoom.disable());
   })();
 </script>
 

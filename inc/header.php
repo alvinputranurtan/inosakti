@@ -96,7 +96,7 @@ $basePath = $basePath ?? '';
 <header class="fixed top-0 w-full z-50 glass-effect border-b border-slate-100 dark:border-slate-800">
   <div class="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
     <div class="flex items-center gap-2 -ml-2 sm:ml-0">
-      <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png" alt="InoSakti" class="h-16 sm:h-20 w-auto" />
+      <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png" alt="InoSakti" class="h-[2rem] w-auto" />
     </div>
 
     <nav class="hidden lg:flex items-center gap-6 font-bold text-sm">
