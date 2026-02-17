@@ -3,7 +3,7 @@
 // expects optional $basePath (set by header or page)
 $basePath = $basePath ?? '/inosakti.com';
 ?>
-<footer class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pt-24 pb-12">
+<footer class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pt-24 pb-12" id="contact">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-20">
             <div>
@@ -22,16 +22,16 @@ $basePath = $basePath ?? '/inosakti.com';
                 <ul class="space-y-6 text-sm text-slate-600 dark:text-slate-400">
                     <li class="flex gap-3">
                         <span class="material-symbols-outlined text-primary">location_on</span>
-                        <span>Alamat Office and Workshop : Dinar Blok B No. 1, Semarang, Jawa Tengah</span>
+                        <span>Alamat Office and Workshop : Jalan Dinar Mas Utara IV No.5, Meteseh, Tembalang, Kota Semarang, Jawa Tengah</span>
                     </li>
                     <li class="flex gap-3">
                         <span class="material-symbols-outlined text-primary">location_on</span>
-                        <span>Alamat Workshop : Leyangan Baru Blok A No. 12, Ungaran, Kab. Semarang</span>
+                        <span>Alamat Workshop : Jalan Bukit Leyangan Damai No.66, Leyangan, Ungaran Timur, Kab. Semarang, Jawa Tengah</span>
                     </li>
-                    <li class="flex gap-3">
+                    <!-- <li class="flex gap-3">
                         <span class="material-symbols-outlined text-primary">location_on</span>
                         <span>Alamat Kursus dan Pelatihan : Lamper Tengah Gg. IX No. 11, Semarang</span>
-                    </li>
+                    </li> -->
                 </ul>
                 <h4 class="font-bold mt-8 mb-4 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Kontak</h4>
                 <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-400">
@@ -48,22 +48,17 @@ $basePath = $basePath ?? '/inosakti.com';
             <div>
                 <h4 class="font-bold mb-8 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Navigasi</h4>
                 <ul class="space-y-3 text-sm font-semibold text-slate-600 dark:text-slate-400">
-                    <li><a class="hover:text-primary transition-colors" href="/">Home</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#layanan">Layanan Kami</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#produk">Produk Kami</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#portofolio">Portofolio</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#ecommerce">Ecommerce</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#social">Sosial Media</a></li>
+                
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/">Home</a></li>
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#layanan">Layanan Kami</a></li>
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#produk">Produk Kami</a></li>
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#portofolio">Portofolio</a></li>
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#ecommerce">Ecommerce</a></li>
                     <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#social">Sosial Media</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Mitra &amp; Pelanggan Kami</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="/index.php#testimonial">Testimonial</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Special Partners</a></li>
-                    <li><a class="hover:text-primary transition-colors" href="#">Kontak</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#mitra">Mitra &amp; Pelanggan Kami</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#testimonial">Testimonial</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#special-partners">Special Partners</a></li>
+                    <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#contact">Kontak</a></li>
                 </ul>
             </div>
             <div>

@@ -222,7 +222,7 @@ include __DIR__.'/inc/header.php';
 </div>
 </div>
 </section>
-<section class="py-24 bg-[#f8fafc] dark:bg-slate-900/50">
+<section class="py-24 bg-[#f8fafc] dark:bg-slate-900/50" id="mitra">
 <div class="container mx-auto px-6">
 <h2 class="section-title">Mitra &amp; Pelanggan Kami</h2>
 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center">
@@ -281,7 +281,7 @@ include __DIR__.'/inc/header.php';
 </div>
 </div>
 </section>
-<section class="py-24 bg-[#f8fafc] dark:bg-slate-900/50">
+<section class="py-24 bg-[#f8fafc] dark:bg-slate-900/50" id="special-partners">
 <div class="container mx-auto px-6">
 <h2 class="section-title">Special Partners</h2>
 <div class="flex flex-col lg:flex-row items-center gap-16">
