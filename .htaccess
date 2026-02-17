@@ -1,10 +1,10 @@
 RewriteEngine On
 
-# set rewrite base only if the request is prefixed with /inosakti.com/ (local subfolder)
-# this avoids breaking production where the site is served from root
-RewriteCond %{REQUEST_URI} ^/inosakti\.com/
-RewriteRule .* - [E=BASE:/inosakti.com/]
-RewriteBase %{ENV:BASE}
+# apply RewriteBase only when running under the local subfolder
+# (skipped in production so we never output a blank/invalid base)
+<If "%{REQUEST_URI} =~ m#^/inosakti\.com/#">
+    RewriteBase /inosakti.com/
+</If>
 
 # =========================
 # SHOP CATEGORY ROUTE
