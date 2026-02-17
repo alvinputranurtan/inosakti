@@ -1,7 +1,8 @@
 <?php
 // footer.php
-$req = $_SERVER['REQUEST_URI'] ?? '/';
-$basePath = $basePath ?? (preg_match('#^/inosakti\.com(/|$)#', $req) ? '/inosakti.com' : '');
+// reuse the same basePath logic from config
+require_once __DIR__ . '/config.php';
+$basePath = $basePath ?? '';
 ?>
 
 <footer class="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pt-24 pb-12" id="contact">

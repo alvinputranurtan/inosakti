@@ -1,9 +1,12 @@
 RewriteEngine On
 
+# make sure rules compute relative paths when running under subfolder
+RewriteBase /inosakti.com/
+
 # =========================
 # SHOP CATEGORY ROUTE
 # =========================
-RewriteRule ^pages/products/shop/category/([^/]+)/?$ /pages/products/shop.php?category=$1 [L,QSA]
+RewriteRule ^pages/products/shop/category/([^/]+)/?$ pages/products/shop.php?category=$1 [L,QSA]
 
 # =========================
 # HILANGKAN .PHP
@@ -13,4 +16,4 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^([^\.]+)$ $1.php [L]
 
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?]
-RewriteRule ^ %1 [R=301,L]
+RewriteRule ^ /%1 [R=301,L]

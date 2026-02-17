@@ -1,7 +1,9 @@
 <?php
 // header.php
-$req = $_SERVER['REQUEST_URI'] ?? '/';
-$basePath = $basePath ?? (preg_match('#^/inosakti\.com(/|$)#', $req) ? '/inosakti.com' : '');
+// load configuration (basePath detection etc.)
+require_once __DIR__ . '/config.php';
+// ensure variable is defined for templates
+$basePath = $basePath ?? '';
 ?>
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
