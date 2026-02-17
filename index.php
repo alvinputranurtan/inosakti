@@ -17,7 +17,7 @@ include __DIR__.'/inc/header.php';
                     Applied Engineering &amp; Technology Solutions delivering engineering services, integrated smart systems, R&amp;D, software solutions, and education across AI, IoT, networking, RF, electronics, and renewable energy.
                 </p>
 <div class="flex flex-wrap gap-4">
-<a class="px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-colors" href="#layanan">
+<a class="px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-colors" href="pages/subpages/about.php">
                         Kenali lebih lanjut →
                     </a>
 <a class="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-colors shadow-lg" href="#">

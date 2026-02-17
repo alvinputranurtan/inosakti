@@ -9,7 +9,7 @@ $basePath = $basePath ?? '/inosakti.com';
             <div>
                 <div class="flex items-center gap-2 mb-8">
                     <span class="text-3xl font-black tracking-tighter text-primary dark:text-white flex items-center gap-2">
-                        <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png" alt="InoSakti" class="h-25 w-auto" />
+                        <img src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png" alt="InoSakti" class="h-15 sm:h-25 w-auto" />
                     </span>
                 </div>
                 <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Maps</h4>
