@@ -1,7 +1,7 @@
 <?php
 // header.php
 // load configuration (basePath detection etc.)
-require_once __DIR__ . '/config.php';
+require_once __DIR__.'/config.php';
 // ensure variable is defined for templates
 $basePath = $basePath ?? '';
 ?>
@@ -101,8 +101,8 @@ $basePath = $basePath ?? '';
 
     <nav class="hidden lg:flex items-center gap-6 font-bold text-sm">
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/">Home</a>
-      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/products/shop.php?category=all">Belanja</a>
-      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#blog">Blog</a>
+      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/products/shop?category=all">Belanja</a>
+      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#blog">Blog</a>
       <a class="hover:text-primary transition-colors" href="https://wa.me/+6288207085761">Konsultasi</a>
       <a class="hover:text-primary transition-colors" href="#">Login</a>
     </nav>
@@ -137,8 +137,8 @@ $basePath = $basePath ?? '';
   </div>
   <nav class="px-6 py-8 space-y-4">
     <a href="<?php echo $basePath; ?>/" class="block text-lg font-semibold hover:text-primary">Home</a>
-    <a href="<?php echo $basePath; ?>/pages/products/shop.php?category=all" class="block text-lg font-semibold hover:text-primary">Belanja</a>
-    <a href="<?php echo $basePath; ?>/index.php#blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
+    <a href="<?php echo $basePath; ?>/pages/products/shop?category=all" class="block text-lg font-semibold hover:text-primary">Belanja</a>
+    <a href="<?php echo $basePath; ?>/#blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
     <a href="https://wa.me/+6288207085761" class="block text-lg font-semibold hover:text-primary">Konsultasi</a>
     <a href="#" class="block text-lg font-semibold hover:text-primary">Login</a>
   </nav>

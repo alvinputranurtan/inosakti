@@ -52,15 +52,15 @@ $basePath = $basePath ?? '';
         <h4 class="font-bold mb-8 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Navigasi</h4>
         <ul class="space-y-3 text-sm font-semibold text-slate-600 dark:text-slate-400">
           <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/">Home</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#layanan">Layanan Kami</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#produk">Produk Kami</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#portofolio">Portofolio</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#ecommerce">Ecommerce</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#social">Sosial Media</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#mitra">Mitra &amp; Pelanggan Kami</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#testimonial">Testimonial</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#special-partners">Special Partners</a></li>
-          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/index.php#contact">Kontak</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#layanan">Layanan Kami</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#produk">Produk Kami</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#portofolio">Portofolio</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#ecommerce">Ecommerce</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#social">Sosial Media</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#mitra">Mitra &amp; Pelanggan Kami</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#testimonial">Testimonial</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#special-partners">Special Partners</a></li>
+          <li><a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#contact">Kontak</a></li>
         </ul>
       </div>
 

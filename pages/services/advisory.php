@@ -8,7 +8,7 @@ include __DIR__.'/../../inc/header.php';
 
     <!-- breadcrumb -->
     <nav class="flex mb-8 text-sm font-medium text-slate-500 dark:text-slate-400 animate-slide-up stagger-1">
-        <a class="hover:text-accent transition-colors" href="<?php echo $basePath; ?>/index.php#layanan">Services</a>
+        <a class="hover:text-accent transition-colors" href="<?php echo $basePath; ?>/#layanan">Services</a>
         <span class="mx-2">/</span>
         <span class="text-slate-900 dark:text-white">Technology Advisory &amp; Lifecycle</span>
     </nav>
@@ -191,7 +191,7 @@ include __DIR__.'/../../inc/header.php';
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25"
-                       href="<?php echo $basePath; ?>/index.php#konsultasi">
+                       href="<?php echo $basePath; ?>/#konsultasi">
                         Consult Now
                     </a>
 

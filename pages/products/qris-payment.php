@@ -166,14 +166,14 @@ exit;
 <div>
 <h4 class="font-bold mb-8 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Navigasi</h4>
 <ul class="space-y-3 text-sm font-semibold text-slate-600 dark:text-slate-400">
-<li><a class="hover:text-primary transition-colors" href="../../index.php">Home</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#layanan">Layanan Kami</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#produk">Produk Kami</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#portofolio">Portofolio</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#ecommerce">Ecommerce</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#social">Sosial Media</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../">Home</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#layanan">Layanan Kami</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#produk">Produk Kami</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#portofolio">Portofolio</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#ecommerce">Ecommerce</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#social">Sosial Media</a></li>
 <li><a class="hover:text-primary transition-colors" href="#">Mitra &amp; Pelanggan Kami</a></li>
-<li><a class="hover:text-primary transition-colors" href="../../index.php#testimonial">Testimonial</a></li>
+<li><a class="hover:text-primary transition-colors" href="../../#testimonial">Testimonial</a></li>
 <li><a class="hover:text-primary transition-colors" href="#">Special Partners</a></li>
 <li><a class="hover:text-primary transition-colors" href="#">Kontak</a></li>
 </ul>
