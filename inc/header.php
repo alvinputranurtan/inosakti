@@ -25,9 +25,10 @@ $basePath = $basePath ?? '';
   <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $basePath; ?>/assets/img/apple-touch.png">
 
   <!-- PWA -->
-  <link rel="manifest" href="<?php echo $basePath; ?>/site.webmanifest.php">
+  <link rel="manifest" href="<?php echo $basePath; ?>/site.webmanifest">
   <meta name="theme-color" content="#1E40AF">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InoSakti">
 
@@ -35,27 +36,29 @@ $basePath = $basePath ?? '';
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
 
   <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "rgb(var(--primary) / <alpha-value>)",
-            secondary: "rgb(var(--secondary) / <alpha-value>)",
-            accent: "rgb(var(--accent) / <alpha-value>)",
-            "accent-green": "rgb(var(--accent-green) / <alpha-value>)",
-            "accent-red": "rgb(var(--accent-red) / <alpha-value>)",
-            "background-light": "#f8fafc",
-            "background-dark": "#020617",
+    if (window.tailwind) {
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "rgb(var(--primary) / <alpha-value>)",
+              secondary: "rgb(var(--secondary) / <alpha-value>)",
+              accent: "rgb(var(--accent) / <alpha-value>)",
+              "accent-green": "rgb(var(--accent-green) / <alpha-value>)",
+              "accent-red": "rgb(var(--accent-red) / <alpha-value>)",
+              "background-light": "#f8fafc",
+              "background-dark": "#020617",
+            },
+            fontFamily: {
+              display: ["'Plus Jakarta Sans'", "sans-serif"],
+              sans: ["'Plus Jakarta Sans'", "sans-serif"],
+            },
+            borderRadius: { DEFAULT: "0.75rem" },
           },
-          fontFamily: {
-            display: ["'Plus Jakarta Sans'", "sans-serif"],
-            sans: ["'Plus Jakarta Sans'", "sans-serif"],
-          },
-          borderRadius: { DEFAULT: "0.75rem" },
         },
-      },
-    };
+      };
+    }
   </script>
 
   <style type="text/tailwindcss">

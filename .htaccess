@@ -3,6 +3,9 @@ RewriteEngine On
 # Universal rules for localhost subfolder and production root.
 # Avoid RewriteBase so this file works in both environments.
 
+# PWA manifest route (works with extensionless URL)
+RewriteRule ^site\.webmanifest$ site.webmanifest.php [L,QSA]
+
 # =========================
 # SHOP CATEGORY ROUTE
 # =========================
@@ -19,5 +22,6 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^([^.]+)$ $1.php [L]
 
 # Redirect .php ke URL tanpa ekstensi
+RewriteCond %{REQUEST_URI} !/site\.webmanifest\.php$ [NC]
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php(?:[\s?]|$)
 RewriteRule ^ /%1 [R=301,L]
