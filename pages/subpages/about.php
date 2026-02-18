@@ -83,10 +83,10 @@ foreach ($misi as $i => $text) { ?>
                     <?php } ?>
                 </ul>
             </div>
-        </section>
+        <!-- </section> -->
 
         <!-- Team -->
-        <section class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 md:p-12 shadow-xl shadow-slate-200/50 dark:shadow-none animate-slide-up stagger-3">
+        <!-- <section class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 md:p-12 shadow-xl shadow-slate-200/50 dark:shadow-none animate-slide-up stagger-3">
             <div class="text-center mb-12">
                 <h2 class="font-display text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                     Dibalik InoSakti
@@ -97,10 +97,10 @@ foreach ($misi as $i => $text) { ?>
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8"> -->
 
                 <!-- Irfan -->
-                <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <!-- <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                     <div class="mb-6 relative inline-block">
                         <div class="absolute inset-0 bg-accent/20 rounded-full scale-110 blur group-hover:scale-125 transition-transform"></div>
                         <img
@@ -119,10 +119,10 @@ foreach ($misi as $i => $text) { ?>
                     >
                         Kenali Lebih Lanjut
                     </a>
-                </article>
+                </article> -->
 
                 <!-- Alvin -->
-                <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <!-- <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                     <div class="mb-6 relative inline-block">
                         <div class="absolute inset-0 bg-accent/20 rounded-full scale-110 blur group-hover:scale-125 transition-transform"></div>
                         <img
@@ -141,10 +141,10 @@ foreach ($misi as $i => $text) { ?>
                     >
                         Kenali Lebih Lanjut
                     </a>
-                </article>
+                </article> -->
 
                 <!-- Sidiq -->
-                <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <!-- <article class="group bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                     <div class="mb-6 relative inline-block">
                         <div class="absolute inset-0 bg-accent/20 rounded-full scale-110 blur group-hover:scale-125 transition-transform"></div>
                         <img
@@ -163,7 +163,7 @@ foreach ($misi as $i => $text) { ?>
                     >
                         Kenali Lebih Lanjut
                     </a>
-                </article>
+                </article> -->
 
             </div>
         </section>

@@ -1,15 +1,19 @@
 RewriteEngine On
-
-# apply RewriteBase only when running under the local subfolder
-# (skipped in production so we never output a blank/invalid base)
-<If "%{REQUEST_URI} =~ m#^/inosakti\.com/#">
-    RewriteBase /inosakti.com/
-</If>
+RewriteBase /inosakti.com/
 
 # =========================
-# SHOP CATEGORY ROUTE
+# DEBUG - Remove comment to see what's happening
 # =========================
-RewriteRule ^pages/products/shop/category/([^/]+)/?$ pages/products/shop.php?category=$1 [L,QSA]
+# RewriteLogLevel 5
+# RewriteLog "C:/xampp/apache/logs/rewrite.log"
+
+# =========================
+# SHOP CATEGORY ROUTE - Handle URL parameters
+# =========================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^pages/products/shop/?$ pages/products/shop.php [QSA,L]
+RewriteRule ^pages/products/shop/category/([^/]+)/?$ pages/products/shop.php?category=$1 [QSA,L]
 
 # =========================
 # HILANGKAN .PHP
@@ -18,5 +22,6 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^([^\.]+)$ $1.php [L]
 
+# Redirect .php to non-.php
 RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?]
 RewriteRule ^ /%1 [R=301,L]
