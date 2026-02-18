@@ -31,13 +31,13 @@ $base = (preg_match('#^/inosakti\.com(/|$)#', $req)) ? '/inosakti.com' : '';
   ],
   "screenshots": [
     {
-      "src": "<?php echo $base; ?>/assets/pwa/screen-wide-1.png",
+      "src": "<?php echo $base; ?>/assets/img/background_utama.jpeg",
       "sizes": "1280x720",
-      "type": "image/png",
+      "type": "image/jpeg",
       "form_factor": "wide"
     },
     {
-      "src": "<?php echo $base; ?>/assets/pwa/screen-mobile-1.png",
+      "src": "<?php echo $base; ?>/assets/img/produk_1.png",
       "sizes": "720x1280",
       "type": "image/png"
     }

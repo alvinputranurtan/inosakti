@@ -1,14 +1,18 @@
 /* sw.js - InoSakti PWA Service Worker (safe for PHP sites) */
 
-const CACHE_NAME = "inosakti-v3";
-const BASE = "/inosakti.com"; // ganti jadi "" jika deploy di root domain
+const CACHE_NAME = "inosakti-v4";
+const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+
+function withBase(path) {
+  return `${BASE}${path}`;
+}
 
 // Precache minimal (jangan kebanyakan untuk PHP)
 const PRECACHE = [
-  `${BASE}/`,
-  `${BASE}/index.php`,
-  `${BASE}/assets/img/favicon-192.png`,
-  `${BASE}/assets/img/favicon-512.png`,
+  withBase("/"),
+  withBase("/index.php"),
+  withBase("/assets/img/favicon-192.png"),
+  withBase("/assets/img/favicon-512.png"),
 ];
 
 // Halaman yang aman untuk dicache (public, tidak personal)
@@ -16,11 +20,11 @@ function isCacheablePage(url) {
   const p = url.pathname;
 
   return (
-    p === `${BASE}/` ||
-    p === `${BASE}/index.php` ||
-    p.startsWith(`${BASE}/pages/services/`) ||
-    p.startsWith(`${BASE}/pages/about/`) ||
-    p.startsWith(`${BASE}/pages/products/`) === false // contoh: jangan cache produk (dinamis)
+    (p === withBase("/") ||
+      p === withBase("/index.php") ||
+      p.startsWith(withBase("/pages/services/")) ||
+      p.startsWith(withBase("/pages/subpages/"))) &&
+    !p.startsWith(withBase("/pages/products/"))
   );
 }
 
@@ -28,7 +32,7 @@ function isCacheablePage(url) {
 function isStaticAsset(url) {
   const p = url.pathname;
   return (
-    p.startsWith(`${BASE}/assets/`) ||
+    p.startsWith(withBase("/assets/")) ||
     p.endsWith(".css") ||
     p.endsWith(".js") ||
     p.endsWith(".png") ||
@@ -55,7 +59,7 @@ function isSensitive(url) {
     p.includes("/api") ||
     p.includes("/inc/") ||
     p.includes("/upload") ||
-    p.startsWith(`${BASE}/pages/products/`) // shop/product biasanya pakai query & berubah
+    p.startsWith(withBase("/pages/products/")) // shop/product biasanya pakai query & berubah
   );
 }
 
@@ -97,7 +101,7 @@ self.addEventListener("fetch", (event) => {
     // Jangan cache halaman sensitif/dinamis
     if (isSensitive(url) || !isCacheablePage(url)) {
       event.respondWith(
-        fetch(req).catch(() => caches.match(`${BASE}/`))
+        fetch(req).catch(() => caches.match(withBase("/")))
       );
       return;
     }
@@ -111,7 +115,7 @@ self.addEventListener("fetch", (event) => {
           return res;
         })
         .catch(() =>
-          caches.match(req).then((r) => r || caches.match(`${BASE}/`))
+          caches.match(req).then((r) => r || caches.match(withBase("/")))
         )
     );
     return;
