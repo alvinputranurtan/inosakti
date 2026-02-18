@@ -72,6 +72,23 @@ include __DIR__.'/../../inc/header.php';
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
+            <div class="service-card group bg-white dark:bg-slate-900 border-2 border-accent/20 dark:border-accent/30 p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3">
+                    <span class="px-2 py-1 bg-accent text-white text-[10px] font-bold rounded uppercase tracking-wider">Interactive</span>
+                </div>
+                <div class="w-14 h-14 bg-accent/10 dark:bg-accent/20 rounded-xl flex items-center justify-center mb-6 icon-box transition-transform">
+                    <span class="material-symbols-outlined text-accent text-3xl">laptop_mac</span>
+                </div>
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Edukasi Online</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                    Akses materi pembelajaran fleksibel kapan saja dan di mana saja melalui platform digital interaktif kami.
+                </p>
+                <a class="inline-flex items-center text-accent font-bold group-hover:underline" href="<?php echo $basePath; ?>/pages/subpages/about">
+                    Masuk ke Platform
+                    <span class="material-symbols-outlined ml-2 text-sm">open_in_new</span>
+                </a>
+            </div>
+
             <div class="service-card group">
                 <div class="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-6 icon-box transition-transform">
                     <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-3xl">code</span>
