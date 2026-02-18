@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteBase /inosakti.com/
+RewriteBase /
 
 # =========================
 # SHOP CATEGORY ROUTE
