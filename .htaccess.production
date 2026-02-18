@@ -1,5 +1,7 @@
 RewriteEngine On
-RewriteBase /
+
+# Universal rules for localhost subfolder and production root.
+# Avoid RewriteBase so this file works in both environments.
 
 # =========================
 # SHOP CATEGORY ROUTE
@@ -10,11 +12,12 @@ RewriteRule ^pages/products/shop/?$ pages/products/shop.php [QSA,L]
 RewriteRule ^pages/products/shop/category/([^/]+)/?$ pages/products/shop.php?category=$1 [QSA,L]
 
 # =========================
-# HILANGKAN .PHP
+# HILANGKAN .PHP (internal rewrite)
 # =========================
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([^\.]+)$ $1.php [L]
+RewriteRule ^([^.]+)$ $1.php [L]
 
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?]
+# Redirect .php ke URL tanpa ekstensi
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php(?:[\s?]|$)
 RewriteRule ^ /%1 [R=301,L]
