@@ -10,7 +10,6 @@ function withBase(path) {
 // Precache minimal (jangan kebanyakan untuk PHP)
 const PRECACHE = [
   withBase("/"),
-  withBase("/index.php"),
   withBase("/assets/img/favicon-192.png"),
   withBase("/assets/img/favicon-512.png"),
 ];
@@ -23,7 +22,7 @@ function isCacheablePage(url) {
     (p === withBase("/") ||
       p === withBase("/index.php") ||
       p.startsWith(withBase("/pages/services/")) ||
-      p.startsWith(withBase("/pages/subpages/"))) &&
+      p.startsWith(withBase("/pages/company/"))) &&
     !p.startsWith(withBase("/pages/products/"))
   );
 }

@@ -4,6 +4,42 @@
 require_once __DIR__.'/config.php';
 // ensure variable is defined for templates
 $basePath = $basePath ?? '';
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start([
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax',
+    ]);
+}
+$authUser = $_SESSION['admin_user'] ?? null;
+$isLoggedIn = is_array($authUser);
+$roleCodes = [];
+if ($isLoggedIn && isset($authUser['roles']) && is_array($authUser['roles'])) {
+    $roleCodes = array_values(array_filter(array_map('strval', $authUser['roles'])));
+}
+
+$panelHref = $basePath . '/portal';
+$panelText = 'Masuk Panel';
+if ($isLoggedIn) {
+    if (in_array('super_admin', $roleCodes, true) || in_array('editor', $roleCodes, true) || in_array('hr_admin', $roleCodes, true)) {
+        $panelHref = $basePath . '/admin/';
+        $panelText = 'Masuk Admin Panel';
+    } elseif (in_array('student', $roleCodes, true)) {
+        $panelHref = $basePath . '/pages/learning';
+        $panelText = 'Lanjutkan Belajar';
+    } elseif (in_array('instructor', $roleCodes, true)) {
+        $panelHref = $basePath . '/pages/learning';
+        $panelText = 'Masuk Instructor Panel';
+    } elseif (in_array('employee', $roleCodes, true)) {
+        $panelHref = $basePath . '/portal';
+        $panelText = 'Masuk Employee Panel';
+    } else {
+        $panelHref = $basePath . '/portal';
+        $panelText = 'Masuk Panel';
+    }
+}
+$loginHref = $basePath . '/login';
+$logoutHref = $basePath . '/logout';
 ?>
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
@@ -105,26 +141,38 @@ $basePath = $basePath ?? '';
     <nav class="hidden lg:flex items-center gap-6 font-bold text-sm">
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/">Home</a>
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/products/shop?category=all">Belanja</a>
-      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/#blog">Blog</a>
+      <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/blog">Blog</a>
       <a class="hover:text-primary transition-colors" href="https://wa.me/+6288207085761">Konsultasi</a>
-      <a class="hover:text-primary transition-colors" href="#">Login</a>
+      <?php if (!$isLoggedIn): ?>
+      <a class="hover:text-primary transition-colors" href="<?php echo $loginHref; ?>">Login</a>
+      <?php else: ?>
+      <div class="relative group">
+        <button class="inline-flex items-center gap-1 hover:text-primary transition-colors">
+          Akun <span class="material-symbols-outlined text-base">expand_more</span>
+        </button>
+        <div class="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-lg p-2 hidden group-hover:block">
+          <a href="<?php echo $panelHref; ?>" class="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50"><?php echo $panelText; ?></a>
+          <a href="<?php echo $logoutHref; ?>" class="block px-3 py-2 rounded-lg text-red-600 hover:bg-red-50">Logout</a>
+        </div>
+      </div>
+      <?php endif; ?>
     </nav>
 
-    <div class="flex items-center gap-4">
-      <div class="hidden sm:flex border rounded-lg overflow-hidden text-xs font-bold">
-        <button class="bg-primary text-white px-3 py-1.5 flex items-center gap-1">
-          Navigasi <span class="material-symbols-outlined text-xs">expand_more</span>
-        </button>
-        <button class="bg-white px-3 py-1.5 flex items-center gap-1">
-          <span class="material-symbols-outlined text-xs">language</span>
-          IND <span class="material-symbols-outlined text-xs">expand_more</span>
-        </button>
-      </div>
+	    <div class="flex items-center gap-4">
+	      <div class="hidden sm:flex border rounded-lg overflow-hidden text-xs font-bold">
+	        <button class="bg-primary text-white px-3 py-1.5 flex items-center gap-1">
+	          Navigasi <span class="material-symbols-outlined text-xs">expand_more</span>
+	        </button>
+	        <button class="bg-white px-3 py-1.5 flex items-center gap-1">
+	          <span class="material-symbols-outlined text-xs">language</span>
+	          IND <span class="material-symbols-outlined text-xs">expand_more</span>
+	        </button>
+	      </div>
 
-      <div class="lg:hidden">
-        <button id="hamburgerBtn" class="p-2 focus:outline-none">
-          <span class="material-symbols-outlined text-3xl">menu</span>
-        </button>
+	      <div class="lg:hidden">
+	        <button id="hamburgerBtn" class="p-2 focus:outline-none">
+	          <span class="material-symbols-outlined text-3xl">menu</span>
+	        </button>
       </div>
     </div>
   </div>
@@ -141,9 +189,14 @@ $basePath = $basePath ?? '';
   <nav class="px-6 py-8 space-y-4">
     <a href="<?php echo $basePath; ?>/" class="block text-lg font-semibold hover:text-primary">Home</a>
     <a href="<?php echo $basePath; ?>/pages/products/shop?category=all" class="block text-lg font-semibold hover:text-primary">Belanja</a>
-    <a href="<?php echo $basePath; ?>/#blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
+    <a href="<?php echo $basePath; ?>/pages/blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
     <a href="https://wa.me/+6288207085761" class="block text-lg font-semibold hover:text-primary">Konsultasi</a>
-    <a href="#" class="block text-lg font-semibold hover:text-primary">Login</a>
+    <?php if (!$isLoggedIn): ?>
+    <a href="<?php echo $loginHref; ?>" class="block text-lg font-semibold hover:text-primary">Login</a>
+    <?php else: ?>
+    <a href="<?php echo $panelHref; ?>" class="block text-lg font-semibold hover:text-primary"><?php echo $panelText; ?></a>
+    <a href="<?php echo $logoutHref; ?>" class="block text-lg font-semibold text-red-600 hover:text-red-700">Logout</a>
+    <?php endif; ?>
   </nav>
 </div>
 

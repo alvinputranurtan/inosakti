@@ -1,5 +1,9 @@
 RewriteEngine On
 
+<Files ".env">
+    Require all denied
+</Files>
+
 # Universal rules for localhost subfolder and production root.
 # Avoid RewriteBase so this file works in both environments.
 

@@ -73,14 +73,14 @@ include __DIR__.'/../../inc/header.php';
         </div>
 
         <!-- 5 columns on xl, as original -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="service-card group">
                 <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">science</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Research &amp; Development Projects</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    End-to-end systematic investigation and development of novel technical solutions.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Research &amp; Development Projects</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Investigasi sistematis dan pengembangan solusi teknis inovatif secara menyeluruh dari awal hingga akhir.
                 </p>
             </div>
 
@@ -88,9 +88,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">precision_manufacturing</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Prototype Development &amp; Validation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Building functional physical models to test and verify design assumptions.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Prototype Development &amp; Validation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pembuatan model fisik fungsional untuk menguji dan memverifikasi asumsi desain.
                 </p>
             </div>
 
@@ -98,9 +98,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">query_stats</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Technology Feasibility Study</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    In-depth technical analysis to determine project viability and potential risks.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Technology Feasibility Study</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Analisis teknis mendalam untuk menilai kelayakan proyek serta potensi risikonya.
                 </p>
             </div>
 
@@ -108,9 +108,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">lightbulb</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Proof of Concept Development</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Demonstrating practical potential of concepts through MVP functional builds.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Proof of Concept Development</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pembuktian potensi praktis konsep melalui pengembangan MVP yang fungsional.
                 </p>
             </div>
 
@@ -118,9 +118,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">memory</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Experimental System Engineering</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Engineering bespoke experimental setups for complex data collection and testing.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Experimental System Engineering</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Perancangan sistem eksperimen khusus untuk kebutuhan pengambilan data dan pengujian yang kompleks.
                 </p>
             </div>
 
@@ -128,9 +128,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">sensors</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Signal Processing System Development</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Advanced processing of real-time sensor data for specialized industrial needs.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Signal Processing System Development</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pemrosesan lanjutan data sensor real-time untuk kebutuhan industri yang spesifik.
                 </p>
             </div>
 
@@ -138,9 +138,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">functions</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Advanced Algorithm Engineering</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Custom algorithm design for optimization, prediction, and pattern recognition.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Advanced Algorithm Engineering</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Perancangan algoritma kustom untuk optimasi, prediksi, dan pengenalan pola.
                 </p>
             </div>
 
@@ -148,9 +148,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">auto_awesome</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Product Innovation Engineering</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Infusing creative engineering solutions into product design for competitive edge.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Product Innovation Engineering</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Integrasi solusi rekayasa kreatif ke dalam desain produk untuk meningkatkan daya saing.
                 </p>
             </div>
 
@@ -158,9 +158,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">factory</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Industrial Pilot Project</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Small-scale implementation to test new systems in actual industrial environments.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Industrial Pilot Project</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Implementasi skala kecil untuk menguji sistem baru pada lingkungan industri nyata.
                 </p>
             </div>
 
@@ -168,9 +168,9 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">rocket_launch</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2 leading-snug">Technology Commercialization Preparation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Optimizing R&amp;D outputs for mass production and market readiness standards.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3 leading-snug">Technology Commercialization Preparation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Optimasi keluaran R&D agar siap masuk tahap produksi massal dan memenuhi standar kesiapan pasar.
                 </p>
             </div>
         </div>
@@ -203,3 +203,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+

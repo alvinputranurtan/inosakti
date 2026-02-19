@@ -71,13 +71,13 @@ include __DIR__.'/../../inc/header.php';
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="service-card group">
                 <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">schema</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Electronic System Design</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Electronic System Design</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Arsitektur sistem elektronik yang efisien untuk berbagai aplikasi industri dan konsumen.
                 </p>
             </div>
@@ -86,8 +86,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">grid_view</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">PCB Design &amp; Layout</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">PCB Design &amp; Layout</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Desain layout PCB multi-layer dengan standar integritas sinyal dan manajemen panas yang baik.
                 </p>
             </div>
@@ -96,8 +96,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">precision_manufacturing</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Prototyping &amp; Bring-Up</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Prototyping &amp; Bring-Up</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pembuatan prototipe fungsional dan pengujian awal untuk memastikan sistem berjalan sesuai spesifikasi.
                 </p>
             </div>
@@ -106,8 +106,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">rule</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Testing &amp; Validation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Testing &amp; Validation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pengujian ketat hardware untuk validasi performa, keamanan, dan standar kepatuhan regulasi.
                 </p>
             </div>
@@ -116,8 +116,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">conveyor_belt</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Manufacturing Prep</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Manufacturing Prep</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Persiapan file produksi (Gerber, BOM, Assembly) untuk transisi mulus ke manufaktur massal.
                 </p>
             </div>
@@ -126,8 +126,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">history</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Reverse Engineering</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Reverse Engineering</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Analisis mendalam perangkat keras yang ada untuk pembaruan teknologi atau dokumentasi ulang.
                 </p>
             </div>
@@ -136,8 +136,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">settings_input_component</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Instrumentation System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Instrumentation System</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pengembangan alat ukur dan sistem akuisisi data presisi tinggi untuk kebutuhan laboratorium atau industri.
                 </p>
             </div>
@@ -146,8 +146,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">factory</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Industrial Equipment</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Industrial Equipment</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Perancangan perangkat elektronik khusus yang tahan lama untuk lingkungan operasional industri berat.
                 </p>
             </div>
@@ -156,8 +156,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">hub</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Embedded Hardware</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Embedded Hardware</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Integrasi mikrokontroler dan prosesor dengan sensor/aktuator untuk sistem cerdas tertanam.
                 </p>
             </div>
@@ -166,8 +166,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">build</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Troubleshooting &amp; Repair</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Troubleshooting &amp; Repair</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Layanan diagnosa kerusakan dan perbaikan perangkat elektronik tingkat lanjut (component-level).
                 </p>
             </div>
@@ -176,8 +176,8 @@ include __DIR__.'/../../inc/header.php';
                 <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-pink-600 dark:text-pink-400">view_in_ar</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">3D Mechanical Design</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">3D Mechanical Design</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Desain enclosure dan casing mekanik yang presisi untuk melindungi modul elektronik Anda.
                 </p>
             </div>

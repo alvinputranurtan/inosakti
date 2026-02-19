@@ -71,95 +71,95 @@ include __DIR__.'/../../inc/header.php';
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">assignment</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Research Grant Proposal Assistance</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Guidance menyusun proposal pendanaan yang kuat, logis, dan kompetitif (hibah nasional/internasional).
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Research Grant Proposal Assistance</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pendampingan penyusunan proposal pendanaan yang kuat, logis, dan kompetitif untuk hibah nasional maupun internasional.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">school</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Thesis &amp; Dissertation Guidance</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Mentorship terstruktur untuk skripsi/tesis/disertasi: roadmap, milestone, dan quality control naskah.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Thesis &amp; Dissertation Guidance</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pendampingan terstruktur untuk skripsi, tesis, dan disertasi melalui peta jalan, target capaian, serta kendali mutu naskah.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">psychology</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Research Methodology Consultation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Rekomendasi desain riset (kualitatif/kuantitatif/mixed) yang valid, terukur, dan sesuai scope jurnal.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Research Methodology Consultation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Konsultasi desain riset kualitatif, kuantitatif, maupun campuran yang valid, terukur, dan sesuai ruang lingkup jurnal tujuan.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">edit_note</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Scientific Paper Writing Assistance</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Penyusunan struktur artikel (IMRaD), storytelling ilmiah, dan konsistensi terminologi hingga siap submit.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Scientific Paper Writing Assistance</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pendampingan penyusunan artikel berbasis struktur IMRaD, alur narasi ilmiah yang kuat, dan konsistensi terminologi hingga siap submit.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">upload_file</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Journal Publication Preparation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Formatting template jurnal, reference manager, cover letter, hingga support proses submission & revisi.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Journal Publication Preparation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pendampingan persiapan publikasi mulai dari format template jurnal, manajemen referensi, cover letter, hingga proses pengajuan (submission) dan revisi.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">gavel</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Patent &amp; Intellectual Property</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Penyusunan dokumen HKI (hak cipta/paten) dan strategi klaim/novelty untuk perlindungan inovasi.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Patent &amp; Intellectual Property</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Penyusunan dokumen HKI (hak cipta/paten) beserta strategi klaim kebaruan untuk perlindungan inovasi.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">insights</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Research Data Analysis</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Analisis statistik/tematik (SPSS/R/NVivo) + interpretasi hasil agar kuat di bagian discussion.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Research Data Analysis</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Analisis data statistik maupun tematik (SPSS/R/NVivo) disertai interpretasi hasil yang kuat untuk bagian pembahasan.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">science</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Experimental Design Consultation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Validasi rancangan eksperimen/lab/field test agar data repeatable, akurat, dan sesuai tujuan riset.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Experimental Design Consultation</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Validasi rancangan eksperimen laboratorium maupun lapangan agar data dapat direplikasi, akurat, dan sesuai tujuan penelitian.
                 </p>
             </div>
 
-            <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="service-card group">
                 <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">spellcheck</span>
                 </div>
-                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Academic Technical Editing</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Proofreading, polishing bahasa akademik, dan perapian sitasi agar naskah konsisten & profesional.
+                <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Academic Technical Editing</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Layanan proofreading, penyempurnaan bahasa akademik, dan perapian sitasi agar naskah konsisten serta profesional.
                 </p>
             </div>
 
@@ -193,3 +193,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+

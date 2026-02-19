@@ -17,7 +17,7 @@ include __DIR__.'/inc/header.php';
                     Applied Engineering &amp; Technology Solutions delivering engineering services, integrated smart systems, R&amp;D, software solutions, and education across AI, IoT, networking, RF, electronics, and renewable energy.
                 </p>
 <div class="flex flex-wrap gap-4">
-<a class="px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-colors" href="<?php echo $basePath; ?>/pages/subpages/about">
+<a class="px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-colors" href="<?php echo $basePath; ?>/pages/company/about">
                         Kenali lebih lanjut →
                     </a>
 <a class="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-colors shadow-lg" href="#">
@@ -41,7 +41,7 @@ include __DIR__.'/inc/header.php';
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">psychology</span></div>
 <h3 class="text-xl font-bold mb-4">AI-Driven Systems</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Solusi berbasis Artificial Intelligence untuk computer vision, predictive analytics, dan pengambilan keputusan cerdas.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="<?php echo $basePath; ?>/pages/services/aidriven">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="<?php echo $basePath; ?>/pages/services/ai-driven">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">memory</span></div>
@@ -53,7 +53,7 @@ include __DIR__.'/inc/header.php';
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">settings_input_antenna</span></div>
 <h3 class="text-xl font-bold mb-4">Advanced Network &amp; RF Engineering</h3>
 <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 leading-relaxed">Perencanaan dan pengujian sistem jaringan serta rekayasa RF untuk kebutuhan komunikasi data infrastruktur tinggi.</p>
-<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="<?php echo $basePath; ?>/pages/services/rf">Lihat lebih lanjut →</a>
+<a class="text-primary font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all" href="<?php echo $basePath; ?>/pages/services/rf-engineering">Lihat lebih lanjut →</a>
 </div>
 <div class="service-card group">
 <div class="w-12 h-12 mb-6 text-primary"><span class="material-symbols-outlined text-4xl">developer_board</span></div>
@@ -108,7 +108,7 @@ include __DIR__.'/inc/header.php';
 <div class="product-thumb"><img alt="P2" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_2.png"/></div>
 <div class="product-thumb"><img alt="P3" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_3.png"/></div>
 <div class="product-thumb"><img alt="P4" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_4.png"/></div>
-<div class="product-thumb"><img alt="P5" class="w-full h/full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_5.png"/></div>
+<div class="product-thumb"><img alt="P5" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_5.png"/></div>
 <div class="product-thumb"><img alt="P6" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/produk_6.png"/></div>
 </div>
 <p class="text-slate-500 text-sm mb-4">Lini produk sistem teknologi terapan yang dirancang untuk implementasi industri, komersial, dan edukasi profesional.</p>
@@ -117,12 +117,12 @@ include __DIR__.'/inc/header.php';
 <div class="text-center">
 <h3 class="text-2xl font-bold mb-6">Electronic Components &amp; Technology Supply</h3>
 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
-<div class="product-thumb"><img alt="C1" class="w-full h-full object-cover" src="assets/img/electronic_1.png"/></div>
-<div class="product-thumb"><img alt="C2" class="w-full h-full object-cover" src="assets/img/electronic_2.png"/></div>
-<div class="product-thumb"><img alt="C3" class="w-full h-full object-cover" src="assets/img/electronic_3.png"/></div>
-<div class="product-thumb"><img alt="C4" class="w-full h-full object-cover" src="assets/img/electronic_4.png"/></div>
-<div class="product-thumb"><img alt="C5" class="w-full h-full object-cover" src="assets/img/electronic_5.png"/></div>
-<div class="product-thumb"><img alt="C6" class="w-full h-full object-cover" src="assets/img/electronic_6.png"/></div>
+<div class="product-thumb"><img alt="C1" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_1.png"/></div>
+<div class="product-thumb"><img alt="C2" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_2.png"/></div>
+<div class="product-thumb"><img alt="C3" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_3.png"/></div>
+<div class="product-thumb"><img alt="C4" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_4.png"/></div>
+<div class="product-thumb"><img alt="C5" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_5.png"/></div>
+<div class="product-thumb"><img alt="C6" class="w-full h-full object-cover" src="<?php echo $basePath; ?>/assets/img/electronic_6.png"/></div>
 </div>
 <p class="text-slate-500 text-sm mb-4">Penyediaan komponen dan perangkat elektronik berkualitas untuk kebutuhan pengembangan dan integrasi sistem.</p>
 <a class="text-primary font-bold" href="<?php echo $basePath; ?>/pages/products/shop?category=electronic">Lihat lebih lanjut →</a>
@@ -145,7 +145,7 @@ include __DIR__.'/inc/header.php';
 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 <div class="group">
 <div class="rounded-2xl overflow-hidden mb-6 aspect-video">
-<img alt="P1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="assets/img/portofolio_solarpanelsystem.png"/>
+<img alt="P1" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="<?php echo $basePath; ?>/assets/img/portofolio_solarpanelsystem.png"/>
 </div>
 <h3 class="text-xl font-bold mb-2">Solar Panel System for Greenhouse</h3>
 <p class="text-slate-400 text-sm mb-4 leading-relaxed">Solar Panel System menggunakan MPPT dan baterai LiPo.</p>
@@ -153,7 +153,7 @@ include __DIR__.'/inc/header.php';
 </div>
 <div class="group">
 <div class="rounded-2xl overflow-hidden mb-6 aspect-video">
-<img alt="P2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="assets/img/portofolio_smartaeroponic.jpeg"/>
+<img alt="P2" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="<?php echo $basePath; ?>/assets/img/portofolio_smartaeroponic.jpeg"/>
 </div>
 <h3 class="text-xl font-bold mb-2">Smart Aeroponic &amp; AI-Driven Nutrition System</h3>
 <p class="text-slate-400 text-sm mb-4 leading-relaxed">AI Driven Nutrition System Menggunakan YOLO.</p>
@@ -161,7 +161,7 @@ include __DIR__.'/inc/header.php';
 </div>
 <div class="group">
 <div class="rounded-2xl overflow-hidden mb-6 aspect-video">
-<img alt="P3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="assets/img/portofolio_smartgreenhousecontrol.jpeg"/>
+<img alt="P3" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="<?php echo $basePath; ?>/assets/img/portofolio_smartgreenhousecontrol.jpeg"/>
 </div>
 <h3 class="text-xl font-bold mb-2">Smart Greenhouse Control</h3>
 <p class="text-slate-400 text-sm mb-4 leading-relaxed">Sistem monitoring terpadu berbasis cloud untuk kontrol otomatis.</p>
@@ -175,12 +175,12 @@ include __DIR__.'/inc/header.php';
 <h2 class="section-title">Ecommerce</h2>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
 <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl border border-slate-100 dark:border-slate-700 text-center hover:shadow-lg transition-all">
-<img alt="Shopee" class="h-16 mx-auto mb-6" src="assets/img/ecommerce_shopee.png"/>
+<img alt="Shopee" class="h-16 mx-auto mb-6" src="<?php echo $basePath; ?>/assets/img/ecommerce_shopee.png"/>
 <h4 class="text-2xl font-bold mb-4">Shopee</h4>
 <a class="text-primary font-bold text-sm" href="https://shopee.co.id/plantara.indonesia">Lihat lebih lanjut →</a>
 </div>
 <div class="bg-white dark:bg-slate-800 p-10 rounded-2xl border border-slate-100 dark:border-slate-700 text-center hover:shadow-lg transition-all">
-<img alt="Tokopedia" class="h-16 mx-auto mb-6" src="assets/img/ecommerce_tokopedia.png"/>
+<img alt="Tokopedia" class="h-16 mx-auto mb-6" src="<?php echo $basePath; ?>/assets/img/ecommerce_tokopedia.png"/>
 <h4 class="text-2xl font-bold mb-4">Tokopedia</h4>
 <a class="text-primary font-bold text-sm" href="#">Lihat lebih lanjut →</a>
 </div>
@@ -200,21 +200,21 @@ include __DIR__.'/inc/header.php';
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
 <div class="bg-[#f8fafc] dark:bg-slate-800 p-10 rounded-2xl border border-slate-100 dark:border-slate-700 text-center hover:shadow-lg transition-all">
 <div class="w-20 h-20 mx-auto mb-6">
-    <img src="assets/img/sosial_instagram.png" alt="Instagram" class="w-full h-full object-contain" />
+    <img src="<?php echo $basePath; ?>/assets/img/sosial_instagram.png" alt="Instagram" class="w-full h-full object-contain" />
 </div>
 <h4 class="text-2xl font-bold mb-4">Instagram</h4>
 <a class="text-primary font-bold text-sm" href="#">Lihat lebih lanjut →</a>
 </div>
 <div class="bg-[#f8fafc] dark:bg-slate-800 p-10 rounded-2xl border border-slate-100 dark:border-slate-700 text-center hover:shadow-lg transition-all">
 <div class="w-20 h-20 mx-auto mb-6">
-    <img src="assets/img/sosial_tiktok.png" alt="Tiktok" class="w-full h-full object-contain" />
+    <img src="<?php echo $basePath; ?>/assets/img/sosial_tiktok.png" alt="Tiktok" class="w-full h-full object-contain" />
 </div>
 <h4 class="text-2xl font-bold mb-4">Tiktok</h4>
 <a class="text-primary font-bold text-sm" href="#">Lihat lebih lanjut →</a>
 </div>
 <div class="bg-[#f8fafc] dark:bg-slate-800 p-10 rounded-2xl border border-slate-100 dark:border-slate-700 text-center hover:shadow-lg transition-all">
 <div class="w-20 h-20 mx-auto mb-6">
-    <img src="assets/img/sosial_facebook.png" alt="Facebook" class="w-full h-full object-contain" />
+    <img src="<?php echo $basePath; ?>/assets/img/sosial_facebook.png" alt="Facebook" class="w-full h-full object-contain" />
 </div>
 <h4 class="text-2xl font-bold mb-4">Facebook</h4>
 <a class="text-primary font-bold text-sm" href="#">Lihat lebih lanjut →</a>
@@ -226,18 +226,18 @@ include __DIR__.'/inc/header.php';
 <div class="container mx-auto px-6">
 <h2 class="section-title">Mitra &amp; Pelanggan Kami</h2>
 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center">
-<img alt="P1" class="h-20 w-auto object-contain" src="assets/img/mitra_ambatech.jpeg"/>
-<img alt="P2" class="h-20 w-auto object-contain" src="assets/img/mitra_atasi.jpg"/>
-<img alt="P3" class="h-20 w-auto object-contain" src="assets/img/mitra_indomaker.png"/>
-<img alt="P4" class="h-20 w-auto object-contain" src="assets/img/mitra_moenadi.png"/>
-<img alt="P5" class="h-20 w-auto object-contain" src="assets/img/mitra_polban.png"/>
-<img alt="P6" class="h-20 w-auto object-contain" src="assets/img/mitra_polines.png"/>
-<img alt="P7" class="h-20 w-auto object-contain" src="assets/img/mitra_pppayakumbuh.png"/>
-<img alt="P8" class="h-20 w-auto object-contain" src="assets/img/mitra_unand.png"/>
-<img alt="P9" class="h-20 w-auto object-contain" src="assets/img/mitra_unsiq.png"/>
-<img alt="P10" class="h-20 w-auto object-contain" src="assets/img/mitra_wjd.png"/>
-<img alt="Logo InoSakti" class="h-32 w-auto object-contain" src="assets/img/logo_inosakti.png"/>
-<img alt="Logo Plantara" class="h-24 w-auto object-contain" src="assets/img/logo_plantara.png"/>
+<img alt="P1" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_ambatech.jpeg"/>
+<img alt="P2" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_atasi.jpg"/>
+<img alt="P3" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_indomaker.png"/>
+<img alt="P4" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_moenadi.png"/>
+<img alt="P5" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_polban.png"/>
+<img alt="P6" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_polines.png"/>
+<img alt="P7" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_pppayakumbuh.png"/>
+<img alt="P8" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_unand.png"/>
+<img alt="P9" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_unsiq.png"/>
+<img alt="P10" class="h-20 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_wjd.png"/>
+<img alt="Logo InoSakti" class="h-32 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/logo_inosakti.png"/>
+<img alt="Logo Plantara" class="h-24 w-auto object-contain" src="<?php echo $basePath; ?>/assets/img/logo_plantara.png"/>
 </div>
 </div>
 </section>
@@ -259,7 +259,7 @@ include __DIR__.'/inc/header.php';
 <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-8">
 <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-700 relative shadow-sm">
 <div class="flex items-center gap-4 mb-6">
-<img alt="ATASI" class="w-16 h-16 object-contain" src="assets/img/mitra_atasi.jpg"/>
+<img alt="ATASI" class="w-16 h-16 object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_atasi.jpg"/>
 <div>
 <h4 class="font-bold">Kelompok Tani ATASI</h4>
 <p class="text-sm text-slate-500">Bapak Tommy</p>
@@ -269,7 +269,7 @@ include __DIR__.'/inc/header.php';
 </div>
 <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-100 dark:border-slate-700 relative shadow-sm">
 <div class="flex items-center gap-4 mb-6">
-<img alt="Polban" class="w-16 h-16 object-contain" src="assets/img/mitra_polban.png"/>
+<img alt="Polban" class="w-16 h-16 object-contain" src="<?php echo $basePath; ?>/assets/img/mitra_polban.png"/>
 <div>
 <h4 class="font-bold">Politeknik Negeri Bandung</h4>
 <p class="text-sm text-slate-500">Prof. Dr. Ir. Rachmad Imbang</p>
@@ -286,7 +286,7 @@ include __DIR__.'/inc/header.php';
 <h2 class="section-title">Special Partners</h2>
 <div class="flex flex-col lg:flex-row items-center gap-16">
 <div class="w-full lg:w-1/3">
-<img alt="Plantara Logo" class="w-full max-w-sm mx-auto" src="assets/img/logo_plantara.png"/>
+<img alt="Plantara Logo" class="w-full max-w-sm mx-auto" src="<?php echo $basePath; ?>/assets/img/logo_plantara.png"/>
 </div>
 <div class="w-full lg:w-2/3">
 <h2 class="text-7xl font-black mb-4">Plantara</h2>

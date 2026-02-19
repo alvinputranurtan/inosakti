@@ -48,113 +48,113 @@ include __DIR__.'/../../inc/header.php';
                 <h2 class="font-display text-3xl font-bold text-slate-900 dark:text-white mb-4">Our Specialized Services</h2>
                 <div class="w-20 h-1.5 bg-accent mx-auto rounded-full"></div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">language</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Web Development</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Full-stack web applications built with modern frameworks for speed and interactivity.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Web Development</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Aplikasi web full-stack berbasis framework modern untuk performa tinggi dan interaktivitas optimal.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">business</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Enterprise Web Systems</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Robust systems designed to handle complex business processes and large data volumes.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Enterprise Web Systems</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Sistem enterprise andal untuk menangani proses bisnis kompleks dan volume data yang besar.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">api</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">API Development</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Secure and scalable RESTful and GraphQL APIs for seamless integration.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">API Development</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Pengembangan API RESTful dan GraphQL yang aman serta skalabel untuk integrasi lintas sistem yang mulus.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">cloud</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Cloud-based App Dev</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Cloud-native applications leveraging AWS, Azure, or Google Cloud infrastructure.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Cloud-based App Dev</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Aplikasi cloud-native yang memanfaatkan infrastruktur AWS, Azure, atau Google Cloud secara optimal.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">layers</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">SaaS Platform Dev</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Multi-tenant software-as-a-service solutions with subscription management.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">SaaS Platform Dev</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Solusi SaaS multi-tenant dengan manajemen langganan yang terstruktur dan mudah dikembangkan.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">bar_chart</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Data Visualization</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Turning complex data into actionable insights through interactive dashboards.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Data Visualization</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Transformasi data kompleks menjadi insight yang dapat ditindaklanjuti melalui dashboard interaktif.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">dns</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Server Hosting</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Managed hosting solutions with high availability and optimized performance.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Server Hosting</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Layanan hosting terkelola dengan ketersediaan tinggi dan performa sistem yang dioptimalkan.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-amber-50 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">all_inclusive</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">DevOps</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Streamlined CI/CD pipelines and infrastructure as code for faster delivery.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">DevOps</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Implementasi pipeline CI/CD dan infrastructure as code untuk mempercepat siklus rilis aplikasi.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-teal-50 dark:bg-teal-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">database</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Database Design</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Efficient relational and NoSQL database modeling for data integrity.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Database Design</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Perancangan basis data relasional dan NoSQL yang efisien untuk menjaga integritas data.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">settings_applications</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Custom Business Software</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Tailor-made software built specifically to solve your unique business challenges.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Custom Business Software</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Pengembangan perangkat lunak kustom yang dirancang khusus untuk menyelesaikan tantangan bisnis spesifik.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-pink-600 dark:text-pink-400">inventory_2</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">ERP/CRM/Inventory</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Integrated management systems for better resource and relationship control.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">ERP/CRM/Inventory</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Sistem manajemen terintegrasi untuk meningkatkan kontrol sumber daya dan relasi pelanggan.
                     </p>
                 </div>
-                <div class="service-card group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="service-card group">
                     <div class="w-12 h-12 bg-violet-50 dark:bg-violet-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                         <span class="material-symbols-outlined text-violet-600 dark:text-violet-400">palette</span>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">UI/UX System Engineering</h3>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Designing intuitive user interfaces and seamless user experiences at scale.
+                    <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">UI/UX System Engineering</h3>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Perancangan antarmuka yang intuitif dan pengalaman pengguna yang konsisten pada skala besar.
                     </p>
                 </div>
             </div>
@@ -182,3 +182,5 @@ include __DIR__.'/../../inc/header.php';
     </main>
 
     <?php include __DIR__.'/../../inc/footer.php'; ?>
+
+

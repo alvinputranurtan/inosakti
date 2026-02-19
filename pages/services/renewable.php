@@ -75,15 +75,15 @@ include __DIR__.'/../../inc/header.php';
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
             <div class="service-card group">
                 <div class="w-14 h-14 bg-amber-50 dark:bg-amber-900/20 rounded-xl flex items-center justify-center mb-6 icon-box transition-transform">
                     <span class="material-symbols-outlined text-amber-600 text-3xl">light_mode</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Solar Panel Planning &amp; Installation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Comprehensive rooftop and ground-mounted solar solutions optimized for maximum energy yield.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Solusi panel surya atap dan ground-mounted yang dioptimalkan untuk menghasilkan energi maksimal.
                 </p>
             </div>
 
@@ -92,8 +92,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-blue-600 text-3xl">water_drop</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Micro-Hydropower System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Sustainable small-scale hydroelectric systems for remote areas and industrial water flows.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Sistem mikrohidro berkelanjutan untuk wilayah terpencil maupun aliran air industri.
                 </p>
             </div>
 
@@ -103,8 +103,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-accent text-3xl">monitoring</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Energy Monitoring IoT System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Real-time tracking of energy consumption and generation patterns through smart sensors.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Pemantauan pola konsumsi dan produksi energi secara real-time melalui sensor cerdas.
                 </p>
             </div>
 
@@ -113,8 +113,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-indigo-600 text-3xl">settings_remote</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Smart Energy Management</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Data-driven platforms that optimize power distribution and reduce operational waste.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Platform berbasis data untuk mengoptimalkan distribusi daya dan menekan pemborosan operasional.
                 </p>
             </div>
 
@@ -123,8 +123,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-rose-600 text-3xl">battery_charging_full</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Battery &amp; Storage Integration</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    High-capacity energy storage systems (BESS) for peak shaving and backup power reliability.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Integrasi sistem penyimpanan energi berkapasitas tinggi (BESS) untuk peak shaving dan keandalan daya cadangan.
                 </p>
             </div>
 
@@ -133,8 +133,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-cyan-600 text-3xl">hub</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Hybrid Power System Design</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Seamlessly combining solar, wind, and conventional power for 24/7 energy stability.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Integrasi tenaga surya, angin, dan sumber konvensional secara mulus untuk stabilitas energi 24/7.
                 </p>
             </div>
 
@@ -143,8 +143,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-orange-600 text-3xl">electric_bolt</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Power Electronics Integration</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Advanced inverter and converter systems to ensure clean and stable power quality.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Integrasi sistem inverter dan konverter tingkat lanjut untuk menjaga kualitas daya yang bersih dan stabil.
                 </p>
             </div>
 
@@ -153,8 +153,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-teal-600 text-3xl">analytics</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Performance Optimization</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    In-depth data analysis and maintenance to keep your energy systems at peak efficiency.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Analisis data mendalam dan pemeliharaan berkala untuk menjaga sistem energi tetap pada efisiensi puncak.
                 </p>
             </div>
 
@@ -164,8 +164,8 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-accent text-3xl">assignment</span>
                 </div>
                 <h3 class="font-bold text-xl text-slate-900 dark:text-white mb-3">Green Energy Feasibility Study</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                    Technical and economic assessments to determine the best renewable strategy for your site.
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Studi kelayakan teknis dan ekonomi untuk menentukan strategi energi terbarukan paling tepat bagi lokasi Anda.
                 </p>
             </div>
 
@@ -203,3 +203,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+

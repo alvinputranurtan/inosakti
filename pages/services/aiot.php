@@ -80,14 +80,14 @@ include __DIR__.'/../../inc/header.php';
 </div>
 
         <!-- cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- 1 -->
             <div class="service-card group">
                 <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mb-5 icon-box transition-transform">
                     <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">developer_board</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Embedded System Development</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Perancangan sistem tertanam kustom dari konsep hingga produksi massal.
                 </p>
             </div>
@@ -98,7 +98,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-teal-600 dark:text-teal-400">router</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">IoT Device Development</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pengembangan perangkat IoT yang hemat energi dengan konektivitas luas.
                 </p>
             </div>
@@ -109,7 +109,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">smart_toy</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">AIoT Smart Control System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Integrasi AI pada sistem kontrol untuk otomasi yang lebih cerdas dan adaptif.
                 </p>
             </div>
@@ -120,7 +120,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-amber-600 dark:text-amber-400">terminal</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Microcontroller Programming</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pemrograman low-level untuk berbagai arsitektur MCU (ARM, ESP, AVR, dll).
                 </p>
             </div>
@@ -131,7 +131,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-rose-600 dark:text-rose-400">computer</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Single Board Computer System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Implementasi sistem berbasis SBC untuk aplikasi industri yang haus performa.
                 </p>
             </div>
@@ -142,7 +142,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-orange-600 dark:text-orange-400">settings_input_component</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Industrial Automation Controller</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Sistem kontrol otomatisasi industri dengan standar keandalan tinggi.
                 </p>
             </div>
@@ -153,7 +153,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">sensors</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Sensor Integration System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Integrasi berbagai sensor analog dan digital untuk akuisisi data presisi.
                 </p>
             </div>
@@ -164,7 +164,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-sky-600 dark:text-sky-400">settings_remote</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Remote Monitoring System</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pemantauan aset jarak jauh secara real-time melalui dashboard terpusat.
                 </p>
             </div>
@@ -175,7 +175,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-violet-600 dark:text-violet-400">lan</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Telemetry &amp; Data Logging</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Transmisi data nirkabel dan pencatatan histori data yang aman.
                 </p>
             </div>
@@ -186,7 +186,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-cyan-600 dark:text-cyan-400">dynamic_form</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Edge Computing Implementation</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Pemrosesan data di level perangkat untuk mengurangi latensi dan beban cloud.
                 </p>
             </div>
@@ -197,7 +197,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-green-600 dark:text-green-400">agriculture</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Smart Agriculture &amp; Industry</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Solusi khusus untuk optimalisasi hasil tani dan efisiensi pabrik.
                 </p>
             </div>
@@ -208,7 +208,7 @@ include __DIR__.'/../../inc/header.php';
                     <span class="material-symbols-outlined text-purple-600 dark:text-purple-400">code_blocks</span>
                 </div>
                 <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-3 leading-tight">Firmware Dev &amp; Optimization</h3>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                     Optimasi kode firmware untuk performa maksimal dan konsumsi daya rendah.
                 </p>
             </div>
@@ -247,3 +247,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+
