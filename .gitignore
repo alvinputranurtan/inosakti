@@ -4,6 +4,7 @@ database/*.sql
 # Private operational notes and credentials
 README.private.md
 *.private.md
+account.md
 CHANGELOG.md
 
 # Sensitive backup/export artifacts

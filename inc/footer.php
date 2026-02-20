@@ -20,7 +20,7 @@ $basePath = $basePath ?? '';
         <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-slate-900 dark:text-white">Maps</h4>
 
         <!-- Open-source Interactive Map (Leaflet + OpenStreetMap) -->
-        <div class="mb-8 overflow-hidden rounded-xl h-[15rem] border border-slate-200 dark:border-slate-700">
+        <div class="mb-8 overflow-hidden rounded-xl h-[15rem] border border-slate-200 dark:border-slate-700 relative z-0 isolate">
           <div id="inosaktiMap" class="h-full w-full"></div>
         </div>
       </div>
@@ -125,6 +125,15 @@ $basePath = $basePath ?? '';
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
   crossorigin=""
 ></script>
+
+<style>
+  /* Keep Leaflet layers confined within footer map stack context */
+  #inosaktiMap.leaflet-container { z-index: 0; }
+  #inosaktiMap .leaflet-pane { z-index: 1; }
+  #inosaktiMap .leaflet-top,
+  #inosaktiMap .leaflet-bottom { z-index: 2; }
+  #inosaktiMap .leaflet-popup-pane { z-index: 3; }
+</style>
 
 <script>
   // header shadow

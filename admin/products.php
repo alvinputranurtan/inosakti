@@ -13,8 +13,63 @@ function normalize_image_filename(string $name): string
 {
     $name = trim(str_replace(['\\', '/'], '', $name));
     $name = preg_replace('/[^A-Za-z0-9._-]/', '-', $name) ?? '';
-    $name = trim($name, '.- _');
-    return $name;
+    return trim($name, '.- _');
+}
+
+function product_image_allowed_ext(string $ext): bool
+{
+    return in_array(strtolower($ext), ['png', 'jpg', 'jpeg', 'webp'], true);
+}
+
+function list_product_images(string $dirAbs): array
+{
+    if (!is_dir($dirAbs)) {
+        return [];
+    }
+    $files = scandir($dirAbs) ?: [];
+    $images = [];
+    foreach ($files as $file) {
+        if ($file === '.' || $file === '..') {
+            continue;
+        }
+        $full = $dirAbs . DIRECTORY_SEPARATOR . $file;
+        if (!is_file($full)) {
+            continue;
+        }
+        if (!product_image_allowed_ext((string) pathinfo($file, PATHINFO_EXTENSION))) {
+            continue;
+        }
+        $images[] = $file;
+    }
+    natcasesort($images);
+    return array_values($images);
+}
+
+function parse_product_image_paths(string $imagePath): array
+{
+    $raw = preg_split('/[|,]/', $imagePath) ?: [];
+    $paths = [];
+    foreach ($raw as $p) {
+        $p = trim((string) $p);
+        if ($p === '') {
+            continue;
+        }
+        $paths[] = $p;
+    }
+    return array_values(array_unique($paths));
+}
+
+function build_product_image_paths(array $paths): string
+{
+    $clean = [];
+    foreach ($paths as $p) {
+        $p = trim((string) $p);
+        if ($p === '') {
+            continue;
+        }
+        $clean[] = $p;
+    }
+    return implode('|', array_values(array_unique($clean)));
 }
 
 if (!admin_table_exists('products')) {
@@ -60,10 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stock = (int) ($_POST['stock'] ?? 0);
         $isActive = isset($_POST['is_active']) ? 1 : 0;
         $imageFilenameInput = trim((string) ($_POST['image_filename'] ?? ''));
+        $selectedImage = trim((string) ($_POST['selected_image'] ?? ''));
+        $selectedImagesInput = $_POST['selected_images'] ?? [];
         $categoryId = (int) ($_POST['category_id'] ?? 0);
         $categoryIdValue = $categoryId > 0 ? $categoryId : null;
         $imagePath = '';
         $currentImagePath = '';
+        $currentImagePaths = [];
 
         if ($id > 0 && $hasImagePath) {
             $getCurrent = admin_db()->prepare("SELECT image_path FROM products WHERE id = ? LIMIT 1");
@@ -72,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $getCurrent->execute();
                 $cur = $getCurrent->get_result()->fetch_assoc();
                 $currentImagePath = (string) ($cur['image_path'] ?? '');
+                $currentImagePaths = parse_product_image_paths($currentImagePath);
                 $getCurrent->close();
             }
         }
@@ -83,26 +142,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($hasImagePath) {
-            $imagePath = $currentImagePath;
+            $imagePaths = $currentImagePaths;
+            $repoNames = [];
+            if (is_array($selectedImagesInput)) {
+                foreach ($selectedImagesInput as $n) {
+                    $n = normalize_image_filename((string) $n);
+                    if ($n === '') {
+                        continue;
+                    }
+                    $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
+                    $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
+                    if (product_image_allowed_ext($ext) && is_file($abs)) {
+                        $repoNames[] = $productImageDirRel . '/' . $n;
+                    }
+                }
+            }
+            if (!$repoNames && $selectedImage !== '') {
+                $n = normalize_image_filename($selectedImage);
+                $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
+                $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
+                if ($n !== '' && product_image_allowed_ext($ext) && is_file($abs)) {
+                    $repoNames[] = $productImageDirRel . '/' . $n;
+                }
+            }
+            if ($repoNames) {
+                $imagePaths = $repoNames;
+            }
+
+            $uploadedMulti = $_FILES['image_files'] ?? null;
+            if (is_array($uploadedMulti) && isset($uploadedMulti['name']) && is_array($uploadedMulti['name'])) {
+                $total = count($uploadedMulti['name']);
+                for ($i = 0; $i < $total; $i++) {
+                    $err = (int) ($uploadedMulti['error'][$i] ?? UPLOAD_ERR_NO_FILE);
+                    if ($err !== UPLOAD_ERR_OK) {
+                        continue;
+                    }
+                    $originalName = (string) ($uploadedMulti['name'][$i] ?? '');
+                    $tmpName = (string) ($uploadedMulti['tmp_name'][$i] ?? '');
+                    $ext = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
+                    if (!product_image_allowed_ext($ext)) {
+                        continue;
+                    }
+                    $baseName = (string) pathinfo($originalName, PATHINFO_FILENAME);
+                    $baseName = normalize_image_filename($baseName);
+                    if ($baseName === '') {
+                        $baseName = 'product-' . time() . '-' . $i;
+                    }
+                    $finalFilename = $baseName . '.' . $ext;
+                    $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $finalFilename;
+                    $suffix = 1;
+                    while (file_exists($targetAbs)) {
+                        $finalFilename = $baseName . '-' . $suffix . '.' . $ext;
+                        $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $finalFilename;
+                        $suffix++;
+                    }
+                    if (@move_uploaded_file($tmpName, $targetAbs)) {
+                        $imagePaths[] = $productImageDirRel . '/' . $finalFilename;
+                    }
+                }
+            }
+
             $uploaded = $_FILES['image_file'] ?? null;
             $hasUpload = is_array($uploaded) && isset($uploaded['error']) && (int) $uploaded['error'] === UPLOAD_ERR_OK;
-
             if ($hasUpload) {
                 $originalName = (string) ($uploaded['name'] ?? '');
                 $ext = strtolower((string) pathinfo($originalName, PATHINFO_EXTENSION));
-                $allowedExt = ['png', 'jpg', 'jpeg', 'webp'];
-                if (!in_array($ext, $allowedExt, true)) {
+                if (!product_image_allowed_ext($ext)) {
                     admin_set_flash('error', 'Format file tidak didukung. Gunakan: png, jpg, jpeg, webp.');
                     header('Location: ' . admin_url('/admin/products'));
                     exit;
                 }
-
                 $baseName = $imageFilenameInput !== '' ? (string) pathinfo($imageFilenameInput, PATHINFO_FILENAME) : (string) pathinfo($originalName, PATHINFO_FILENAME);
                 $baseName = normalize_image_filename($baseName);
                 if ($baseName === '') {
                     $baseName = 'product-' . time();
                 }
-
                 $finalFilename = $baseName . '.' . $ext;
                 $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $finalFilename;
                 $suffix = 1;
@@ -111,46 +225,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $finalFilename;
                     $suffix++;
                 }
-
                 if (!move_uploaded_file((string) $uploaded['tmp_name'], $targetAbs)) {
                     admin_set_flash('error', 'Gagal upload file gambar.');
                     header('Location: ' . admin_url('/admin/products'));
                     exit;
                 }
-
-                $imagePath = $productImageDirRel . '/' . $finalFilename;
-            } elseif ($imageFilenameInput !== '') {
+                $imagePaths[] = $productImageDirRel . '/' . $finalFilename;
+            } elseif ($imageFilenameInput !== '' && !empty($imagePaths)) {
                 $typedName = normalize_image_filename($imageFilenameInput);
                 if ($typedName === '') {
                     admin_set_flash('error', 'Nama file gambar tidak valid.');
                     header('Location: ' . admin_url('/admin/products'));
                     exit;
                 }
-
-                $oldFilename = basename($currentImagePath);
-                $oldExt = strtolower((string) pathinfo($oldFilename, PATHINFO_EXTENSION));
+                $firstPath = (string) $imagePaths[0];
+                $sourceFilename = basename($firstPath);
+                $sourceExt = strtolower((string) pathinfo($sourceFilename, PATHINFO_EXTENSION));
                 $typedExt = strtolower((string) pathinfo($typedName, PATHINFO_EXTENSION));
-                if ($typedExt === '' && $oldExt !== '') {
-                    $typedName .= '.' . $oldExt;
-                    $typedExt = $oldExt;
+                if ($typedExt === '' && $sourceExt !== '') {
+                    $typedName .= '.' . $sourceExt;
+                    $typedExt = $sourceExt;
                 }
-
-                $allowedExt = ['png', 'jpg', 'jpeg', 'webp'];
-                if ($typedExt !== '' && !in_array($typedExt, $allowedExt, true)) {
+                if (!product_image_allowed_ext($typedExt)) {
                     admin_set_flash('error', 'Ekstensi file gambar tidak didukung.');
                     header('Location: ' . admin_url('/admin/products'));
                     exit;
                 }
-
-                if ($currentImagePath !== '') {
-                    $sourceAbs = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $currentImagePath);
-                    $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $typedName;
-                    if (is_file($sourceAbs) && $oldFilename !== $typedName && !file_exists($targetAbs)) {
-                        @rename($sourceAbs, $targetAbs);
+                $sourceAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $sourceFilename;
+                $targetAbs = $productImageDirAbs . DIRECTORY_SEPARATOR . $typedName;
+                if (is_file($sourceAbs) && $sourceFilename !== $typedName) {
+                    if (is_file($targetAbs)) {
+                        admin_set_flash('error', 'Nama file tujuan sudah ada di repository.');
+                        header('Location: ' . admin_url('/admin/products'));
+                        exit;
                     }
+                    if (!@rename($sourceAbs, $targetAbs)) {
+                        admin_set_flash('error', 'Gagal rename file gambar di repository.');
+                        header('Location: ' . admin_url('/admin/products'));
+                        exit;
+                    }
+                    $oldPath = $productImageDirRel . '/' . $sourceFilename;
+                    $newPath = $productImageDirRel . '/' . $typedName;
+                    $resUpdateRefs = admin_db()->query("SELECT id, image_path FROM products WHERE image_path LIKE '%" . admin_db()->real_escape_string($sourceFilename) . "%'");
+                    if ($resUpdateRefs) {
+                        while ($rw = $resUpdateRefs->fetch_assoc()) {
+                            $rowId = (int) ($rw['id'] ?? 0);
+                            $rowPath = (string) ($rw['image_path'] ?? '');
+                            $parts = parse_product_image_paths($rowPath);
+                            $changed = false;
+                            foreach ($parts as $idxPart => $part) {
+                                if ($part === $oldPath) {
+                                    $parts[$idxPart] = $newPath;
+                                    $changed = true;
+                                }
+                            }
+                            if ($changed && $rowId > 0) {
+                                $merged = build_product_image_paths($parts);
+                                $st = admin_db()->prepare("UPDATE products SET image_path = ? WHERE id = ?");
+                                if ($st) {
+                                    $st->bind_param('si', $merged, $rowId);
+                                    $st->execute();
+                                    $st->close();
+                                }
+                            }
+                        }
+                    }
+                    $imagePaths[0] = $newPath;
                 }
-                $imagePath = $productImageDirRel . '/' . $typedName;
             }
+
+            $imagePath = build_product_image_paths($imagePaths);
         }
 
         if ($id > 0) {
@@ -254,6 +398,8 @@ if ($hasCategories) {
     }
 }
 
+$repositoryImages = $hasImagePath ? list_product_images($productImageDirAbs) : [];
+
 $rows = [];
 if ($hasCategories && $hasCategoryId && $hasImagePath) {
     $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, p.is_active, p.created_at, p.image_path, p.category_id, pc.name AS category_name
@@ -285,9 +431,8 @@ if ($result) {
 
 admin_render_start('Manajemen Produk', 'products');
 ?>
-
 <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
-  <div class="flex items-center justify-between mb-3">
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
     <h2 class="font-bold text-lg">Form Produk</h2>
     <span id="formModeBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Mode Tambah Produk Baru</span>
   </div>
@@ -328,14 +473,36 @@ admin_render_start('Manajemen Produk', 'products');
       </div>
     <?php endif; ?>
     <?php if ($hasImagePath): ?>
-      <div>
-        <label for="formImageFilename" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama File Gambar</label>
-        <div class="flex gap-2">
+      <div class="md:col-span-2 xl:col-span-3 grid md:grid-cols-3 gap-3 border border-slate-200 rounded-xl p-3">
+        <div class="md:col-span-2">
+          <label for="formSelectedImage" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Multi Gambar Dari Repository</label>
+          <select id="formSelectedImage" name="selected_images[]" multiple size="7" class="rounded-lg border-slate-300 w-full">
+            <?php foreach ($repositoryImages as $imgName): ?>
+              <option value="<?= admin_e($imgName) ?>"><?= admin_e($imgName) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <input type="hidden" id="formSelectedImageSingle" name="selected_image" value="">
+          <div class="mt-2 text-xs text-slate-500">Bisa pilih lebih dari satu gambar (Ctrl/Cmd + klik).</div>
+        </div>
+        <div class="flex items-start">
+          <div class="w-full border border-slate-200 rounded-lg p-2 bg-slate-50">
+            <div class="text-[11px] uppercase font-bold text-slate-500 mb-2">Preview Gallery</div>
+            <div id="formImagePreviewList" class="grid grid-cols-3 gap-2"></div>
+            <div id="formImagePreviewEmpty" class="w-full max-w-[220px] aspect-square flex items-center justify-center rounded-md border border-dashed border-slate-300 text-xs text-slate-500 bg-white">Belum ada gambar</div>
+          </div>
+        </div>
+        <div>
+          <label for="formImageFilename" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama File Gambar (Opsional Rename)</label>
           <input id="formImageFilename" name="image_filename" placeholder="produk_1.png" class="rounded-lg border-slate-300 w-full">
-          <label class="px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-700 font-semibold cursor-pointer">
-            Upload
-            <input id="formImageFile" name="image_file" type="file" accept=".png,.jpg,.jpeg,.webp" class="hidden">
+          <div class="mt-2 text-xs text-slate-500">Jika diisi saat edit, file repository akan di-rename dan path produk ikut diperbarui.</div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Upload Gambar Baru (Multi)</label>
+          <label class="inline-flex w-full justify-center px-3 py-2 rounded-lg border border-slate-300 bg-slate-50 text-slate-700 font-semibold cursor-pointer">
+            Pilih File
+            <input id="formImageFile" name="image_files[]" type="file" accept=".png,.jpg,.jpeg,.webp" multiple class="hidden">
           </label>
+          <div class="mt-2 text-xs text-slate-500">Upload akan membuat file baru di repository.</div>
         </div>
       </div>
     <?php endif; ?>
@@ -346,10 +513,10 @@ admin_render_start('Manajemen Produk', 'products');
     <label class="inline-flex items-center gap-2 text-sm font-semibold">
       <input id="formIsActive" type="checkbox" name="is_active" value="1" checked class="rounded border-slate-300"> Active
     </label>
-    <div class="flex items-center gap-2">
-      <button id="formSubmitButton" class="px-4 py-2 bg-blue-800 text-white rounded-lg font-semibold">Simpan Produk</button>
-      <button id="formResetButton" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-semibold">Reset</button>
-      <button id="formCancelEditButton" type="button" class="px-4 py-2 border border-red-300 text-red-700 rounded-lg font-semibold hidden">Batal Edit</button>
+    <div class="md:col-span-2 xl:col-span-3 flex flex-wrap items-center gap-2">
+      <button id="formSubmitButton" class="px-4 py-2 bg-blue-800 text-white rounded-lg font-semibold w-full sm:w-auto">Simpan Produk</button>
+      <button id="formResetButton" type="button" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-semibold w-full sm:w-auto">Reset</button>
+      <button id="formCancelEditButton" type="button" class="px-4 py-2 border border-red-300 text-red-700 rounded-lg font-semibold hidden w-full sm:w-auto">Batal Edit</button>
     </div>
   </form>
 </div>
@@ -359,10 +526,82 @@ admin_render_start('Manajemen Produk', 'products');
     <h2 class="font-bold text-lg">Daftar Produk</h2>
     <p class="text-sm text-slate-500 mt-1">Data ini langsung dipakai oleh halaman Shop.</p>
   </div>
-  <div class="overflow-x-auto">
+  <div class="md:hidden p-4 space-y-3">
+    <?php foreach ($rows as $r): ?>
+      <?php
+        $imagePath = (string) ($r['image_path'] ?? '');
+        $imagePaths = parse_product_image_paths($imagePath);
+        $firstImagePath = (string) ($imagePaths[0] ?? '');
+        $imageFilename = $firstImagePath !== '' ? basename($firstImagePath) : '';
+        $imageCount = count($imagePaths);
+      ?>
+      <div class="rounded-xl border border-slate-200 p-4">
+        <div class="flex items-start gap-3">
+          <?php if ($firstImagePath !== ''): ?>
+            <img src="<?= admin_e(admin_url('/' . ltrim($firstImagePath, '/'))) ?>" alt="<?= admin_e((string) $r['name']) ?>" class="w-16 h-16 min-w-16 object-contain rounded-lg border border-slate-200 bg-white p-0.5">
+          <?php else: ?>
+            <div class="w-16 h-16 min-w-16 rounded-lg border border-dashed border-slate-300 text-[10px] text-slate-500 flex items-center justify-center">No Image</div>
+          <?php endif; ?>
+          <div class="min-w-0">
+            <div class="font-semibold text-slate-800"><?= admin_e((string) $r['name']) ?></div>
+            <div class="text-xs text-slate-500 line-clamp-2"><?= admin_e((string) ($r['description'] ?? '')) ?></div>
+            <?php if ($imageFilename !== ''): ?>
+              <div class="text-[11px] text-slate-400 mt-1 truncate"><?= admin_e($imageFilename) ?><?= $imageCount > 1 ? ' (+' . (int) ($imageCount - 1) . ')' : '' ?></div>
+            <?php endif; ?>
+          </div>
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <div><span class="text-slate-500">SKU:</span> <span class="font-semibold"><?= admin_e((string) $r['sku']) ?></span></div>
+          <div><span class="text-slate-500">Slug:</span> <span class="font-semibold"><?= admin_e((string) $r['slug']) ?></span></div>
+          <div><span class="text-slate-500">Kategori:</span> <span class="font-semibold"><?= admin_e((string) ($r['category_name'] ?? '-')) ?></span></div>
+          <div><span class="text-slate-500">Stok:</span> <span class="font-semibold"><?= (int) $r['stock'] ?></span></div>
+          <div class="col-span-2"><span class="text-slate-500">Harga:</span> <span class="font-semibold">Rp <?= number_format((float) $r['price'], 0, ',', '.') ?></span></div>
+        </div>
+        <div class="mt-2">
+          <span class="px-2 py-1 rounded-full text-xs font-bold <?= (int) $r['is_active'] === 1 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700' ?>">
+            <?= (int) $r['is_active'] === 1 ? 'active' : 'inactive' ?>
+          </span>
+        </div>
+        <div class="mt-3 flex flex-col gap-2">
+          <form method="post">
+            <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+            <input type="hidden" name="action" value="toggle">
+            <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+            <input type="hidden" name="is_active" value="<?= (int) $r['is_active'] === 1 ? 0 : 1 ?>">
+            <button class="px-3 py-2 rounded-lg text-white font-semibold w-full <?= (int) $r['is_active'] === 1 ? 'bg-amber-500' : 'bg-emerald-600' ?>">
+              <?= (int) $r['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan' ?>
+            </button>
+          </form>
+          <button
+            type="button"
+            class="px-3 py-2 rounded-lg bg-slate-800 text-white font-semibold btn-edit-product w-full"
+            data-id="<?= (int) $r['id'] ?>"
+            data-sku="<?= admin_e((string) $r['sku']) ?>"
+            data-slug="<?= admin_e((string) $r['slug']) ?>"
+            data-name="<?= admin_e((string) $r['name']) ?>"
+            data-description="<?= admin_e((string) ($r['description'] ?? '')) ?>"
+            data-price="<?= (float) $r['price'] ?>"
+            data-stock="<?= (int) $r['stock'] ?>"
+            data-is-active="<?= (int) $r['is_active'] ?>"
+            data-category-id="<?= (int) ($r['category_id'] ?? 0) ?>"
+            data-image-filename="<?= admin_e($imageFilename) ?>"
+            data-image-path="<?= admin_e($imagePath) ?>"
+          >
+            Edit
+          </button>
+        </div>
+      </div>
+    <?php endforeach; ?>
+    <?php if (!$rows): ?>
+      <div class="text-center text-sm text-slate-500 py-4">Belum ada data produk.</div>
+    <?php endif; ?>
+  </div>
+
+  <div class="hidden md:block overflow-x-auto">
     <table class="w-full text-sm">
       <thead class="bg-slate-50 text-slate-500 uppercase text-[11px] tracking-wider">
       <tr>
+        <th class="px-4 py-3 text-left">Gambar</th>
         <th class="px-4 py-3 text-left">Produk</th>
         <th class="px-4 py-3 text-left">SKU/Slug</th>
         <th class="px-4 py-3 text-left">Kategori</th>
@@ -374,10 +613,27 @@ admin_render_start('Manajemen Produk', 'products');
       </thead>
       <tbody class="divide-y divide-slate-100">
       <?php foreach ($rows as $r): ?>
+        <?php
+          $imagePath = (string) ($r['image_path'] ?? '');
+          $imagePaths = parse_product_image_paths($imagePath);
+          $firstImagePath = (string) ($imagePaths[0] ?? '');
+          $imageFilename = $firstImagePath !== '' ? basename($firstImagePath) : '';
+          $imageCount = count($imagePaths);
+        ?>
         <tr>
+          <td class="px-4 py-3">
+            <?php if ($firstImagePath !== ''): ?>
+              <img src="<?= admin_e(admin_url('/' . ltrim($firstImagePath, '/'))) ?>" alt="<?= admin_e((string) $r['name']) ?>" class="w-14 h-14 min-w-14 object-contain rounded-lg border border-slate-200 bg-white p-0.5">
+            <?php else: ?>
+              <div class="w-14 h-14 min-w-14 rounded-lg border border-dashed border-slate-300 text-[10px] text-slate-500 flex items-center justify-center">No Image</div>
+            <?php endif; ?>
+          </td>
           <td class="px-4 py-3">
             <div class="font-semibold text-slate-800"><?= admin_e((string) $r['name']) ?></div>
             <div class="text-xs text-slate-500 line-clamp-1"><?= admin_e((string) ($r['description'] ?? '')) ?></div>
+            <?php if ($imageFilename !== ''): ?>
+              <div class="text-[11px] text-slate-400 mt-1"><?= admin_e($imageFilename) ?><?= $imageCount > 1 ? ' (+' . (int) ($imageCount - 1) . ')' : '' ?></div>
+            <?php endif; ?>
           </td>
           <td class="px-4 py-3 text-xs">
             <div class="font-semibold"><?= admin_e((string) $r['sku']) ?></div>
@@ -392,7 +648,7 @@ admin_render_start('Manajemen Produk', 'products');
             </span>
           </td>
           <td class="px-4 py-3">
-            <div class="flex justify-end gap-2">
+            <div class="flex flex-wrap justify-end gap-2">
               <form method="post">
                 <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
                 <input type="hidden" name="action" value="toggle">
@@ -414,7 +670,8 @@ admin_render_start('Manajemen Produk', 'products');
                 data-stock="<?= (int) $r['stock'] ?>"
                 data-is-active="<?= (int) $r['is_active'] ?>"
                 data-category-id="<?= (int) ($r['category_id'] ?? 0) ?>"
-                data-image-filename="<?= admin_e((string) basename((string) ($r['image_path'] ?? ''))) ?>"
+                data-image-filename="<?= admin_e($imageFilename) ?>"
+                data-image-path="<?= admin_e($imagePath) ?>"
               >
                 Edit
               </button>
@@ -423,7 +680,7 @@ admin_render_start('Manajemen Produk', 'products');
         </tr>
       <?php endforeach; ?>
       <?php if (!$rows): ?>
-        <tr><td colspan="7" class="px-4 py-5 text-center text-slate-500">Belum ada data produk.</td></tr>
+        <tr><td colspan="8" class="px-4 py-5 text-center text-slate-500">Belum ada data produk.</td></tr>
       <?php endif; ?>
       </tbody>
     </table>
@@ -442,13 +699,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const stockEl = document.getElementById('formStock');
   const activeEl = document.getElementById('formIsActive');
   const categoryEl = document.getElementById('formCategoryId');
+  const selectedImageEl = document.getElementById('formSelectedImage');
+  const selectedImageSingleEl = document.getElementById('formSelectedImageSingle');
   const imageFilenameEl = document.getElementById('formImageFilename');
   const imageFileEl = document.getElementById('formImageFile');
+  const imagePreviewListEl = document.getElementById('formImagePreviewList');
+  const imagePreviewEmptyEl = document.getElementById('formImagePreviewEmpty');
   const submitEl = document.getElementById('formSubmitButton');
   const resetEl = document.getElementById('formResetButton');
   const cancelEditEl = document.getElementById('formCancelEditButton');
   const modeBadgeEl = document.getElementById('formModeBadge');
   const modeHintEl = document.getElementById('formModeHint');
+  let uploadedPreviewUrls = [];
+  let currentImagePaths = [];
 
   function setAddMode() {
     if (modeBadgeEl) {
@@ -474,11 +737,94 @@ document.addEventListener('DOMContentLoaded', function () {
     cancelEditEl?.classList.remove('hidden');
   }
 
+  function clearUploadedPreview() {
+    uploadedPreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+    uploadedPreviewUrls = [];
+  }
+
+  function clearPreviewList() {
+    if (!imagePreviewListEl) return;
+    imagePreviewListEl.innerHTML = '';
+  }
+
+  function appendPreview(url, label) {
+    if (!imagePreviewListEl) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'rounded-md border border-slate-200 bg-white p-0.5';
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = label || '';
+    img.className = 'w-full aspect-square object-contain rounded-sm bg-white';
+    wrap.appendChild(img);
+    imagePreviewListEl.appendChild(wrap);
+  }
+
+  function selectedImageValues() {
+    if (!selectedImageEl) return [];
+    return Array.from(selectedImageEl.selectedOptions || []).map((o) => o.value).filter(Boolean);
+  }
+
+  function selectedImageUrls() {
+    return selectedImageValues().map((name) => ({
+      label: name,
+      url: '<?= admin_e(admin_url('/' . trim($productImageDirRel, '/'))) ?>/' + encodeURIComponent(name),
+    }));
+  }
+
+  function parseImagePathList(raw) {
+    if (!raw) return [];
+    return String(raw).split(/[|,]/).map((x) => x.trim()).filter(Boolean);
+  }
+
+  function updatePreview() {
+    clearPreviewList();
+    clearUploadedPreview();
+    let count = 0;
+
+    const selected = selectedImageUrls();
+    selected.forEach((item) => {
+      appendPreview(item.url, item.label);
+      count++;
+    });
+
+    const uploadedFiles = Array.from(imageFileEl?.files || []);
+    uploadedFiles.forEach((file) => {
+      const url = URL.createObjectURL(file);
+      uploadedPreviewUrls.push(url);
+      appendPreview(url, file.name);
+      count++;
+    });
+
+    if (count === 0) {
+      currentImagePaths.forEach((p) => {
+        const url = '<?= admin_e(admin_url('/')) ?>' + '/' + p.replace(/^\/+/, '');
+        appendPreview(url, p.split('/').pop() || '');
+        count++;
+      });
+    }
+
+    if (imagePreviewEmptyEl) {
+      imagePreviewEmptyEl.classList.toggle('hidden', count > 0);
+    }
+    if (selectedImageSingleEl) {
+      selectedImageSingleEl.value = selectedImageValues()[0] || '';
+    }
+  }
+
   function resetFormState() {
     idEl.value = '0';
+    currentImagePaths = [];
     form.reset();
     if (activeEl) activeEl.checked = true;
     if (imageFileEl) imageFileEl.value = '';
+    if (selectedImageEl) {
+      Array.from(selectedImageEl.options).forEach((o) => {
+        o.selected = false;
+      });
+    }
+    if (selectedImageSingleEl) selectedImageSingleEl.value = '';
+    clearUploadedPreview();
+    updatePreview();
     setAddMode();
   }
 
@@ -491,24 +837,44 @@ document.addEventListener('DOMContentLoaded', function () {
       descEl.value = this.dataset.description || '';
       priceEl.value = this.dataset.price || '';
       stockEl.value = this.dataset.stock || '';
+      currentImagePaths = parseImagePathList(this.dataset.imagePath || '');
       if (activeEl) activeEl.checked = (this.dataset.isActive || '0') === '1';
       if (categoryEl) categoryEl.value = this.dataset.categoryId || '0';
+      if (selectedImageEl) {
+        const imageNames = currentImagePaths.map((p) => p.split('/').pop()).filter(Boolean);
+        Array.from(selectedImageEl.options).forEach((o) => {
+          o.selected = imageNames.includes(o.value);
+        });
+      }
       if (imageFilenameEl) imageFilenameEl.value = this.dataset.imageFilename || '';
       if (imageFileEl) imageFileEl.value = '';
+      clearUploadedPreview();
+      updatePreview();
       setEditMode(this.dataset.id || '0');
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
+  selectedImageEl?.addEventListener('change', function () {
+    const first = selectedImageValues()[0] || '';
+    if (imageFilenameEl && first) {
+      imageFilenameEl.value = first;
+    }
+    updatePreview();
+  });
+
   imageFileEl?.addEventListener('change', function () {
     const file = this.files && this.files[0];
-    if (!file || !imageFilenameEl) return;
-    imageFilenameEl.value = file.name;
+    if (file && imageFilenameEl) {
+      imageFilenameEl.value = file.name;
+    }
+    updatePreview();
   });
 
   resetEl?.addEventListener('click', resetFormState);
   cancelEditEl?.addEventListener('click', resetFormState);
   setAddMode();
+  updatePreview();
 });
 </script>
 

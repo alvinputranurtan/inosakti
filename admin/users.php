@@ -63,7 +63,36 @@ admin_render_start('Manajemen Pengguna', 'users');
     <h2 class="font-bold text-lg">Daftar User (maks 100 terbaru)</h2>
     <p class="text-sm text-slate-500 mt-1">Aktif/nonaktifkan akun admin/editor secara cepat.</p>
   </div>
-  <div class="overflow-x-auto">
+  <div class="md:hidden p-4 space-y-3">
+    <?php foreach ($rows as $r): ?>
+      <div class="rounded-xl border border-slate-200 p-4">
+        <div class="font-semibold text-slate-800"><?= admin_e((string) $r['name']) ?></div>
+        <div class="mt-1 text-xs text-slate-600 break-all"><?= admin_e((string) $r['email']) ?></div>
+        <div class="mt-2 text-xs text-slate-500">Role: <?= admin_e((string) ($r['roles'] ?: '-')) ?></div>
+        <div class="text-xs text-slate-500">Last Login: <?= admin_e((string) ($r['last_login_at'] ?? '-')) ?></div>
+        <div class="mt-2">
+          <?php if ((int) $r['is_active'] === 1): ?>
+            <span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">active</span>
+          <?php else: ?>
+            <span class="px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">inactive</span>
+          <?php endif; ?>
+        </div>
+        <form method="post" class="mt-3">
+          <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+          <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+          <input type="hidden" name="is_active" value="<?= (int) $r['is_active'] === 1 ? 0 : 1 ?>">
+          <button class="px-3 py-2 rounded-lg font-semibold w-full <?= (int) $r['is_active'] === 1 ? 'bg-amber-500 text-white' : 'bg-emerald-600 text-white' ?>">
+            <?= (int) $r['is_active'] === 1 ? 'Nonaktifkan' : 'Aktifkan' ?>
+          </button>
+        </form>
+      </div>
+    <?php endforeach; ?>
+    <?php if (!$rows): ?>
+      <div class="text-center text-sm text-slate-500 py-4">Belum ada data users.</div>
+    <?php endif; ?>
+  </div>
+
+  <div class="hidden md:block overflow-x-auto">
     <table class="w-full text-sm">
       <thead class="bg-slate-50 text-slate-500 uppercase text-[11px] tracking-wider">
       <tr>
@@ -90,7 +119,7 @@ admin_render_start('Manajemen Pengguna', 'users');
             <?php endif; ?>
           </td>
           <td class="px-4 py-3">
-            <form method="post" class="flex justify-end gap-2">
+            <form method="post" class="flex flex-col sm:flex-row sm:justify-end gap-2">
               <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
               <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
               <input type="hidden" name="is_active" value="<?= (int) $r['is_active'] === 1 ? 0 : 1 ?>">

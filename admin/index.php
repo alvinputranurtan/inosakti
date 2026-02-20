@@ -77,7 +77,7 @@ admin_render_start('Dashboard', 'dashboard');
 <div class="grid lg:grid-cols-2 gap-6">
   <div class="bg-white border border-slate-200 rounded-2xl p-6">
     <h2 class="font-bold text-lg">Quick Access</h2>
-    <div class="grid grid-cols-2 gap-3 mt-4 text-sm">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-sm">
       <a class="rounded-xl border border-slate-200 p-3 hover:bg-slate-50 font-semibold" href="<?= admin_e(admin_url('/admin/posts')) ?>">Kelola Blog</a>
       <a class="rounded-xl border border-slate-200 p-3 hover:bg-slate-50 font-semibold" href="<?= admin_e(admin_url('/admin/courses')) ?>">Kelola Kursus</a>
       <a class="rounded-xl border border-slate-200 p-3 hover:bg-slate-50 font-semibold" href="<?= admin_e(admin_url('/admin/products')) ?>">Kelola Produk</a>
@@ -93,7 +93,7 @@ admin_render_start('Dashboard', 'dashboard');
     <?php else: ?>
       <ul class="mt-3 space-y-3 text-sm">
         <?php foreach ($latestLogs as $log): ?>
-          <li class="flex justify-between gap-3 border-b border-slate-100 pb-2">
+          <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3 border-b border-slate-100 pb-2">
             <div>
               <span class="font-semibold"><?= admin_e((string) ($log['name'] ?? 'System')) ?></span>
               <span class="text-slate-500">- <?= admin_e((string) ($log['action'] ?? '')) ?> <?= admin_e((string) ($log['entity_type'] ?? '')) ?></span>

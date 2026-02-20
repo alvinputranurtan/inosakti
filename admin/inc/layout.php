@@ -52,7 +52,7 @@ function admin_render_start(string $title, string $active): void
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased">
 <div class="min-h-screen flex">
-  <aside class="hidden lg:flex w-72 bg-panel text-white flex-col fixed inset-y-0 z-30">
+  <aside id="adminSidebar" class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full bg-panel text-white flex flex-col transition-transform duration-200 lg:translate-x-0">
     <div class="px-7 py-6 border-b border-white/10">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-2xl">settings_input_component</span>
@@ -79,9 +79,16 @@ function admin_render_start(string $title, string $active): void
     </div>
   </aside>
 
+  <div id="adminSidebarBackdrop" class="fixed inset-0 z-30 bg-slate-900/50 hidden lg:hidden"></div>
+
   <main class="flex-1 lg:ml-72">
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-5 lg:px-8 sticky top-0 z-20">
-      <h1 class="font-bold text-slate-800"><?= admin_e($title) ?></h1>
+      <div class="flex items-center gap-3">
+        <button id="adminSidebarToggle" type="button" class="inline-flex lg:hidden items-center justify-center w-9 h-9 rounded-lg border border-slate-200 text-slate-700">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h1 class="font-bold text-slate-800"><?= admin_e($title) ?></h1>
+      </div>
       <a href="<?= admin_e(admin_url('/')) ?>" class="text-sm text-brand font-semibold hover:underline">Lihat Website</a>
     </header>
     <div class="p-5 lg:p-8">
@@ -100,6 +107,53 @@ function admin_render_end(): void
     </div>
   </main>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const sidebar = document.getElementById('adminSidebar');
+  const toggle = document.getElementById('adminSidebarToggle');
+  const backdrop = document.getElementById('adminSidebarBackdrop');
+
+  function openSidebar() {
+    if (!sidebar || !backdrop) return;
+    sidebar.classList.remove('-translate-x-full');
+    backdrop.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+
+  function closeSidebar() {
+    if (!sidebar || !backdrop) return;
+    sidebar.classList.add('-translate-x-full');
+    backdrop.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  toggle?.addEventListener('click', function () {
+    if (sidebar?.classList.contains('-translate-x-full')) {
+      openSidebar();
+    } else {
+      closeSidebar();
+    }
+  });
+
+  backdrop?.addEventListener('click', closeSidebar);
+  document.querySelectorAll('#adminSidebar a').forEach((link) => {
+    link.addEventListener('click', function () {
+      if (window.innerWidth < 1024) closeSidebar();
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 1024) {
+      document.body.classList.remove('overflow-hidden');
+      backdrop?.classList.add('hidden');
+      sidebar?.classList.remove('-translate-x-full');
+      return;
+    }
+    sidebar?.classList.add('-translate-x-full');
+    backdrop?.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  });
+});
+</script>
 </body>
 </html>
 <?php

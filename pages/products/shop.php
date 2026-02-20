@@ -6,7 +6,12 @@ $extraHead = <<<HTML
 <style type="text/tailwindcss">
 @layer components {
   .product-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1; }
-  .filter-dropdown { @apply bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold; }
+  .filter-dropdown {
+    @apply border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold shadow-sm;
+    backdrop-filter: blur(8px);
+    background-color: rgba(255,255,255,.9);
+  }
+  .dark .filter-dropdown { background-color: rgba(15,23,42,.9); }
   .category-badge { @apply absolute bottom-3 left-3 z-10 bg-slate-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-200 text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm; }
 }
 </style>
@@ -52,6 +57,20 @@ function shop_column_exists(mysqli $db, string $table, string $column): bool
     $row = $stmt->get_result()->fetch_assoc();
     $stmt->close();
     return ((int) ($row['cnt'] ?? 0)) > 0;
+}
+
+function shop_parse_image_paths(string $imagePath): array
+{
+    $items = preg_split('/[|,]/', $imagePath) ?: [];
+    $paths = [];
+    foreach ($items as $item) {
+        $item = trim((string) $item);
+        if ($item === '') {
+            continue;
+        }
+        $paths[] = $item;
+    }
+    return array_values(array_unique($paths));
 }
 
 $products = [];
@@ -172,7 +191,8 @@ if ($dbError === null) {
 }
 ?>
 
-<div class="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-16 z-40">
+<div class="h-16"></div>
+<div class="glass-effect border-b border-slate-100 dark:border-slate-800 sticky top-16 z-40">
   <div class="container mx-auto px-6 py-4">
     <form method="get" class="flex flex-wrap items-end gap-4 text-xs font-bold text-slate-600 dark:text-slate-400">
       <div class="flex flex-col gap-1">
@@ -209,7 +229,7 @@ if ($dbError === null) {
       <div class="flex flex-col gap-1 flex-grow lg:max-w-xs ml-auto">
         <label>Pencarian</label>
         <div class="relative">
-          <input name="q" value="<?= htmlspecialchars($filters['q']) ?>" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 pl-9 text-xs focus:ring-1 focus:ring-primary outline-none" placeholder="Cari item...">
+          <input name="q" value="<?= htmlspecialchars($filters['q']) ?>" class="w-full bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/60 dark:border-slate-600/70 rounded-lg px-4 py-2 pl-9 text-xs focus:ring-1 focus:ring-primary outline-none" placeholder="Cari item...">
           <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
         </div>
       </div>
@@ -244,13 +264,21 @@ if ($dbError === null) {
       ];
       foreach ($products as $idx => $p):
           $img = trim((string) ($p['image_path'] ?? ''));
-          $imageUrl = $img !== '' ? (str_starts_with($img, 'http') ? $img : $basePath . '/' . ltrim($img, '/')) : $fallbackImages[$idx % count($fallbackImages)];
+          $imagePathList = shop_parse_image_paths($img);
+          $imageUrls = [];
+          foreach ($imagePathList as $it) {
+              $imageUrls[] = str_starts_with($it, 'http') ? $it : $basePath . '/' . ltrim($it, '/');
+          }
+          if (!$imageUrls) {
+              $imageUrls[] = $fallbackImages[$idx % count($fallbackImages)];
+          }
+          $imageUrl = (string) $imageUrls[0];
           $shortDesc = trim((string) ($p['description'] ?? '')) !== '' ? (string) $p['description'] : 'Produk teknologi InoSakti.';
       ?>
       <article class="product-card group">
-        <div class="relative aspect-square bg-slate-100 dark:bg-slate-700 overflow-hidden">
+        <div class="relative aspect-square bg-white overflow-hidden border-b border-slate-100 dark:border-slate-700">
           <span class="category-badge"><?= htmlspecialchars((string) $p['category_name']) ?></span>
-          <img alt="<?= htmlspecialchars((string) $p['name']) ?>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="<?= htmlspecialchars($imageUrl) ?>">
+          <img alt="<?= htmlspecialchars((string) $p['name']) ?>" class="w-full h-full object-contain bg-white" src="<?= htmlspecialchars($imageUrl) ?>">
         </div>
         <div class="p-5">
           <h3 class="font-bold text-sm mb-2 line-clamp-1"><?= htmlspecialchars((string) $p['name']) ?></h3>
@@ -268,6 +296,7 @@ if ($dbError === null) {
               data-category="<?= htmlspecialchars((string) $p['category_name']) ?>"
               data-description="<?= htmlspecialchars($shortDesc) ?>"
               data-image="<?= htmlspecialchars($imageUrl) ?>"
+              data-images="<?= htmlspecialchars((string) json_encode($imageUrls), ENT_QUOTES, 'UTF-8') ?>"
             >
               Lihat deskripsi
             </button>
@@ -308,7 +337,8 @@ if ($dbError === null) {
       </button>
     </div>
     <div class="p-5 space-y-3">
-      <img id="modalProductImage" src="" alt="Product" class="w-full aspect-video object-cover rounded-xl bg-slate-100">
+      <img id="modalProductImage" src="" alt="Product" class="w-full aspect-square object-contain rounded-xl bg-white border border-slate-200">
+      <div id="modalProductThumbs" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
       <div class="text-xs font-bold uppercase tracking-wider text-slate-500" id="modalProductCategory"></div>
       <h4 class="font-extrabold text-xl" id="modalProductName"></h4>
       <div class="text-primary font-bold" id="modalProductPrice"></div>
@@ -330,6 +360,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const elCategory = document.getElementById('modalProductCategory');
   const elDesc = document.getElementById('modalProductDesc');
   const elImage = document.getElementById('modalProductImage');
+  const elThumbs = document.getElementById('modalProductThumbs');
+
+  function renderThumbs(images) {
+    if (!elThumbs) return;
+    elThumbs.innerHTML = '';
+    images.forEach((src, idx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rounded-md border border-slate-200 bg-white p-0.5 overflow-hidden';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'thumb-' + idx;
+      img.className = 'w-full aspect-square object-contain';
+      btn.appendChild(img);
+      btn.addEventListener('click', function () {
+        elImage.src = src;
+      });
+      elThumbs.appendChild(btn);
+    });
+  }
 
   document.querySelectorAll('.btn-product-detail').forEach((btn) => {
     btn.addEventListener('click', function () {
@@ -339,6 +389,13 @@ document.addEventListener('DOMContentLoaded', function () {
       elCategory.textContent = this.dataset.category || '';
       elDesc.textContent = this.dataset.description || '';
       elImage.src = this.dataset.image || '';
+      let images = [];
+      try {
+        const parsed = JSON.parse(this.dataset.images || '[]');
+        if (Array.isArray(parsed)) images = parsed.filter(Boolean);
+      } catch (e) {}
+      if (!images.length && this.dataset.image) images = [this.dataset.image];
+      renderThumbs(images);
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     });

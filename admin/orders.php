@@ -60,7 +60,34 @@ admin_render_start('Manajemen Order', 'orders');
     <h2 class="font-bold text-lg">Daftar Order (maks 100 terbaru)</h2>
     <p class="text-sm text-slate-500 mt-1">Kelola status order e-commerce langsung dari dashboard.</p>
   </div>
-  <div class="overflow-x-auto">
+  <div class="md:hidden p-4 space-y-3">
+    <?php foreach ($rows as $r): ?>
+      <div class="rounded-xl border border-slate-200 p-4">
+        <div class="font-semibold text-blue-800"><?= admin_e((string) $r['order_number']) ?></div>
+        <div class="mt-2 text-xs text-slate-600"><?= admin_e((string) $r['customer_name']) ?></div>
+        <div class="text-xs text-slate-500">Total: Rp <?= number_format((float) $r['grand_total'], 0, ',', '.') ?></div>
+        <div class="text-xs text-slate-500">Tanggal: <?= admin_e((string) $r['placed_at']) ?></div>
+        <div class="mt-2">
+          <span class="px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700"><?= admin_e((string) $r['status']) ?></span>
+        </div>
+        <form method="post" class="mt-3 flex flex-col gap-2">
+          <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+          <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+          <select name="status" class="rounded-lg border-slate-300 text-sm w-full">
+            <?php foreach (['pending', 'paid', 'processing', 'shipped', 'completed', 'cancelled'] as $s): ?>
+              <option value="<?= $s ?>" <?= $s === $r['status'] ? 'selected' : '' ?>><?= $s ?></option>
+            <?php endforeach; ?>
+          </select>
+          <button class="px-3 py-2 bg-blue-800 text-white rounded-lg font-semibold w-full">Simpan</button>
+        </form>
+      </div>
+    <?php endforeach; ?>
+    <?php if (!$rows): ?>
+      <div class="text-center text-sm text-slate-500 py-4">Belum ada data orders.</div>
+    <?php endif; ?>
+  </div>
+
+  <div class="hidden md:block overflow-x-auto">
     <table class="w-full text-sm">
       <thead class="bg-slate-50 text-slate-500 uppercase text-[11px] tracking-wider">
       <tr>
@@ -83,7 +110,7 @@ admin_render_start('Manajemen Order', 'orders');
             <span class="px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700"><?= admin_e((string) $r['status']) ?></span>
           </td>
           <td class="px-4 py-3">
-            <form method="post" class="flex justify-end gap-2">
+            <form method="post" class="flex flex-col sm:flex-row sm:justify-end gap-2">
               <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
               <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
               <select name="status" class="rounded-lg border-slate-300 text-sm">
