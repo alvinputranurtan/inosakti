@@ -40,6 +40,18 @@ if ($isLoggedIn) {
 }
 $loginHref = $basePath . '/login';
 $logoutHref = $basePath . '/logout';
+$siteNavLinks = [
+    ['label' => 'Home', 'href' => $basePath . '/'],
+    ['label' => 'Layanan Kami', 'href' => $basePath . '/#layanan'],
+    ['label' => 'Produk Kami', 'href' => $basePath . '/#produk'],
+    ['label' => 'Portofolio', 'href' => $basePath . '/#portofolio'],
+    ['label' => 'Ecommerce', 'href' => $basePath . '/#ecommerce'],
+    ['label' => 'Sosial Media', 'href' => $basePath . '/#social'],
+    ['label' => 'Mitra & Pelanggan Kami', 'href' => $basePath . '/#mitra'],
+    ['label' => 'Testimonial', 'href' => $basePath . '/#testimonial'],
+    ['label' => 'Special Partners', 'href' => $basePath . '/#special-partners'],
+    ['label' => 'Kontak', 'href' => $basePath . '/#contact'],
+];
 ?>
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
@@ -146,28 +158,37 @@ $logoutHref = $basePath . '/logout';
       <?php if (!$isLoggedIn): ?>
       <a class="hover:text-primary transition-colors" href="<?php echo $loginHref; ?>">Login</a>
       <?php else: ?>
-      <div class="relative group">
-        <button class="inline-flex items-center gap-1 hover:text-primary transition-colors">
-          Akun <span class="material-symbols-outlined text-base">expand_more</span>
-        </button>
-        <div class="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-lg p-2 hidden group-hover:block">
-          <a href="<?php echo $panelHref; ?>" class="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50"><?php echo $panelText; ?></a>
-          <a href="<?php echo $logoutHref; ?>" class="block px-3 py-2 rounded-lg text-red-600 hover:bg-red-50">Logout</a>
-        </div>
-      </div>
+	      <div class="relative">
+	        <button id="accountDropdownBtn" type="button" class="inline-flex items-center gap-1 hover:text-primary transition-colors">
+	          Akun <span class="material-symbols-outlined text-base">expand_more</span>
+	        </button>
+	        <div id="accountDropdownMenu" class="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white shadow-lg p-2 hidden">
+	          <a href="<?php echo $panelHref; ?>" class="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50"><?php echo $panelText; ?></a>
+	          <a href="<?php echo $logoutHref; ?>" class="block px-3 py-2 rounded-lg text-red-600 hover:bg-red-50">Logout</a>
+	        </div>
+	      </div>
       <?php endif; ?>
     </nav>
 
 	    <div class="flex items-center gap-4">
-	      <div class="hidden sm:flex border rounded-lg overflow-hidden text-xs font-bold">
-	        <button class="bg-primary text-white px-3 py-1.5 flex items-center gap-1">
-	          Navigasi <span class="material-symbols-outlined text-xs">expand_more</span>
-	        </button>
-	        <button class="bg-white px-3 py-1.5 flex items-center gap-1">
-	          <span class="material-symbols-outlined text-xs">language</span>
-	          IND <span class="material-symbols-outlined text-xs">expand_more</span>
-	        </button>
-	      </div>
+		      <div class="hidden sm:flex items-center gap-2 text-xs font-bold">
+            <div class="relative">
+		        <button id="siteNavDropdownBtn" type="button" class="bg-primary text-white px-3 py-1.5 flex items-center gap-1 rounded-lg">
+		          Navigasi <span class="material-symbols-outlined text-xs">expand_more</span>
+		        </button>
+              <div id="siteNavDropdownMenu" class="absolute right-0 top-full mt-2 w-64 max-h-80 overflow-auto rounded-xl border border-slate-200 bg-white shadow-lg p-2 hidden">
+                <?php foreach ($siteNavLinks as $link): ?>
+                  <a href="<?php echo htmlspecialchars($link['href']); ?>" class="block px-3 py-2 rounded-lg text-slate-700 hover:bg-slate-50">
+                    <?php echo htmlspecialchars($link['label']); ?>
+                  </a>
+                <?php endforeach; ?>
+              </div>
+            </div>
+		        <button class="bg-white px-3 py-1.5 flex items-center gap-1 border rounded-lg">
+		          <span class="material-symbols-outlined text-xs">language</span>
+		          IND <span class="material-symbols-outlined text-xs">expand_more</span>
+		        </button>
+		      </div>
 
 	      <div class="lg:hidden">
 	        <button id="hamburgerBtn" class="p-2 focus:outline-none">
@@ -204,14 +225,49 @@ $logoutHref = $basePath . '/logout';
   document.addEventListener('DOMContentLoaded', function() {
     var menu = document.getElementById('mobileMenu');
     var overlay = document.getElementById('mobileOverlay');
-    var openBtn = document.getElementById('hamburgerBtn');
-    var closeBtn = document.getElementById('closeMenuBtn');
+	    var openBtn = document.getElementById('hamburgerBtn');
+	    var closeBtn = document.getElementById('closeMenuBtn');
+      var accountBtn = document.getElementById('accountDropdownBtn');
+      var accountMenu = document.getElementById('accountDropdownMenu');
+      var siteNavBtn = document.getElementById('siteNavDropdownBtn');
+      var siteNavMenu = document.getElementById('siteNavDropdownMenu');
 
-    function openMenu(){ menu.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
-    function closeMenu(){ menu.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+	    function openMenu(){ menu.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); }
+	    function closeMenu(){ menu.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
+      function closeAccountDropdown(){ accountMenu?.classList.add('hidden'); }
+      function closeSiteNavDropdown(){ siteNavMenu?.classList.add('hidden'); }
 
-    openBtn?.addEventListener('click', openMenu);
-    closeBtn?.addEventListener('click', closeMenu);
-    overlay?.addEventListener('click', closeMenu);
-  });
-</script>
+	    openBtn?.addEventListener('click', openMenu);
+	    closeBtn?.addEventListener('click', closeMenu);
+	    overlay?.addEventListener('click', closeMenu);
+      accountBtn?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!accountMenu) return;
+        var willOpen = accountMenu.classList.contains('hidden');
+        closeSiteNavDropdown();
+        accountMenu.classList.toggle('hidden', !willOpen);
+      });
+      siteNavBtn?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!siteNavMenu) return;
+        var willOpen = siteNavMenu.classList.contains('hidden');
+        closeAccountDropdown();
+        siteNavMenu.classList.toggle('hidden', !willOpen);
+      });
+      document.addEventListener('click', function (e) {
+        var target = e.target;
+        if (accountBtn && accountMenu && !accountBtn.contains(target) && !accountMenu.contains(target)) {
+          closeAccountDropdown();
+        }
+        if (siteNavBtn && siteNavMenu && !siteNavBtn.contains(target) && !siteNavMenu.contains(target)) {
+          closeSiteNavDropdown();
+        }
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeAccountDropdown();
+          closeSiteNavDropdown();
+        }
+      });
+	  });
+	</script>

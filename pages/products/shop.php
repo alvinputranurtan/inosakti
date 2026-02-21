@@ -328,16 +328,16 @@ if ($dbError === null) {
   <?php endif; ?>
 </main>
 
-<div id="productDetailModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-  <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full overflow-hidden border border-slate-200 dark:border-slate-700">
-    <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+<div id="productDetailModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-3 sm:p-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)] overflow-hidden border border-slate-200 dark:border-slate-700 flex flex-col">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shrink-0">
       <h3 class="font-bold text-lg">Detail Produk</h3>
       <button id="btnCloseProductModal" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
-    <div class="p-5 space-y-3">
-      <img id="modalProductImage" src="" alt="Product" class="w-full aspect-square object-contain rounded-xl bg-white border border-slate-200">
+    <div class="p-4 sm:p-5 space-y-3 overflow-y-auto">
+      <img id="modalProductImage" src="" alt="Product" class="w-full max-h-[42vh] object-contain rounded-xl bg-white border border-slate-200">
       <div id="modalProductThumbs" class="grid grid-cols-4 sm:grid-cols-6 gap-2"></div>
       <div class="text-xs font-bold uppercase tracking-wider text-slate-500" id="modalProductCategory"></div>
       <h4 class="font-extrabold text-xl" id="modalProductName"></h4>
@@ -381,8 +381,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  document.querySelectorAll('.btn-product-detail').forEach((btn) => {
-    btn.addEventListener('click', function () {
+	  document.querySelectorAll('.btn-product-detail').forEach((btn) => {
+	    btn.addEventListener('click', function () {
       elName.textContent = this.dataset.name || '';
       elPrice.textContent = this.dataset.price || '';
       elStock.textContent = this.dataset.stock || '0';
@@ -395,16 +395,18 @@ document.addEventListener('DOMContentLoaded', function () {
         if (Array.isArray(parsed)) images = parsed.filter(Boolean);
       } catch (e) {}
       if (!images.length && this.dataset.image) images = [this.dataset.image];
-      renderThumbs(images);
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    });
-  });
-
-  function closeModal() {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-  }
+	      renderThumbs(images);
+	      modal.classList.remove('hidden');
+	      modal.classList.add('flex');
+	      document.body.classList.add('overflow-hidden');
+	    });
+	  });
+	
+	  function closeModal() {
+	    modal.classList.add('hidden');
+	    modal.classList.remove('flex');
+	    document.body.classList.remove('overflow-hidden');
+	  }
 
   closeBtn?.addEventListener('click', closeModal);
   modal?.addEventListener('click', function (e) {

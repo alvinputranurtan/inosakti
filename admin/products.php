@@ -117,6 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imageFilenameInput = trim((string) ($_POST['image_filename'] ?? ''));
         $selectedImage = trim((string) ($_POST['selected_image'] ?? ''));
         $selectedImagesInput = $_POST['selected_images'] ?? [];
+        $orderedImagesInput = (string) ($_POST['ordered_images'] ?? '');
+        $primaryImageInput = trim((string) ($_POST['primary_image'] ?? ''));
         $categoryId = (int) ($_POST['category_id'] ?? 0);
         $categoryIdValue = $categoryId > 0 ? $categoryId : null;
         $imagePath = '';
@@ -144,28 +146,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($hasImagePath) {
             $imagePaths = $currentImagePaths;
             $repoNames = [];
-            if (is_array($selectedImagesInput)) {
-                foreach ($selectedImagesInput as $n) {
-                    $n = normalize_image_filename((string) $n);
-                    if ($n === '') {
-                        continue;
+            $orderedRepoNames = [];
+            if ($orderedImagesInput !== '') {
+                $decoded = json_decode($orderedImagesInput, true);
+                if (is_array($decoded)) {
+                    foreach ($decoded as $n) {
+                        $n = normalize_image_filename((string) $n);
+                        if ($n === '') {
+                            continue;
+                        }
+                        $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
+                        $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
+                        if (product_image_allowed_ext($ext) && is_file($abs)) {
+                            $orderedRepoNames[] = $productImageDirRel . '/' . $n;
+                        }
                     }
+                }
+            }
+            if (!$orderedRepoNames) {
+                if (is_array($selectedImagesInput)) {
+                    foreach ($selectedImagesInput as $n) {
+                        $n = normalize_image_filename((string) $n);
+                        if ($n === '') {
+                            continue;
+                        }
+                        $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
+                        $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
+                        if (product_image_allowed_ext($ext) && is_file($abs)) {
+                            $repoNames[] = $productImageDirRel . '/' . $n;
+                        }
+                    }
+                }
+                if (!$repoNames && $selectedImage !== '') {
+                    $n = normalize_image_filename($selectedImage);
                     $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
                     $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
-                    if (product_image_allowed_ext($ext) && is_file($abs)) {
+                    if ($n !== '' && product_image_allowed_ext($ext) && is_file($abs)) {
                         $repoNames[] = $productImageDirRel . '/' . $n;
                     }
                 }
             }
-            if (!$repoNames && $selectedImage !== '') {
-                $n = normalize_image_filename($selectedImage);
-                $ext = strtolower((string) pathinfo($n, PATHINFO_EXTENSION));
-                $abs = $productImageDirAbs . DIRECTORY_SEPARATOR . $n;
-                if ($n !== '' && product_image_allowed_ext($ext) && is_file($abs)) {
-                    $repoNames[] = $productImageDirRel . '/' . $n;
-                }
-            }
-            if ($repoNames) {
+            if ($orderedRepoNames) {
+                $imagePaths = $orderedRepoNames;
+            } elseif ($repoNames) {
                 $imagePaths = $repoNames;
             }
 
@@ -291,6 +314,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
                     $imagePaths[0] = $newPath;
+                }
+            }
+
+            if (!empty($imagePaths) && $primaryImageInput !== '') {
+                $primaryName = normalize_image_filename($primaryImageInput);
+                if ($primaryName !== '') {
+                    $primaryPath = $productImageDirRel . '/' . $primaryName;
+                    $idxPrimary = array_search($primaryPath, $imagePaths, true);
+                    if ($idxPrimary !== false) {
+                        unset($imagePaths[$idxPrimary]);
+                        array_unshift($imagePaths, $primaryPath);
+                        $imagePaths = array_values($imagePaths);
+                    }
                 }
             }
 
@@ -475,14 +511,22 @@ admin_render_start('Manajemen Produk', 'products');
     <?php if ($hasImagePath): ?>
       <div class="md:col-span-2 xl:col-span-3 grid md:grid-cols-3 gap-3 border border-slate-200 rounded-xl p-3">
         <div class="md:col-span-2">
-          <label for="formSelectedImage" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Multi Gambar Dari Repository</label>
-          <select id="formSelectedImage" name="selected_images[]" multiple size="7" class="rounded-lg border-slate-300 w-full">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Pilih Multi Gambar Dari Repository</label>
+          <div id="formSelectedImageList" class="rounded-lg border border-slate-300 bg-white max-h-56 overflow-auto p-2 space-y-1">
             <?php foreach ($repositoryImages as $imgName): ?>
-              <option value="<?= admin_e($imgName) ?>"><?= admin_e($imgName) ?></option>
+              <label class="flex items-center gap-2 rounded px-2 py-1.5 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" class="repo-image-checkbox rounded border-slate-300" name="selected_images[]" value="<?= admin_e($imgName) ?>">
+                <span class="text-sm text-slate-700"><?= admin_e($imgName) ?></span>
+              </label>
             <?php endforeach; ?>
-          </select>
+            <?php if (!$repositoryImages): ?>
+              <div class="px-2 py-1 text-xs text-slate-500">Belum ada gambar di repository.</div>
+            <?php endif; ?>
+          </div>
           <input type="hidden" id="formSelectedImageSingle" name="selected_image" value="">
-          <div class="mt-2 text-xs text-slate-500">Bisa pilih lebih dari satu gambar (Ctrl/Cmd + klik).</div>
+          <input type="hidden" id="formOrderedImages" name="ordered_images" value="">
+          <input type="hidden" id="formPrimaryImage" name="primary_image" value="">
+          <div class="mt-2 text-xs text-slate-500">Centang gambar yang akan dipakai, lalu atur urutan/primary di panel preview.</div>
         </div>
         <div class="flex items-start">
           <div class="w-full border border-slate-200 rounded-lg p-2 bg-slate-50">
@@ -699,19 +743,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const stockEl = document.getElementById('formStock');
   const activeEl = document.getElementById('formIsActive');
   const categoryEl = document.getElementById('formCategoryId');
-  const selectedImageEl = document.getElementById('formSelectedImage');
-  const selectedImageSingleEl = document.getElementById('formSelectedImageSingle');
-  const imageFilenameEl = document.getElementById('formImageFilename');
-  const imageFileEl = document.getElementById('formImageFile');
-  const imagePreviewListEl = document.getElementById('formImagePreviewList');
+  const selectedImageListEl = document.getElementById('formSelectedImageList');
+	 const selectedImageSingleEl = document.getElementById('formSelectedImageSingle');
+	  const orderedImagesEl = document.getElementById('formOrderedImages');
+	  const primaryImageEl = document.getElementById('formPrimaryImage');
+	  const imageFilenameEl = document.getElementById('formImageFilename');
+	  const imageFileEl = document.getElementById('formImageFile');
+	  const imagePreviewListEl = document.getElementById('formImagePreviewList');
   const imagePreviewEmptyEl = document.getElementById('formImagePreviewEmpty');
   const submitEl = document.getElementById('formSubmitButton');
   const resetEl = document.getElementById('formResetButton');
   const cancelEditEl = document.getElementById('formCancelEditButton');
-  const modeBadgeEl = document.getElementById('formModeBadge');
-  const modeHintEl = document.getElementById('formModeHint');
-  let uploadedPreviewUrls = [];
-  let currentImagePaths = [];
+	  const modeBadgeEl = document.getElementById('formModeBadge');
+	  const modeHintEl = document.getElementById('formModeHint');
+	  let uploadedPreviewUrls = [];
+	  let currentImagePaths = [];
+	  let selectedOrder = [];
+	  let primaryImageName = '';
 
   function setAddMode() {
     if (modeBadgeEl) {
@@ -742,90 +790,189 @@ document.addEventListener('DOMContentLoaded', function () {
     uploadedPreviewUrls = [];
   }
 
-  function clearPreviewList() {
-    if (!imagePreviewListEl) return;
-    imagePreviewListEl.innerHTML = '';
-  }
-
-  function appendPreview(url, label) {
-    if (!imagePreviewListEl) return;
-    const wrap = document.createElement('div');
-    wrap.className = 'rounded-md border border-slate-200 bg-white p-0.5';
-    const img = document.createElement('img');
-    img.src = url;
-    img.alt = label || '';
-    img.className = 'w-full aspect-square object-contain rounded-sm bg-white';
-    wrap.appendChild(img);
-    imagePreviewListEl.appendChild(wrap);
-  }
+	  function clearPreviewList() {
+	    if (!imagePreviewListEl) return;
+	    imagePreviewListEl.innerHTML = '';
+	  }
 
   function selectedImageValues() {
-    if (!selectedImageEl) return [];
-    return Array.from(selectedImageEl.selectedOptions || []).map((o) => o.value).filter(Boolean);
+    return Array.from(document.querySelectorAll('.repo-image-checkbox:checked')).map((el) => el.value).filter(Boolean);
   }
 
-  function selectedImageUrls() {
-    return selectedImageValues().map((name) => ({
-      label: name,
-      url: '<?= admin_e(admin_url('/' . trim($productImageDirRel, '/'))) ?>/' + encodeURIComponent(name),
-    }));
-  }
+	  function syncSelectedOrderFromSelect() {
+	    const selected = new Set(selectedImageValues());
+	    selectedOrder = selectedOrder.filter((name) => selected.has(name));
+	    selected.forEach((name) => {
+	      if (!selectedOrder.includes(name)) {
+	        selectedOrder.push(name);
+	      }
+	    });
+	  }
 
-  function parseImagePathList(raw) {
-    if (!raw) return [];
-    return String(raw).split(/[|,]/).map((x) => x.trim()).filter(Boolean);
-  }
-
-  function updatePreview() {
-    clearPreviewList();
-    clearUploadedPreview();
-    let count = 0;
-
-    const selected = selectedImageUrls();
-    selected.forEach((item) => {
-      appendPreview(item.url, item.label);
-      count++;
+  function syncSelectedOrderToSelect() {
+    if (!selectedImageListEl) return;
+    const selected = new Set(selectedOrder);
+    document.querySelectorAll('.repo-image-checkbox').forEach((el) => {
+      el.checked = selected.has(el.value);
     });
-
-    const uploadedFiles = Array.from(imageFileEl?.files || []);
-    uploadedFiles.forEach((file) => {
-      const url = URL.createObjectURL(file);
-      uploadedPreviewUrls.push(url);
-      appendPreview(url, file.name);
-      count++;
-    });
-
-    if (count === 0) {
-      currentImagePaths.forEach((p) => {
-        const url = '<?= admin_e(admin_url('/')) ?>' + '/' + p.replace(/^\/+/, '');
-        appendPreview(url, p.split('/').pop() || '');
-        count++;
-      });
-    }
-
-    if (imagePreviewEmptyEl) {
-      imagePreviewEmptyEl.classList.toggle('hidden', count > 0);
-    }
-    if (selectedImageSingleEl) {
-      selectedImageSingleEl.value = selectedImageValues()[0] || '';
-    }
   }
+
+	  function ensurePrimaryInSelection() {
+	    if (!selectedOrder.length) {
+	      primaryImageName = '';
+	      return;
+	    }
+	    if (!primaryImageName || !selectedOrder.includes(primaryImageName)) {
+	      primaryImageName = selectedOrder[0];
+	    }
+	  }
+
+	  function moveSelectedOrder(name, dir) {
+	    const idx = selectedOrder.indexOf(name);
+	    if (idx < 0) return;
+	    const target = idx + dir;
+	    if (target < 0 || target >= selectedOrder.length) return;
+	    const tmp = selectedOrder[target];
+	    selectedOrder[target] = selectedOrder[idx];
+	    selectedOrder[idx] = tmp;
+	  }
+
+	  function renderOrderedPreview() {
+	    if (!imagePreviewListEl) return;
+	    clearPreviewList();
+	    let count = 0;
+	    selectedOrder.forEach((name, idx) => {
+	      const wrap = document.createElement('div');
+	      wrap.className = 'rounded-md border border-slate-200 bg-white p-1';
+
+	      const img = document.createElement('img');
+	      img.src = '<?= admin_e(admin_url('/' . trim($productImageDirRel, '/'))) ?>/' + encodeURIComponent(name);
+	      img.alt = name;
+	      img.className = 'w-full aspect-square object-contain rounded-sm bg-white';
+	      wrap.appendChild(img);
+
+	      const info = document.createElement('div');
+	      info.className = 'mt-1 flex items-center justify-between gap-1';
+
+	      const order = document.createElement('span');
+	      order.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700';
+	      order.textContent = '#' + (idx + 1);
+	      info.appendChild(order);
+
+	      const actions = document.createElement('div');
+	      actions.className = 'flex items-center gap-1';
+
+	      const primaryBtn = document.createElement('button');
+	      primaryBtn.type = 'button';
+	      primaryBtn.className = primaryImageName === name ? 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold' : 'text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600';
+	      primaryBtn.textContent = primaryImageName === name ? 'Primary' : 'Set';
+	      primaryBtn.addEventListener('click', function () {
+	        primaryImageName = name;
+	        renderOrderedPreview();
+	        persistImageMeta();
+	      });
+	      actions.appendChild(primaryBtn);
+
+	      const upBtn = document.createElement('button');
+	      upBtn.type = 'button';
+	      upBtn.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700';
+	      upBtn.textContent = '↑';
+	      upBtn.disabled = idx === 0;
+	      upBtn.addEventListener('click', function () {
+	        moveSelectedOrder(name, -1);
+	        syncSelectedOrderToSelect();
+	        ensurePrimaryInSelection();
+	        renderOrderedPreview();
+	        persistImageMeta();
+	      });
+	      actions.appendChild(upBtn);
+
+	      const downBtn = document.createElement('button');
+	      downBtn.type = 'button';
+	      downBtn.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700';
+	      downBtn.textContent = '↓';
+	      downBtn.disabled = idx === selectedOrder.length - 1;
+	      downBtn.addEventListener('click', function () {
+	        moveSelectedOrder(name, 1);
+	        syncSelectedOrderToSelect();
+	        ensurePrimaryInSelection();
+	        renderOrderedPreview();
+	        persistImageMeta();
+	      });
+	      actions.appendChild(downBtn);
+
+	      info.appendChild(actions);
+	      wrap.appendChild(info);
+	      imagePreviewListEl.appendChild(wrap);
+	      count++;
+	    });
+
+	    const uploadedFiles = Array.from(imageFileEl?.files || []);
+	    uploadedFiles.forEach((file) => {
+	      const wrap = document.createElement('div');
+	      wrap.className = 'rounded-md border border-blue-200 bg-blue-50 p-1';
+	      const url = URL.createObjectURL(file);
+	      uploadedPreviewUrls.push(url);
+	      const img = document.createElement('img');
+	      img.src = url;
+	      img.alt = file.name;
+	      img.className = 'w-full aspect-square object-contain rounded-sm bg-white';
+	      wrap.appendChild(img);
+	      const note = document.createElement('div');
+	      note.className = 'mt-1 text-[10px] text-blue-700 font-semibold truncate';
+	      note.textContent = 'Upload baru';
+	      wrap.appendChild(note);
+	      imagePreviewListEl.appendChild(wrap);
+	      count++;
+	    });
+
+	    if (imagePreviewEmptyEl) {
+	      imagePreviewEmptyEl.classList.toggle('hidden', count > 0);
+	    }
+	  }
+
+	  function parseImagePathList(raw) {
+	    if (!raw) return [];
+	    return String(raw).split(/[|,]/).map((x) => x.trim()).filter(Boolean);
+	  }
+
+	  function persistImageMeta() {
+	    if (orderedImagesEl) {
+	      orderedImagesEl.value = JSON.stringify(selectedOrder);
+	    }
+	    if (primaryImageEl) {
+	      primaryImageEl.value = primaryImageName || '';
+	    }
+	    if (selectedImageSingleEl) {
+	      selectedImageSingleEl.value = selectedOrder[0] || '';
+	    }
+	  }
+
+	  function updatePreview() {
+	    clearUploadedPreview();
+	    syncSelectedOrderFromSelect();
+	    ensurePrimaryInSelection();
+	    renderOrderedPreview();
+	    persistImageMeta();
+	  }
 
   function resetFormState() {
-    idEl.value = '0';
-    currentImagePaths = [];
-    form.reset();
-    if (activeEl) activeEl.checked = true;
+	    idEl.value = '0';
+	    currentImagePaths = [];
+	    selectedOrder = [];
+	    primaryImageName = '';
+	    form.reset();
+	    if (activeEl) activeEl.checked = true;
     if (imageFileEl) imageFileEl.value = '';
-    if (selectedImageEl) {
-      Array.from(selectedImageEl.options).forEach((o) => {
-        o.selected = false;
-      });
-    }
-    if (selectedImageSingleEl) selectedImageSingleEl.value = '';
-    clearUploadedPreview();
-    updatePreview();
-    setAddMode();
+    document.querySelectorAll('.repo-image-checkbox').forEach((el) => {
+      el.checked = false;
+    });
+	    if (selectedImageSingleEl) selectedImageSingleEl.value = '';
+	    if (orderedImagesEl) orderedImagesEl.value = '';
+	    if (primaryImageEl) primaryImageEl.value = '';
+	    clearUploadedPreview();
+	    updatePreview();
+	    setAddMode();
   }
 
   document.querySelectorAll('.btn-edit-product').forEach((btn) => {
@@ -837,15 +984,12 @@ document.addEventListener('DOMContentLoaded', function () {
       descEl.value = this.dataset.description || '';
       priceEl.value = this.dataset.price || '';
       stockEl.value = this.dataset.stock || '';
-      currentImagePaths = parseImagePathList(this.dataset.imagePath || '');
+	      currentImagePaths = parseImagePathList(this.dataset.imagePath || '');
+	      selectedOrder = currentImagePaths.map((p) => p.split('/').pop()).filter(Boolean);
+	      primaryImageName = selectedOrder[0] || '';
       if (activeEl) activeEl.checked = (this.dataset.isActive || '0') === '1';
       if (categoryEl) categoryEl.value = this.dataset.categoryId || '0';
-      if (selectedImageEl) {
-        const imageNames = currentImagePaths.map((p) => p.split('/').pop()).filter(Boolean);
-        Array.from(selectedImageEl.options).forEach((o) => {
-          o.selected = imageNames.includes(o.value);
-        });
-      }
+      syncSelectedOrderToSelect();
       if (imageFilenameEl) imageFilenameEl.value = this.dataset.imageFilename || '';
       if (imageFileEl) imageFileEl.value = '';
       clearUploadedPreview();
@@ -855,13 +999,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  selectedImageEl?.addEventListener('change', function () {
-    const first = selectedImageValues()[0] || '';
-    if (imageFilenameEl && first) {
-      imageFilenameEl.value = first;
-    }
-    updatePreview();
-  });
+  selectedImageListEl?.addEventListener('change', function (e) {
+    const target = e.target;
+    if (!(target instanceof HTMLInputElement) || !target.classList.contains('repo-image-checkbox')) return;
+    syncSelectedOrderFromSelect();
+    ensurePrimaryInSelection();
+    const first = selectedOrder[0] || '';
+	    if (imageFilenameEl && first) {
+	      imageFilenameEl.value = first;
+	    }
+	    updatePreview();
+	  });
 
   imageFileEl?.addEventListener('change', function () {
     const file = this.files && this.files[0];
