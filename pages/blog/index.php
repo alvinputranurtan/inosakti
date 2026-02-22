@@ -36,7 +36,7 @@ function blog_db_connect(): ?mysqli
     if ($db->connect_errno) {
         return null;
     }
-    $db->set_charset('utf8mb4');
+    inosakti_init_db_connection($db);
     return $db;
 }
 
@@ -47,6 +47,19 @@ function blog_table_exists(mysqli $db, string $table): bool
         return false;
     }
     $stmt->bind_param('s', $table);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return ((int) ($row['cnt'] ?? 0)) > 0;
+}
+
+function blog_column_exists(mysqli $db, string $table, string $column): bool
+{
+    $stmt = $db->prepare("SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?");
+    if (!$stmt) {
+        return false;
+    }
+    $stmt->bind_param('ss', $table, $column);
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
     $stmt->close();
@@ -95,6 +108,8 @@ if (!$db) {
 } elseif (!blog_table_exists($db, 'posts') || !blog_table_exists($db, 'post_translations')) {
     $errorMessage = 'Tabel blog belum tersedia.';
 } else {
+    $hasFeaturedFlag = blog_column_exists($db, 'posts', 'is_featured');
+    $hasSortOrder = blog_column_exists($db, 'posts', 'sort_order');
     $where = [
         "p.deleted_at IS NULL",
         "p.status = 'published'",
@@ -135,6 +150,14 @@ if (!$db) {
         }
     }
 
+    $orderSql = 'ORDER BY COALESCE(p.published_at, p.created_at) DESC';
+    if ($hasFeaturedFlag || $hasSortOrder) {
+        $featuredExpr = $hasFeaturedFlag ? "CASE WHEN p.is_featured = 1 THEN 0 ELSE 1 END" : "1";
+        $sortNullExpr = $hasSortOrder ? "CASE WHEN p.sort_order IS NULL THEN 1 ELSE 0 END" : "1";
+        $sortValueExpr = $hasSortOrder ? "p.sort_order ASC," : '';
+        $orderSql = "ORDER BY {$featuredExpr} ASC, {$sortNullExpr} ASC, {$sortValueExpr} COALESCE(p.published_at, p.created_at) DESC";
+    }
+
     $sql = "SELECT
               p.id,
               pt.slug,
@@ -148,7 +171,7 @@ if (!$db) {
             JOIN post_translations pt ON pt.post_id = p.id
             LEFT JOIN post_categories pc ON pc.id = p.category_id
             WHERE {$whereSql}
-            ORDER BY COALESCE(p.published_at, p.created_at) DESC
+            {$orderSql}
             LIMIT 60";
     $stmt = $db->prepare($sql);
     if ($stmt) {

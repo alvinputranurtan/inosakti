@@ -95,6 +95,14 @@ if ($checkCatCol) {
     $hasCategoryId = ((int) ($rowCatCol['cnt'] ?? 0)) > 0;
     $checkCatCol->close();
 }
+$hasFullDescription = false;
+$checkFullDescCol = admin_db()->prepare("SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME='products' AND COLUMN_NAME='full_description'");
+if ($checkFullDescCol) {
+    $checkFullDescCol->execute();
+    $rowFullDescCol = $checkFullDescCol->get_result()->fetch_assoc();
+    $hasFullDescription = ((int) ($rowFullDescCol['cnt'] ?? 0)) > 0;
+    $checkFullDescCol->close();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
@@ -111,6 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $slug = trim((string) ($_POST['slug'] ?? ''));
         $name = trim((string) ($_POST['name'] ?? ''));
         $description = trim((string) ($_POST['description'] ?? ''));
+        $fullDescription = trim((string) ($_POST['full_description'] ?? ''));
         $price = (float) ($_POST['price'] ?? 0);
         $stock = (int) ($_POST['stock'] ?? 0);
         $isActive = isset($_POST['is_active']) ? 1 : 0;
@@ -335,34 +344,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($id > 0) {
             if ($hasCategoryId && $hasImagePath) {
-                $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, category_id=?, image_path=? WHERE id=?";
+                if ($hasFullDescription) {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, full_description=?, price=?, stock=?, is_active=?, category_id=?, image_path=? WHERE id=?";
+                } else {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, category_id=?, image_path=? WHERE id=?";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiiisi', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $imagePath, $id);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiiisi', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $categoryIdValue, $imagePath, $id);
+                    } else {
+                        $stmt->bind_param('ssssdiiisi', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $imagePath, $id);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } elseif ($hasCategoryId) {
-                $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, category_id=? WHERE id=?";
+                if ($hasFullDescription) {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, full_description=?, price=?, stock=?, is_active=?, category_id=? WHERE id=?";
+                } else {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, category_id=? WHERE id=?";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $id);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiiii', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $categoryIdValue, $id);
+                    } else {
+                        $stmt->bind_param('ssssdiiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $id);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } elseif ($hasImagePath) {
-                $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, image_path=? WHERE id=?";
+                if ($hasFullDescription) {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, full_description=?, price=?, stock=?, is_active=?, image_path=? WHERE id=?";
+                } else {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=?, image_path=? WHERE id=?";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiisi', $sku, $slug, $name, $description, $price, $stock, $isActive, $imagePath, $id);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiisi', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $imagePath, $id);
+                    } else {
+                        $stmt->bind_param('ssssdiisi', $sku, $slug, $name, $description, $price, $stock, $isActive, $imagePath, $id);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } else {
-                $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=? WHERE id=?";
+                if ($hasFullDescription) {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, full_description=?, price=?, stock=?, is_active=? WHERE id=?";
+                } else {
+                    $sql = "UPDATE products SET sku=?, slug=?, name=?, description=?, price=?, stock=?, is_active=? WHERE id=?";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $id);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiii', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $id);
+                    } else {
+                        $stmt->bind_param('ssssdiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $id);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
@@ -370,34 +411,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             admin_set_flash('success', 'Produk berhasil diperbarui.');
         } else {
             if ($hasCategoryId && $hasImagePath) {
-                $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, category_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                if ($hasFullDescription) {
+                    $sql = "INSERT INTO products (sku, slug, name, description, full_description, price, stock, is_active, category_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                } else {
+                    $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, category_id, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiiis', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $imagePath);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiiis', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $categoryIdValue, $imagePath);
+                    } else {
+                        $stmt->bind_param('ssssdiiis', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue, $imagePath);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } elseif ($hasCategoryId) {
-                $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                if ($hasFullDescription) {
+                    $sql = "INSERT INTO products (sku, slug, name, description, full_description, price, stock, is_active, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                } else {
+                    $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, category_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiii', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $categoryIdValue);
+                    } else {
+                        $stmt->bind_param('ssssdiii', $sku, $slug, $name, $description, $price, $stock, $isActive, $categoryIdValue);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } elseif ($hasImagePath) {
-                $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                if ($hasFullDescription) {
+                    $sql = "INSERT INTO products (sku, slug, name, description, full_description, price, stock, is_active, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                } else {
+                    $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active, image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdiis', $sku, $slug, $name, $description, $price, $stock, $isActive, $imagePath);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdiis', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive, $imagePath);
+                    } else {
+                        $stmt->bind_param('ssssdiis', $sku, $slug, $name, $description, $price, $stock, $isActive, $imagePath);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
             } else {
-                $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                if ($hasFullDescription) {
+                    $sql = "INSERT INTO products (sku, slug, name, description, full_description, price, stock, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                } else {
+                    $sql = "INSERT INTO products (sku, slug, name, description, price, stock, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                }
                 $stmt = admin_db()->prepare($sql);
                 if ($stmt) {
-                    $stmt->bind_param('ssssdii', $sku, $slug, $name, $description, $price, $stock, $isActive);
+                    if ($hasFullDescription) {
+                        $stmt->bind_param('sssssdii', $sku, $slug, $name, $description, $fullDescription, $price, $stock, $isActive);
+                    } else {
+                        $stmt->bind_param('ssssdii', $sku, $slug, $name, $description, $price, $stock, $isActive);
+                    }
                     $stmt->execute();
                     $stmt->close();
                 }
@@ -437,25 +510,28 @@ if ($hasCategories) {
 $repositoryImages = $hasImagePath ? list_product_images($productImageDirAbs) : [];
 
 $rows = [];
+$fullDescriptionSelect = $hasFullDescription
+    ? "p.full_description"
+    : "'' AS full_description";
 if ($hasCategories && $hasCategoryId && $hasImagePath) {
-    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, p.is_active, p.created_at, p.image_path, p.category_id, pc.name AS category_name
+    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, {$fullDescriptionSelect}, p.price, p.stock, p.is_active, p.created_at, p.image_path, p.category_id, pc.name AS category_name
             FROM products p
             LEFT JOIN product_categories pc ON pc.id = p.category_id
             ORDER BY p.created_at DESC
             LIMIT 150";
 } elseif ($hasCategories && $hasCategoryId) {
-    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, p.is_active, p.created_at, NULL AS image_path, p.category_id, pc.name AS category_name
+    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, {$fullDescriptionSelect}, p.price, p.stock, p.is_active, p.created_at, NULL AS image_path, p.category_id, pc.name AS category_name
             FROM products p
             LEFT JOIN product_categories pc ON pc.id = p.category_id
             ORDER BY p.created_at DESC
             LIMIT 150";
 } elseif ($hasImagePath) {
-    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, p.is_active, p.created_at, p.image_path, NULL AS category_id, NULL AS category_name
+    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, {$fullDescriptionSelect}, p.price, p.stock, p.is_active, p.created_at, p.image_path, NULL AS category_id, NULL AS category_name
             FROM products p
             ORDER BY p.created_at DESC
             LIMIT 150";
 } else {
-    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, p.is_active, p.created_at, NULL AS image_path, NULL AS category_id, NULL AS category_name
+    $sql = "SELECT p.id, p.sku, p.slug, p.name, p.description, {$fullDescriptionSelect}, p.price, p.stock, p.is_active, p.created_at, NULL AS image_path, NULL AS category_id, NULL AS category_name
             FROM products p
             ORDER BY p.created_at DESC
             LIMIT 150";
@@ -467,11 +543,15 @@ if ($result) {
 
 admin_render_start('Manajemen Produk', 'products');
 ?>
+<div class="mb-4 flex justify-end">
+  <button id="productFormToggleButton" type="button" class="px-4 py-2 bg-blue-800 text-white rounded-lg font-semibold">Buka Form Produk</button>
+</div>
 <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
   <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-3">
     <h2 class="font-bold text-lg">Form Produk</h2>
     <span id="formModeBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Mode Tambah Produk Baru</span>
   </div>
+  <div id="productFormWrapper" class="hidden">
   <div id="formModeHint" class="mb-4 text-xs text-slate-500">Isi form ini untuk menambahkan produk baru.</div>
   <form id="productForm" method="post" enctype="multipart/form-data" class="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
     <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
@@ -554,6 +634,10 @@ admin_render_start('Manajemen Produk', 'products');
       <label for="formDescription" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Deskripsi Singkat</label>
       <input id="formDescription" name="description" placeholder="Deskripsi singkat produk" class="rounded-lg border-slate-300 w-full">
     </div>
+    <div class="md:col-span-2 xl:col-span-3">
+      <label for="formFullDescription" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Deskripsi Lengkap</label>
+      <textarea id="formFullDescription" name="full_description" rows="6" placeholder="Deskripsi lengkap produk untuk halaman detail, spesifikasi, penggunaan, dll." class="rounded-lg border-slate-300 w-full"></textarea>
+    </div>
     <label class="inline-flex items-center gap-2 text-sm font-semibold">
       <input id="formIsActive" type="checkbox" name="is_active" value="1" checked class="rounded border-slate-300"> Active
     </label>
@@ -563,6 +647,7 @@ admin_render_start('Manajemen Produk', 'products');
       <button id="formCancelEditButton" type="button" class="px-4 py-2 border border-red-300 text-red-700 rounded-lg font-semibold hidden w-full sm:w-auto">Batal Edit</button>
     </div>
   </form>
+  </div>
 </div>
 
 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
@@ -624,6 +709,7 @@ admin_render_start('Manajemen Produk', 'products');
             data-slug="<?= admin_e((string) $r['slug']) ?>"
             data-name="<?= admin_e((string) $r['name']) ?>"
             data-description="<?= admin_e((string) ($r['description'] ?? '')) ?>"
+            data-full-description="<?= admin_e((string) ($r['full_description'] ?? '')) ?>"
             data-price="<?= (float) $r['price'] ?>"
             data-stock="<?= (int) $r['stock'] ?>"
             data-is-active="<?= (int) $r['is_active'] ?>"
@@ -710,6 +796,7 @@ admin_render_start('Manajemen Produk', 'products');
                 data-slug="<?= admin_e((string) $r['slug']) ?>"
                 data-name="<?= admin_e((string) $r['name']) ?>"
                 data-description="<?= admin_e((string) ($r['description'] ?? '')) ?>"
+                data-full-description="<?= admin_e((string) ($r['full_description'] ?? '')) ?>"
                 data-price="<?= (float) $r['price'] ?>"
                 data-stock="<?= (int) $r['stock'] ?>"
                 data-is-active="<?= (int) $r['is_active'] ?>"
@@ -739,6 +826,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const slugEl = document.getElementById('formSlug');
   const nameEl = document.getElementById('formName');
   const descEl = document.getElementById('formDescription');
+  const fullDescEl = document.getElementById('formFullDescription');
   const priceEl = document.getElementById('formPrice');
   const stockEl = document.getElementById('formStock');
   const activeEl = document.getElementById('formIsActive');
@@ -753,13 +841,26 @@ document.addEventListener('DOMContentLoaded', function () {
   const imagePreviewEmptyEl = document.getElementById('formImagePreviewEmpty');
   const submitEl = document.getElementById('formSubmitButton');
   const resetEl = document.getElementById('formResetButton');
-  const cancelEditEl = document.getElementById('formCancelEditButton');
-	  const modeBadgeEl = document.getElementById('formModeBadge');
-	  const modeHintEl = document.getElementById('formModeHint');
-	  let uploadedPreviewUrls = [];
-	  let currentImagePaths = [];
-	  let selectedOrder = [];
-	  let primaryImageName = '';
+	  const cancelEditEl = document.getElementById('formCancelEditButton');
+  const modeBadgeEl = document.getElementById('formModeBadge');
+  const modeHintEl = document.getElementById('formModeHint');
+  const formWrapperEl = document.getElementById('productFormWrapper');
+  const formToggleButtonEl = document.getElementById('productFormToggleButton');
+  let isFormOpen = true;
+		  let uploadedPreviewUrls = [];
+		  let currentImagePaths = [];
+		  let selectedOrder = [];
+		  let primaryImageName = '';
+
+  function setFormVisibility(open) {
+    isFormOpen = !!open;
+    if (formWrapperEl) {
+      formWrapperEl.classList.toggle('hidden', !isFormOpen);
+    }
+    if (formToggleButtonEl) {
+      formToggleButtonEl.textContent = isFormOpen ? 'Tutup Form Produk' : 'Buka Form Produk';
+    }
+  }
 
   function setAddMode() {
     if (modeBadgeEl) {
@@ -956,11 +1057,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	    persistImageMeta();
 	  }
 
-  function resetFormState() {
-	    idEl.value = '0';
-	    currentImagePaths = [];
-	    selectedOrder = [];
-	    primaryImageName = '';
+		  function resetFormState() {
+		    idEl.value = '0';
+		    currentImagePaths = [];
+		    selectedOrder = [];
+		    primaryImageName = '';
 	    form.reset();
 	    if (activeEl) activeEl.checked = true;
     if (imageFileEl) imageFileEl.value = '';
@@ -970,20 +1071,22 @@ document.addEventListener('DOMContentLoaded', function () {
 	    if (selectedImageSingleEl) selectedImageSingleEl.value = '';
 	    if (orderedImagesEl) orderedImagesEl.value = '';
 	    if (primaryImageEl) primaryImageEl.value = '';
-	    clearUploadedPreview();
-	    updatePreview();
-	    setAddMode();
-  }
+		    clearUploadedPreview();
+		    updatePreview();
+		    setAddMode();
+    setFormVisibility(true);
+	  }
 
   document.querySelectorAll('.btn-edit-product').forEach((btn) => {
     btn.addEventListener('click', function () {
       idEl.value = this.dataset.id || '0';
       skuEl.value = this.dataset.sku || '';
       slugEl.value = this.dataset.slug || '';
-      nameEl.value = this.dataset.name || '';
-      descEl.value = this.dataset.description || '';
-      priceEl.value = this.dataset.price || '';
-      stockEl.value = this.dataset.stock || '';
+	      nameEl.value = this.dataset.name || '';
+	      descEl.value = this.dataset.description || '';
+      if (fullDescEl) fullDescEl.value = this.dataset.fullDescription || '';
+	      priceEl.value = this.dataset.price || '';
+	      stockEl.value = this.dataset.stock || '';
 	      currentImagePaths = parseImagePathList(this.dataset.imagePath || '');
 	      selectedOrder = currentImagePaths.map((p) => p.split('/').pop()).filter(Boolean);
 	      primaryImageName = selectedOrder[0] || '';
@@ -994,10 +1097,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (imageFileEl) imageFileEl.value = '';
       clearUploadedPreview();
       updatePreview();
-      setEditMode(this.dataset.id || '0');
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-  });
+	      setEditMode(this.dataset.id || '0');
+      setFormVisibility(true);
+	      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	    });
+	  });
 
   selectedImageListEl?.addEventListener('change', function (e) {
     const target = e.target;
@@ -1019,9 +1123,13 @@ document.addEventListener('DOMContentLoaded', function () {
     updatePreview();
   });
 
-  resetEl?.addEventListener('click', resetFormState);
-  cancelEditEl?.addEventListener('click', resetFormState);
+	  resetEl?.addEventListener('click', resetFormState);
+	  cancelEditEl?.addEventListener('click', resetFormState);
+  formToggleButtonEl?.addEventListener('click', function () {
+    setFormVisibility(!isFormOpen);
+  });
   setAddMode();
+  setFormVisibility(false);
   updatePreview();
 });
 </script>

@@ -76,6 +76,45 @@ if (!function_exists('inosakti_env_value')) {
     }
 }
 
+if (!function_exists('inosakti_app_timezone')) {
+    function inosakti_app_timezone(): string
+    {
+        $tz = inosakti_env_value('APP_TIMEZONE', 'Asia/Jakarta');
+        return is_string($tz) && $tz !== '' ? $tz : 'Asia/Jakarta';
+    }
+}
+
+if (!function_exists('inosakti_db_timezone')) {
+    function inosakti_db_timezone(): string
+    {
+        $tz = inosakti_env_value('DB_TIMEZONE', '+07:00');
+        return is_string($tz) && $tz !== '' ? $tz : '+07:00';
+    }
+}
+
+if (!function_exists('inosakti_set_default_timezone')) {
+    function inosakti_set_default_timezone(): void
+    {
+        date_default_timezone_set(inosakti_app_timezone());
+    }
+}
+
+if (!function_exists('inosakti_init_db_connection')) {
+    function inosakti_init_db_connection(mysqli $db): void
+    {
+        $db->set_charset('utf8mb4');
+        $tz = inosakti_db_timezone();
+        $stmt = $db->prepare('SET time_zone = ?');
+        if ($stmt) {
+            $stmt->bind_param('s', $tz);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+}
+
+inosakti_set_default_timezone();
+
 if (!isset($dbConfig) || !is_array($dbConfig)) {
     $dbConfig = [
         'host' => inosakti_env_value('DB_HOST', 'localhost'),

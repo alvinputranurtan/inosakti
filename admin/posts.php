@@ -13,13 +13,30 @@ $hasPostCategories = admin_table_exists('post_categories');
 $hasPostTranslations = admin_table_exists('post_translations');
 $hasLanguages = admin_table_exists('languages');
 $canOverrideAuthor = admin_has_any_role(['super_admin']);
+$canManageSortAndFeatured = admin_has_any_role(['super_admin']);
 $hasAuthorDisplayName = false;
+$hasFeaturedFlag = false;
+$hasSortOrder = false;
 $checkAuthorCol = admin_db()->prepare("SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME='posts' AND COLUMN_NAME='author_display_name'");
 if ($checkAuthorCol) {
     $checkAuthorCol->execute();
     $authorColRow = $checkAuthorCol->get_result()->fetch_assoc();
     $hasAuthorDisplayName = ((int) ($authorColRow['cnt'] ?? 0)) > 0;
     $checkAuthorCol->close();
+}
+$checkOrderCols = admin_db()->prepare("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME='posts' AND COLUMN_NAME IN ('is_featured', 'sort_order')");
+if ($checkOrderCols) {
+    $checkOrderCols->execute();
+    $colRes = $checkOrderCols->get_result();
+    while ($colRow = $colRes->fetch_assoc()) {
+        $colName = (string) ($colRow['COLUMN_NAME'] ?? '');
+        if ($colName === 'is_featured') {
+            $hasFeaturedFlag = true;
+        } elseif ($colName === 'sort_order') {
+            $hasSortOrder = true;
+        }
+    }
+    $checkOrderCols->close();
 }
 
 $postImageDirRel = 'assets/content/blog/images';
@@ -86,6 +103,57 @@ function admin_blog_language_id(): ?int
     return null;
 }
 
+function admin_post_order_list(mysqli $db): array
+{
+    $sql = "SELECT id
+            FROM posts
+            WHERE deleted_at IS NULL
+            ORDER BY CASE WHEN sort_order IS NULL THEN 1 ELSE 0 END ASC,
+                     sort_order ASC,
+                     COALESCE(published_at, created_at) DESC,
+                     id DESC";
+    $res = $db->query($sql);
+    $rows = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+    return array_map(static fn(array $r): int => (int) ($r['id'] ?? 0), $rows);
+}
+
+function admin_set_post_position(mysqli $db, int $postId, int $position): bool
+{
+    $ids = admin_post_order_list($db);
+    if (!$ids) {
+        return false;
+    }
+    $currentIndex = array_search($postId, $ids, true);
+    if ($currentIndex === false) {
+        return false;
+    }
+
+    $count = count($ids);
+    $position = max(1, min($count, $position));
+    array_splice($ids, (int) $currentIndex, 1);
+    array_splice($ids, $position - 1, 0, [$postId]);
+
+    $db->begin_transaction();
+    try {
+        $stmt = $db->prepare("UPDATE posts SET sort_order = ? WHERE id = ?");
+        if (!$stmt) {
+            throw new RuntimeException('Prepare failed.');
+        }
+        foreach ($ids as $idx => $idVal) {
+            $newOrder = $idx + 1;
+            $idInt = (int) $idVal;
+            $stmt->bind_param('ii', $newOrder, $idInt);
+            $stmt->execute();
+        }
+        $stmt->close();
+        $db->commit();
+        return true;
+    } catch (Throwable $e) {
+        $db->rollback();
+        return false;
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
     if (!admin_verify_csrf(is_string($token) ? $token : null)) {
@@ -113,6 +181,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'set_featured' || $action === 'unset_featured') {
+        if (!$canManageSortAndFeatured || !$hasFeaturedFlag) {
+            admin_set_flash('error', 'Hanya super admin yang bisa mengatur featured article.');
+            header('Location: ' . admin_url('/admin/posts'));
+            exit;
+        }
+        $id = (int) ($_POST['id'] ?? 0);
+        if ($id > 0) {
+            if ($action === 'set_featured') {
+                admin_db()->query("UPDATE posts SET is_featured = 0 WHERE deleted_at IS NULL");
+                $stmt = admin_db()->prepare("UPDATE posts SET is_featured = 1 WHERE id = ? AND deleted_at IS NULL");
+                if ($stmt) {
+                    $stmt->bind_param('i', $id);
+                    $stmt->execute();
+                    $stmt->close();
+                    admin_set_flash('success', 'Featured article berhasil diperbarui.');
+                }
+            } else {
+                $stmt = admin_db()->prepare("UPDATE posts SET is_featured = 0 WHERE id = ? AND deleted_at IS NULL");
+                if ($stmt) {
+                    $stmt->bind_param('i', $id);
+                    $stmt->execute();
+                    $stmt->close();
+                    admin_set_flash('success', 'Featured article berhasil dilepas.');
+                }
+            }
+        }
+        header('Location: ' . admin_url('/admin/posts'));
+        exit;
+    }
+
+    if ($action === 'set_sort_order') {
+        if (!$canManageSortAndFeatured || !$hasSortOrder) {
+            $isAjax = strtolower((string) ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) === 'xmlhttprequest';
+            if ($isAjax) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['ok' => false, 'message' => 'Hanya super admin yang bisa mengatur urutan artikel.']);
+                exit;
+            }
+            admin_set_flash('error', 'Hanya super admin yang bisa mengatur urutan artikel.');
+            header('Location: ' . admin_url('/admin/posts'));
+            exit;
+        }
+        $id = (int) ($_POST['id'] ?? 0);
+        $position = (int) ($_POST['sort_order'] ?? 0);
+        $isAjax = strtolower((string) ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '')) === 'xmlhttprequest';
+        if ($id > 0 && $position > 0) {
+            $ok = admin_set_post_position(admin_db(), $id, $position);
+            if ($isAjax) {
+                header('Content-Type: application/json; charset=utf-8');
+                $orderIds = $ok ? admin_post_order_list(admin_db()) : [];
+                echo json_encode([
+                    'ok' => $ok,
+                    'message' => $ok ? 'Urutan artikel berhasil diperbarui.' : 'Gagal mengubah urutan artikel.',
+                    'order_ids' => $orderIds,
+                ]);
+                exit;
+            }
+            admin_set_flash($ok ? 'success' : 'error', $ok ? 'Urutan artikel berhasil diperbarui.' : 'Gagal mengubah urutan artikel.');
+        } elseif ($isAjax) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['ok' => false, 'message' => 'Nomor urutan tidak valid.']);
+            exit;
+        }
+        header('Location: ' . admin_url('/admin/posts'));
+        exit;
+    }
+
     if ($action === 'save_post') {
         $id = (int) ($_POST['id'] ?? 0);
         $title = trim((string) ($_POST['title'] ?? ''));
@@ -131,6 +267,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $authorDisplayName = '';
         }
         $status = (string) ($_POST['status'] ?? 'draft');
+        $sortOrderInput = trim((string) ($_POST['sort_order'] ?? ''));
+        $sortOrderValue = null;
+        if ($canManageSortAndFeatured && $hasSortOrder && $sortOrderInput !== '') {
+            if (preg_match('/^-?\d+$/', $sortOrderInput)) {
+                $sortOrderValue = (int) $sortOrderInput;
+                $sortOrderValue = max(0, min(999999, $sortOrderValue));
+            }
+        }
+        $isFeaturedValue = ($canManageSortAndFeatured && $hasFeaturedFlag && isset($_POST['is_featured'])) ? 1 : 0;
         $categoryId = (int) ($_POST['category_id'] ?? 0);
         $categoryId = $categoryId > 0 ? $categoryId : 0;
         $allowed = ['draft', 'published', 'archived'];
@@ -319,6 +464,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            if ($id > 0 && $canManageSortAndFeatured) {
+                if ($hasSortOrder) {
+                    if ($sortOrderValue === null) {
+                        $setOrder = $db->prepare("UPDATE posts SET sort_order = NULL WHERE id = ?");
+                        if ($setOrder) {
+                            $setOrder->bind_param('i', $id);
+                            $setOrder->execute();
+                            $setOrder->close();
+                        }
+                    } else {
+                        $setOrder = $db->prepare("UPDATE posts SET sort_order = ? WHERE id = ?");
+                        if ($setOrder) {
+                            $setOrder->bind_param('ii', $sortOrderValue, $id);
+                            $setOrder->execute();
+                            $setOrder->close();
+                        }
+                    }
+                }
+                if ($hasFeaturedFlag) {
+                    if ($isFeaturedValue === 1) {
+                        $db->query("UPDATE posts SET is_featured = 0 WHERE deleted_at IS NULL");
+                        $setFeatured = $db->prepare("UPDATE posts SET is_featured = 1 WHERE id = ?");
+                        if ($setFeatured) {
+                            $setFeatured->bind_param('i', $id);
+                            $setFeatured->execute();
+                            $setFeatured->close();
+                        }
+                    } else {
+                        $setFeatured = $db->prepare("UPDATE posts SET is_featured = 0 WHERE id = ?");
+                        if ($setFeatured) {
+                            $setFeatured->bind_param('i', $id);
+                            $setFeatured->execute();
+                            $setFeatured->close();
+                        }
+                    }
+                }
+            }
+
             if ($id > 0 && $hasPostTranslations && $hasLanguages && $languageId) {
                 $check = $db->prepare("SELECT id FROM post_translations WHERE post_id = ? AND language_id = ? LIMIT 1");
                 $translationId = 0;
@@ -376,8 +559,13 @@ $rows = [];
 if ($hasPostTranslations && $hasLanguages) {
     $languageId = admin_blog_language_id();
     if ($languageId) {
+        $sortOrderSelect = $hasSortOrder ? "p.sort_order" : "NULL";
+        $featuredSelect = $hasFeaturedFlag ? "p.is_featured" : "0";
+        $adminOrderSql = $hasSortOrder
+            ? "ORDER BY CASE WHEN p.sort_order IS NULL THEN 1 ELSE 0 END ASC, p.sort_order ASC, COALESCE(p.published_at, p.created_at) DESC"
+            : "ORDER BY p.created_at DESC";
         $sql = "SELECT
-                  p.id, p.status, p.published_at, p.view_count, p.created_at, p.featured_image, p.category_id,
+                  p.id, p.status, p.published_at, p.view_count, p.created_at, p.featured_image, p.category_id, {$sortOrderSelect} AS sort_order, {$featuredSelect} AS is_featured,
                   " . ($hasAuthorDisplayName ? "COALESCE(p.author_display_name, '')" : "''") . " AS author_display_name,
                   COALESCE(pt.title, CONCAT('Post #', p.id)) AS title,
                   COALESCE(pt.slug, '') AS slug,
@@ -390,7 +578,7 @@ if ($hasPostTranslations && $hasLanguages) {
                 LEFT JOIN post_translations pt ON pt.post_id = p.id AND pt.language_id = ?
                 LEFT JOIN post_categories pc ON pc.id = p.category_id
                 WHERE p.deleted_at IS NULL
-                ORDER BY p.created_at DESC
+                {$adminOrderSql}
                 LIMIT 100";
         $stmt = admin_db()->prepare($sql);
         if ($stmt) {
@@ -402,11 +590,16 @@ if ($hasPostTranslations && $hasLanguages) {
         }
     }
 } else {
-    $sql = "SELECT p.id, p.status, p.published_at, p.view_count, p.created_at, p.featured_image, p.category_id, " . ($hasAuthorDisplayName ? "COALESCE(p.author_display_name, '')" : "''") . " AS author_display_name, CONCAT('Post #', p.id) AS title,
+    $sortOrderSelect = $hasSortOrder ? "p.sort_order" : "NULL";
+    $featuredSelect = $hasFeaturedFlag ? "p.is_featured" : "0";
+    $adminOrderSql = $hasSortOrder
+        ? "ORDER BY CASE WHEN p.sort_order IS NULL THEN 1 ELSE 0 END ASC, p.sort_order ASC, COALESCE(p.published_at, p.created_at) DESC"
+        : "ORDER BY p.created_at DESC";
+    $sql = "SELECT p.id, p.status, p.published_at, p.view_count, p.created_at, p.featured_image, p.category_id, {$sortOrderSelect} AS sort_order, {$featuredSelect} AS is_featured, " . ($hasAuthorDisplayName ? "COALESCE(p.author_display_name, '')" : "''") . " AS author_display_name, CONCAT('Post #', p.id) AS title,
                    '' AS slug, '' AS excerpt, '' AS content, '' AS seo_title, '' AS seo_description, '-' AS category_name
             FROM posts p
             WHERE p.deleted_at IS NULL
-            ORDER BY p.created_at DESC
+            {$adminOrderSql}
             LIMIT 100";
     $result = admin_db()->query($sql);
     if ($result) {
@@ -423,8 +616,17 @@ admin_render_start('Manajemen Blog Posts', 'posts');
   </div>
 <?php endif; ?>
 
+<?php if ($canManageSortAndFeatured && (!$hasSortOrder || !$hasFeaturedFlag)): ?>
+  <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 text-amber-700 px-4 py-3 text-sm">
+    Fitur urutan/featured article butuh migration kolom <code>sort_order</code> dan <code>is_featured</code> di tabel <code>posts</code>.
+  </div>
+<?php endif; ?>
+
 <?php if ($hasPostTranslations && $hasLanguages): ?>
-  <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-6">
+  <div class="mb-4 flex justify-end">
+    <button id="openAddPostButton" type="button" class="px-4 py-2 bg-blue-800 text-white rounded-lg font-semibold">Buka Form Post</button>
+  </div>
+  <div id="postFormCard" class="bg-white border border-slate-200 rounded-2xl p-5 mb-6 hidden">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-4">
       <h2 class="font-bold text-lg">Form Post</h2>
       <span id="formModeBadge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700">Mode Tambah</span>
@@ -459,6 +661,20 @@ admin_render_start('Manajemen Blog Posts', 'posts');
           <?php endforeach; ?>
         </select>
       </div>
+      <?php if ($canManageSortAndFeatured && $hasSortOrder): ?>
+      <div>
+        <label for="formSortOrder" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Urutan Manual (Opsional)</label>
+        <input id="formSortOrder" name="sort_order" type="number" min="0" step="1" class="rounded-lg border-slate-300 w-full" placeholder="Kosong = ikut tanggal publish">
+      </div>
+      <?php endif; ?>
+      <?php if ($canManageSortAndFeatured && $hasFeaturedFlag): ?>
+      <div class="flex items-end">
+        <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 mb-2">
+          <input id="formIsFeatured" name="is_featured" type="checkbox" value="1" class="rounded border-slate-300">
+          Jadikan Featured Article
+        </label>
+      </div>
+      <?php endif; ?>
       <div class="md:col-span-2">
         <label for="formFeaturedImage" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Featured Image URL</label>
         <input id="formFeaturedImage" name="featured_image" class="rounded-lg border-slate-300 w-full" placeholder="https://...">
@@ -540,6 +756,7 @@ admin_render_start('Manajemen Blog Posts', 'posts');
   </div>
 <?php endif; ?>
 
+<?php $tableColspan = 6 + ($hasSortOrder ? 1 : 0) + ($hasFeaturedFlag ? 1 : 0); ?>
 <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
   <div class="p-5 border-b border-slate-200">
     <h2 class="font-bold text-lg">Daftar Post (maks 100 terbaru)</h2>
@@ -553,20 +770,53 @@ admin_render_start('Manajemen Blog Posts', 'posts');
         <th class="px-4 py-3 text-left">Slug</th>
         <th class="px-4 py-3 text-left">Kategori</th>
         <th class="px-4 py-3 text-left">Published</th>
+        <?php if ($hasSortOrder): ?><th class="px-4 py-3 text-left">Urutan</th><?php endif; ?>
+        <?php if ($hasFeaturedFlag): ?><th class="px-4 py-3 text-left">Featured</th><?php endif; ?>
         <th class="px-4 py-3 text-left">Status</th>
         <th class="px-4 py-3 text-right">Aksi</th>
       </tr>
       </thead>
-      <tbody class="divide-y divide-slate-100">
-      <?php foreach ($rows as $r): ?>
-        <tr>
+	      <tbody id="postsTableBody" class="divide-y divide-slate-100">
+	      <?php foreach ($rows as $r): ?>
+	        <tr data-post-id="<?= (int) $r['id'] ?>">
           <td class="px-4 py-3">
             <div class="font-semibold text-slate-800"><?= admin_e((string) $r['title']) ?></div>
             <div class="text-xs text-slate-500 mt-1">Views: <?= (int) $r['view_count'] ?></div>
           </td>
           <td class="px-4 py-3 text-xs text-slate-600"><?= admin_e((string) $r['slug']) ?></td>
           <td class="px-4 py-3"><?= admin_e((string) ($r['category_name'] ?? '-')) ?></td>
-          <td class="px-4 py-3 text-slate-500"><?= admin_e((string) ($r['published_at'] ?? '-')) ?></td>
+	          <td class="px-4 py-3 text-slate-500"><?= admin_e((string) ($r['published_at'] ?? '-')) ?></td>
+	          <?php if ($hasSortOrder): ?>
+	            <td class="px-4 py-3 text-slate-600">
+                <?php if ($canManageSortAndFeatured): ?>
+	                  <form method="post" class="js-sort-order-form flex items-center gap-2 justify-end">
+                    <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                    <input type="hidden" name="action" value="set_sort_order">
+                    <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+	                    <input
+	                      type="number"
+	                      name="sort_order"
+	                      min="1"
+	                      step="1"
+	                      value="<?= ($r['sort_order'] === null || $r['sort_order'] === '') ? '' : (int) $r['sort_order'] ?>"
+	                      class="w-20 rounded-lg border-slate-300 text-sm"
+	                    >
+                    <button class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-semibold">Set</button>
+                  </form>
+                <?php else: ?>
+                  <?= ($r['sort_order'] === null || $r['sort_order'] === '') ? '-' : (int) $r['sort_order'] ?>
+                <?php endif; ?>
+              </td>
+	          <?php endif; ?>
+          <?php if ($hasFeaturedFlag): ?>
+            <td class="px-4 py-3">
+              <?php if ((int) ($r['is_featured'] ?? 0) === 1): ?>
+                <span class="px-2 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">Yes</span>
+              <?php else: ?>
+                <span class="px-2 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">No</span>
+              <?php endif; ?>
+            </td>
+          <?php endif; ?>
           <td class="px-4 py-3">
             <span class="px-2 py-1 rounded-full text-xs font-bold <?= $r['status'] === 'published' ? 'bg-emerald-100 text-emerald-700' : ($r['status'] === 'draft' ? 'bg-slate-100 text-slate-700' : 'bg-amber-100 text-amber-700') ?>">
               <?= admin_e((string) $r['status']) ?>
@@ -585,7 +835,7 @@ admin_render_start('Manajemen Blog Posts', 'posts');
                 </select>
                 <button class="px-3 py-1.5 bg-blue-800 text-white rounded-lg font-semibold">Simpan</button>
               </form>
-              <?php if ($hasPostTranslations && $hasLanguages): ?>
+	              <?php if ($hasPostTranslations && $hasLanguages): ?>
                 <button
                   type="button"
                   class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold btn-edit-post"
@@ -596,6 +846,8 @@ admin_render_start('Manajemen Blog Posts', 'posts');
                   data-category-id="<?= (int) ($r['category_id'] ?? 0) ?>"
                   data-featured-image="<?= admin_e((string) ($r['featured_image'] ?? '')) ?>"
                   data-image-filename="<?= admin_e((string) basename((string) ($r['featured_image'] ?? ''))) ?>"
+                  data-sort-order="<?= admin_e((string) ($r['sort_order'] ?? '')) ?>"
+                  data-is-featured="<?= (int) ($r['is_featured'] ?? 0) ?>"
                   data-author-display-name="<?= admin_e((string) ($r['author_display_name'] ?? '')) ?>"
                   data-excerpt="<?= admin_e((string) ($r['excerpt'] ?? '')) ?>"
                   data-content="<?= admin_e((string) ($r['content'] ?? '')) ?>"
@@ -605,21 +857,138 @@ admin_render_start('Manajemen Blog Posts', 'posts');
                   Edit
                 </button>
               <?php endif; ?>
+                  <?php if ($canManageSortAndFeatured && $hasFeaturedFlag): ?>
+                    <?php if ((int) ($r['is_featured'] ?? 0) === 1): ?>
+                      <form method="post" class="inline">
+                        <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                        <input type="hidden" name="action" value="unset_featured">
+                        <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                        <button class="px-3 py-1.5 rounded-lg border border-amber-300 text-amber-700 font-semibold">Lepas Featured</button>
+                      </form>
+                    <?php else: ?>
+                      <form method="post" class="inline">
+                        <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                        <input type="hidden" name="action" value="set_featured">
+                        <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                        <button class="px-3 py-1.5 rounded-lg border border-blue-300 text-blue-700 font-semibold">Jadikan Featured</button>
+                      </form>
+                    <?php endif; ?>
+                  <?php endif; ?>
             </div>
           </td>
         </tr>
       <?php endforeach; ?>
       <?php if (!$rows): ?>
-        <tr><td colspan="6" class="px-4 py-5 text-center text-slate-500">Belum ada data posts.</td></tr>
+        <tr><td colspan="<?= $tableColspan ?>" class="px-4 py-5 text-center text-slate-500">Belum ada data posts.</td></tr>
       <?php endif; ?>
       </tbody>
     </table>
   </div>
+  <div id="postsCardsContainer" class="md:hidden p-4 space-y-3">
+    <?php foreach ($rows as $r): ?>
+      <div class="rounded-xl border border-slate-200 p-4" data-post-id="<?= (int) $r['id'] ?>">
+        <div class="font-semibold text-slate-800"><?= admin_e((string) $r['title']) ?></div>
+        <div class="mt-1 text-xs text-slate-500">Slug: <?= admin_e((string) $r['slug']) ?></div>
+        <div class="mt-1 text-xs text-slate-500">Kategori: <?= admin_e((string) ($r['category_name'] ?? '-')) ?></div>
+        <div class="mt-1 text-xs text-slate-500">Published: <?= admin_e((string) ($r['published_at'] ?? '-')) ?></div>
+        <div class="mt-1 text-xs text-slate-500">Views: <?= (int) $r['view_count'] ?></div>
+        <?php if ($hasSortOrder): ?>
+          <div class="mt-3">
+            <?php if ($canManageSortAndFeatured): ?>
+              <form method="post" class="js-sort-order-form flex items-center gap-2">
+                <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                <input type="hidden" name="action" value="set_sort_order">
+                <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                <input
+                  type="number"
+                  name="sort_order"
+                  min="1"
+                  step="1"
+                  value="<?= ($r['sort_order'] === null || $r['sort_order'] === '') ? '' : (int) $r['sort_order'] ?>"
+                  class="w-24 rounded-lg border-slate-300 text-sm"
+                >
+                <button class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-semibold">Set</button>
+              </form>
+            <?php else: ?>
+              <div class="text-xs text-slate-500">Urutan: <?= ($r['sort_order'] === null || $r['sort_order'] === '') ? '-' : (int) $r['sort_order'] ?></div>
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
+        <div class="mt-2">
+          <span class="px-2 py-1 rounded-full text-xs font-bold <?= $r['status'] === 'published' ? 'bg-emerald-100 text-emerald-700' : ($r['status'] === 'draft' ? 'bg-slate-100 text-slate-700' : 'bg-amber-100 text-amber-700') ?>">
+            <?= admin_e((string) $r['status']) ?>
+          </span>
+          <?php if ($hasFeaturedFlag): ?>
+            <?php if ((int) ($r['is_featured'] ?? 0) === 1): ?>
+              <span class="ml-1 px-2 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">Featured</span>
+            <?php endif; ?>
+          <?php endif; ?>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <form method="post" class="flex gap-2">
+            <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+            <input type="hidden" name="action" value="toggle_status">
+            <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+            <select name="status" class="rounded-lg border-slate-300 text-sm">
+              <?php foreach (['draft', 'published', 'archived'] as $s): ?>
+                <option value="<?= $s ?>" <?= $s === $r['status'] ? 'selected' : '' ?>><?= $s ?></option>
+              <?php endforeach; ?>
+            </select>
+            <button class="px-3 py-1.5 bg-blue-800 text-white rounded-lg font-semibold">Simpan</button>
+          </form>
+          <?php if ($hasPostTranslations && $hasLanguages): ?>
+            <button
+              type="button"
+              class="px-3 py-1.5 rounded-lg bg-slate-800 text-white font-semibold btn-edit-post"
+              data-id="<?= (int) $r['id'] ?>"
+              data-title="<?= admin_e((string) $r['title']) ?>"
+              data-slug="<?= admin_e((string) $r['slug']) ?>"
+              data-status="<?= admin_e((string) $r['status']) ?>"
+              data-category-id="<?= (int) ($r['category_id'] ?? 0) ?>"
+              data-featured-image="<?= admin_e((string) ($r['featured_image'] ?? '')) ?>"
+              data-image-filename="<?= admin_e((string) basename((string) ($r['featured_image'] ?? ''))) ?>"
+              data-sort-order="<?= admin_e((string) ($r['sort_order'] ?? '')) ?>"
+              data-is-featured="<?= (int) ($r['is_featured'] ?? 0) ?>"
+              data-author-display-name="<?= admin_e((string) ($r['author_display_name'] ?? '')) ?>"
+              data-excerpt="<?= admin_e((string) ($r['excerpt'] ?? '')) ?>"
+              data-content="<?= admin_e((string) ($r['content'] ?? '')) ?>"
+              data-seo-title="<?= admin_e((string) ($r['seo_title'] ?? '')) ?>"
+              data-seo-description="<?= admin_e((string) ($r['seo_description'] ?? '')) ?>"
+            >
+              Edit
+            </button>
+          <?php endif; ?>
+          <?php if ($canManageSortAndFeatured && $hasFeaturedFlag): ?>
+            <?php if ((int) ($r['is_featured'] ?? 0) === 1): ?>
+              <form method="post" class="inline">
+                <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                <input type="hidden" name="action" value="unset_featured">
+                <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                <button class="px-3 py-1.5 rounded-lg border border-amber-300 text-amber-700 font-semibold">Lepas Featured</button>
+              </form>
+            <?php else: ?>
+              <form method="post" class="inline">
+                <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                <input type="hidden" name="action" value="set_featured">
+                <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                <button class="px-3 py-1.5 rounded-lg border border-blue-300 text-blue-700 font-semibold">Jadikan Featured</button>
+              </form>
+            <?php endif; ?>
+          <?php endif; ?>
+        </div>
+      </div>
+    <?php endforeach; ?>
+    <?php if (!$rows): ?>
+      <div class="px-4 py-5 text-center text-slate-500 text-sm">Belum ada data posts.</div>
+    <?php endif; ?>
+  </div>
 </div>
 
 <?php if ($hasPostTranslations && $hasLanguages): ?>
-<script>
+	<script>
 document.addEventListener('DOMContentLoaded', function () {
+  const postFormCardEl = document.getElementById('postFormCard');
+  const openAddPostButtonEl = document.getElementById('openAddPostButton');
   const form = document.getElementById('postForm');
   const modeBadgeEl = document.getElementById('formModeBadge');
   const submitEl = document.getElementById('formSubmitButton');
@@ -629,6 +998,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const slugEl = document.getElementById('formSlug');
   const statusEl = document.getElementById('formStatus');
   const categoryEl = document.getElementById('formCategory');
+  const sortOrderEl = document.getElementById('formSortOrder');
+  const featuredFlagEl = document.getElementById('formIsFeatured');
   const featuredEl = document.getElementById('formFeaturedImage');
   const selectedFeaturedEl = document.getElementById('formSelectedFeaturedImage');
   const featuredUploadEl = document.getElementById('formFeaturedImageFile');
@@ -655,23 +1026,53 @@ document.addEventListener('DOMContentLoaded', function () {
     submitEl.textContent = 'Update Post';
   }
 
+  function showForm() {
+    postFormCardEl?.classList.remove('hidden');
+    if (openAddPostButtonEl) {
+      openAddPostButtonEl.textContent = 'Tutup Form Post';
+    }
+  }
+
+  function hideForm() {
+    postFormCardEl?.classList.add('hidden');
+    if (openAddPostButtonEl) {
+      openAddPostButtonEl.textContent = 'Buka Form Post';
+    }
+  }
+
   function resetForm() {
     form.reset();
     idEl.value = '0';
     if (selectedFeaturedEl) selectedFeaturedEl.value = '';
     if (featuredUploadEl) featuredUploadEl.value = '';
+    if (sortOrderEl) sortOrderEl.value = '';
+    if (featuredFlagEl) featuredFlagEl.checked = false;
     setAddMode();
   }
+
+  openAddPostButtonEl?.addEventListener('click', function () {
+    const isHidden = postFormCardEl?.classList.contains('hidden');
+    if (isHidden) {
+      resetForm();
+      showForm();
+      postFormCardEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      hideForm();
+    }
+  });
 
   resetEl?.addEventListener('click', resetForm);
 
   document.querySelectorAll('.btn-edit-post').forEach((btn) => {
     btn.addEventListener('click', function () {
+      showForm();
       idEl.value = this.dataset.id || '0';
       titleEl.value = this.dataset.title || '';
       slugEl.value = this.dataset.slug || '';
       statusEl.value = this.dataset.status || 'draft';
       categoryEl.value = this.dataset.categoryId || '0';
+      if (sortOrderEl) sortOrderEl.value = this.dataset.sortOrder || '';
+      if (featuredFlagEl) featuredFlagEl.checked = (this.dataset.isFeatured || '0') === '1';
       featuredEl.value = this.dataset.featuredImage || '';
       if (imageFilenameEl) imageFilenameEl.value = this.dataset.imageFilename || '';
       if (selectedFeaturedEl) selectedFeaturedEl.value = '';
@@ -682,7 +1083,7 @@ document.addEventListener('DOMContentLoaded', function () {
       seoTitleEl.value = this.dataset.seoTitle || '';
       seoDescEl.value = this.dataset.seoDescription || '';
       setEditMode(this.dataset.id || '0');
-      form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      postFormCardEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
@@ -731,6 +1132,52 @@ document.addEventListener('DOMContentLoaded', function () {
     const path = selectedRepoImagePath();
     if (!path) return;
     insertAtCursor(contentEl, '\n<figure class="my-6"><img src="' + path + '" alt="" class="' + selectedImageSizeClass() + ' rounded-xl"><figcaption class="text-sm text-slate-500 mt-2">Caption gambar</figcaption></figure>\n');
+  });
+
+  const postsTableBodyEl = document.getElementById('postsTableBody');
+  const postsCardsEl = document.getElementById('postsCardsContainer');
+  document.querySelectorAll('.js-sort-order-form').forEach((sortForm) => {
+    sortForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"], button:not([type])');
+      if (btn) btn.disabled = true;
+      try {
+        const requestUrl = this.getAttribute('action') || window.location.href;
+        const resp = await fetch(requestUrl, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: new FormData(this),
+        });
+        const data = await resp.json();
+        if (!data || data.ok !== true || !Array.isArray(data.order_ids)) {
+          if (btn) btn.disabled = false;
+          return;
+        }
+        const applyOrder = (container) => {
+          if (!container) return;
+          const itemMap = new Map();
+          container.querySelectorAll('[data-post-id]').forEach((el) => {
+            itemMap.set(String(el.getAttribute('data-post-id') || ''), el);
+          });
+          data.order_ids.forEach((id, idx) => {
+            const key = String(id);
+            const item = itemMap.get(key);
+            if (!item) return;
+            container.appendChild(item);
+            const input = item.querySelector('input[name="sort_order"]');
+            if (input) input.value = String(idx + 1);
+          });
+        };
+        applyOrder(postsTableBodyEl);
+        applyOrder(postsCardsEl);
+      } catch (err) {
+        // Keep silent and fallback to current view without breaking other actions.
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
   });
 });
 </script>

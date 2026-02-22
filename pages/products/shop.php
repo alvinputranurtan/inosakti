@@ -30,7 +30,7 @@ $dbError = null;
 if ($db->connect_errno) {
     $dbError = 'Database tidak bisa diakses saat ini.';
 } else {
-    $db->set_charset('utf8mb4');
+    inosakti_init_db_connection($db);
 }
 
 function shop_table_exists(mysqli $db, string $name): bool
@@ -88,6 +88,7 @@ if ($dbError === null) {
     $hasProductCategories = shop_table_exists($db, 'product_categories');
     $hasCategoryId = shop_column_exists($db, 'products', 'category_id');
     $hasImagePath = shop_column_exists($db, 'products', 'image_path');
+    $hasFullDescription = shop_column_exists($db, 'products', 'full_description');
 
     if (!$hasProducts) {
         $dbError = 'Tabel products belum tersedia.';
@@ -125,12 +126,21 @@ if ($dbError === null) {
         $types = '';
 
         if ($filters['q'] !== '') {
-            $where[] = "(p.name LIKE ? OR p.description LIKE ? OR p.sku LIKE ?)";
+            if ($hasFullDescription) {
+                $where[] = "(p.name LIKE ? OR p.description LIKE ? OR p.full_description LIKE ? OR p.sku LIKE ?)";
+            } else {
+                $where[] = "(p.name LIKE ? OR p.description LIKE ? OR p.sku LIKE ?)";
+            }
             $kw = '%' . $filters['q'] . '%';
             $params[] = $kw;
             $params[] = $kw;
             $params[] = $kw;
-            $types .= 'sss';
+            if ($hasFullDescription) {
+                $params[] = $kw;
+                $types .= 'ssss';
+            } else {
+                $types .= 'sss';
+            }
         }
 
         if ($filters['category'] !== 'all' && $hasProductCategories && $hasCategoryId) {
@@ -167,7 +177,8 @@ if ($dbError === null) {
 
         $selectCategory = $hasProductCategories && $hasCategoryId ? "COALESCE(pc.name, 'Uncategorized') AS category_name, COALESCE(pc.slug, 'uncategorized') AS category_slug," : "'Uncategorized' AS category_name, 'uncategorized' AS category_slug,";
         $selectImage = $hasImagePath ? "p.image_path," : "NULL AS image_path,";
-        $dataSql = "SELECT p.id, p.sku, p.slug, p.name, p.description, p.price, p.stock, {$selectCategory} {$selectImage} p.created_at
+        $selectFullDescription = $hasFullDescription ? "COALESCE(p.full_description, '') AS full_description," : "'' AS full_description,";
+        $dataSql = "SELECT p.id, p.sku, p.slug, p.name, p.description, {$selectFullDescription} p.price, p.stock, {$selectCategory} {$selectImage} p.created_at
                     FROM products p" .
                    ($hasProductCategories && $hasCategoryId ? " LEFT JOIN product_categories pc ON pc.id = p.category_id" : "") .
                    " WHERE {$whereSql}
@@ -274,6 +285,10 @@ if ($dbError === null) {
           }
           $imageUrl = (string) $imageUrls[0];
           $shortDesc = trim((string) ($p['description'] ?? '')) !== '' ? (string) $p['description'] : 'Produk teknologi InoSakti.';
+          $fullDesc = trim((string) ($p['full_description'] ?? ''));
+          if ($fullDesc === '') {
+              $fullDesc = $shortDesc;
+          }
       ?>
       <article class="product-card group">
         <div class="relative aspect-square bg-white overflow-hidden border-b border-slate-100 dark:border-slate-700">
@@ -294,7 +309,8 @@ if ($dbError === null) {
               data-price="Rp<?= number_format((float) $p['price'], 0, ',', '.') ?>"
               data-stock="<?= (int) $p['stock'] ?>"
               data-category="<?= htmlspecialchars((string) $p['category_name']) ?>"
-              data-description="<?= htmlspecialchars($shortDesc) ?>"
+              data-short-description="<?= htmlspecialchars($shortDesc) ?>"
+              data-full-description="<?= htmlspecialchars($fullDesc) ?>"
               data-image="<?= htmlspecialchars($imageUrl) ?>"
               data-images="<?= htmlspecialchars((string) json_encode($imageUrls), ENT_QUOTES, 'UTF-8') ?>"
             >
@@ -343,7 +359,10 @@ if ($dbError === null) {
       <h4 class="font-extrabold text-xl" id="modalProductName"></h4>
       <div class="text-primary font-bold" id="modalProductPrice"></div>
       <div class="text-sm text-slate-500">Stok: <span id="modalProductStock"></span></div>
-      <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed" id="modalProductDesc"></p>
+      <div>
+        <div class="text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-1">Deskripsi Lengkap</div>
+        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line" id="modalProductFullDesc"></p>
+      </div>
     </div>
   </div>
 </div>
@@ -358,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const elPrice = document.getElementById('modalProductPrice');
   const elStock = document.getElementById('modalProductStock');
   const elCategory = document.getElementById('modalProductCategory');
-  const elDesc = document.getElementById('modalProductDesc');
+  const elFullDesc = document.getElementById('modalProductFullDesc');
   const elImage = document.getElementById('modalProductImage');
   const elThumbs = document.getElementById('modalProductThumbs');
 
@@ -387,7 +406,9 @@ document.addEventListener('DOMContentLoaded', function () {
       elPrice.textContent = this.dataset.price || '';
       elStock.textContent = this.dataset.stock || '0';
       elCategory.textContent = this.dataset.category || '';
-      elDesc.textContent = this.dataset.description || '';
+      const shortDesc = this.dataset.shortDescription || '';
+      const fullDesc = this.dataset.fullDescription || shortDesc;
+      elFullDesc.textContent = fullDesc;
       elImage.src = this.dataset.image || '';
       let images = [];
       try {

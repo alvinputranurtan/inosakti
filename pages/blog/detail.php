@@ -19,7 +19,7 @@ function blog_db_connect(): ?mysqli
     if ($db->connect_errno) {
         return null;
     }
-    $db->set_charset('utf8mb4');
+    inosakti_init_db_connection($db);
     return $db;
 }
 
@@ -91,6 +91,25 @@ function blog_prepare_content_html(string $html, string $basePath): string
     }, $html) ?? $html;
 }
 
+function blog_mark_view_once(int $postId, string $basePath = ''): bool
+{
+    if ($postId <= 0) {
+        return false;
+    }
+    $cookieName = 'blog_view_' . $postId;
+    if (isset($_COOKIE[$cookieName]) && $_COOKIE[$cookieName] === '1') {
+        return false;
+    }
+    setcookie($cookieName, '1', [
+        'expires' => time() + 1800, // 30 minutes cooldown per post per browser
+        'path' => $basePath !== '' ? $basePath : '/',
+        'secure' => (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    return true;
+}
+
 $slugInput = strtolower((string) ($_GET['slug'] ?? ''));
 $slug = preg_replace('/[^a-z0-9\-]/', '', $slugInput);
 
@@ -142,6 +161,18 @@ if (!$db) {
     if (!$article) {
         $errorMessage = 'Artikel tidak ditemukan.';
     } else {
+        if (blog_column_exists($db, 'posts', 'view_count')) {
+            $articleId = (int) ($article['id'] ?? 0);
+            if (blog_mark_view_once($articleId, (string) ($basePath ?? ''))) {
+                $viewStmt = $db->prepare("UPDATE posts SET view_count = view_count + 1 WHERE id = ?");
+                if ($viewStmt) {
+                    $viewStmt->bind_param('i', $articleId);
+                    $viewStmt->execute();
+                    $viewStmt->close();
+                }
+            }
+        }
+
         $relatedSql = "SELECT
                          pt.slug,
                          pt.title,
