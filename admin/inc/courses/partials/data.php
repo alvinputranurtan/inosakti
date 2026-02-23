@@ -68,6 +68,8 @@ $landingConfig = [
 $moduleRows = [];
 $selectedChapterId = 0;
 $selectedChapter = null;
+$selectedModuleLessonId = 0;
+$selectedModuleLesson = null;
 $editSections = [];
 $selectedEditSection = (string) ($_GET['edit_section'] ?? 'metadata');
 
@@ -148,7 +150,9 @@ if ($selectedCourseId > 0) {
         $stmt->close();
     }
 
-    $stmt = admin_db()->prepare("SELECT l.id, l.module_id, l.lesson_order, l.title, m.module_order
+    $hasLessonVariant = admin_table_has_column('course_lessons', 'lesson_variant');
+    $variantSelect = $hasLessonVariant ? "COALESCE(l.lesson_variant, '') AS lesson_variant," : "'' AS lesson_variant,";
+    $stmt = admin_db()->prepare("SELECT l.id, l.module_id, l.lesson_order, l.title, l.lesson_type, $variantSelect m.module_order
                                  FROM course_lessons l
                                  JOIN course_modules m ON m.id = l.module_id
                                  WHERE m.course_id = ?
@@ -161,8 +165,10 @@ if ($selectedCourseId > 0) {
     }
 
     $lessonsByModule = [];
+    $lessonsById = [];
     foreach ($lessonRows as $lr) {
         $mid = (int) ($lr['module_id'] ?? 0);
+        $lid = (int) ($lr['id'] ?? 0);
         if ($mid <= 0) {
             continue;
         }
@@ -170,6 +176,9 @@ if ($selectedCourseId > 0) {
             $lessonsByModule[$mid] = [];
         }
         $lessonsByModule[$mid][] = $lr;
+        if ($lid > 0) {
+            $lessonsById[$lid] = $lr;
+        }
     }
 
     $editSections[] = ['value' => 'metadata', 'label' => 'Metadata'];
@@ -208,6 +217,15 @@ if ($selectedCourseId > 0) {
             $selectedChapter = $moduleRows[0];
             $selectedChapterId = (int) ($selectedChapter['id'] ?? 0);
             $selectedEditSection = 'chapter:' . $selectedChapterId;
+        }
+    } elseif (strpos($selectedEditSection, 'module:') === 0) {
+        $selectedModuleLessonId = (int) substr($selectedEditSection, 7);
+        if ($selectedModuleLessonId > 0 && isset($lessonsById[$selectedModuleLessonId])) {
+            $selectedModuleLesson = $lessonsById[$selectedModuleLessonId];
+        } elseif ($lessonRows) {
+            $selectedModuleLesson = $lessonRows[0];
+            $selectedModuleLessonId = (int) ($selectedModuleLesson['id'] ?? 0);
+            $selectedEditSection = 'module:' . $selectedModuleLessonId;
         }
     }
 }

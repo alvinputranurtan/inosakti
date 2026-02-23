@@ -8,8 +8,8 @@
       <div class="p-5 bg-slate-50">
         <form method="post" enctype="multipart/form-data" class="grid lg:grid-cols-2 gap-3">
           <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
-          <input type="hidden" name="action" value="save_course_basic">
           <input type="hidden" name="id" value="<?= (int) ($editingCourse['id'] ?? 0) ?>">
+          <input type="hidden" name="course_id" value="<?= (int) ($editingCourse['id'] ?? 0) ?>">
           <div class="lg:col-span-2">
             <label class="block text-xs font-semibold mb-1">Bagian Yang Diedit</label>
             <select id="editSectionSelect" name="edit_section" class="w-full rounded-lg border-slate-300">
@@ -26,9 +26,22 @@
           <?php if ($selectedLevel === 'group'): ?>
             <?php $selectedLevel = 'custom'; ?>
           <?php endif; ?>
+          <?php $isChapter = strpos($selectedEditSection, 'chapter:') === 0; ?>
           <?php $isFrontCard = $selectedEditSection === 'front-card'; ?>
           <?php $isLanding = $selectedEditSection === 'landing'; ?>
-          <?php if ($isLanding): ?>
+          <?php if ($isChapter): ?>
+            <input type="hidden" name="action" value="save_chapter_basic">
+            <input type="hidden" name="chapter_id" value="<?= (int) ($selectedChapter['id'] ?? 0) ?>">
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nama Chapter</label>
+              <input type="text" name="chapter_title" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($selectedChapter['title'] ?? '')) ?>" required>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nomor Urut Chapter</label>
+              <input type="number" min="1" name="chapter_order" class="w-full rounded-lg border-slate-300" value="<?= (int) ($selectedChapter['module_order'] ?? 1) ?>" required>
+            </div>
+          <?php elseif ($isLanding): ?>
+            <input type="hidden" name="action" value="save_course_basic">
             <div class="lg:col-span-2">
               <label class="block text-xs font-semibold mb-1">Deskripsi Landing Page</label>
               <textarea name="landing_description" rows="4" class="w-full rounded-lg border-slate-300" placeholder="Deskripsi utama landing page kursus..."><?= admin_e((string) ($landingConfig['description'] ?? '')) ?></textarea>
@@ -63,6 +76,7 @@
             <input type="hidden" name="level_group" value="<?= admin_e((string) ($editingCourse['level'] ?? 'beginner')) ?>">
             <input type="hidden" name="level_group_custom" value="<?= admin_e((string) ($editingCourse['level_group_label'] ?? '')) ?>">
           <?php elseif ($isFrontCard): ?>
+            <input type="hidden" name="action" value="save_course_basic">
             <div class="lg:col-span-2">
               <label class="block text-xs font-semibold mb-1">Hero Image Front Card (URL)</label>
               <input type="text" name="featured_image" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($editingCourse['featured_image'] ?? '')) ?>" placeholder="/assets/uploads/courses/...">
@@ -96,6 +110,7 @@
             <input type="hidden" name="status" value="<?= admin_e($selectedStatus) ?>">
             <input type="hidden" name="slug" value="<?= admin_e((string) ($editingCourse['slug'] ?? '')) ?>">
           <?php else: ?>
+            <input type="hidden" name="action" value="save_course_basic">
             <div>
               <label class="block text-xs font-semibold mb-1">Judul</label>
               <input type="text" name="title" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($editingCourse['title'] ?? '')) ?>" required>
@@ -123,10 +138,57 @@
             <input type="hidden" name="level_group_custom" value="">
           <?php endif; ?>
           <div class="lg:col-span-2 flex gap-2">
-            <button class="px-4 py-2 rounded-lg bg-blue-800 text-white text-sm font-semibold">Simpan Kursus</button>
+            <button class="px-4 py-2 rounded-lg bg-blue-800 text-white text-sm font-semibold"><?= $isChapter ? 'Simpan Chapter' : 'Simpan Kursus' ?></button>
+            <?php if ($isChapter && (int) ($selectedChapter['id'] ?? 0) > 0): ?>
+              <button
+                type="button"
+                id="deleteChapterButton"
+                class="px-4 py-2 rounded-lg bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700"
+                data-chapter-title="<?= admin_e((string) ($selectedChapter['title'] ?? '')) ?>">
+                Hapus Chapter
+              </button>
+            <?php endif; ?>
             <a href="<?= admin_e(admin_url('/admin/courses')) ?>" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-white">Batal</a>
           </div>
         </form>
+        <?php if ($isChapter && (int) ($selectedChapter['id'] ?? 0) > 0): ?>
+          <div id="deleteChapterModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4">
+            <div class="w-full max-w-md rounded-2xl bg-white border border-slate-200 shadow-xl p-5">
+              <h4 class="text-base font-bold text-slate-900">Konfirmasi Hapus Chapter</h4>
+              <p id="deleteChapterMessage" class="mt-2 text-sm text-slate-600">apakah benar anda ingin menghapus chapter ini?</p>
+              <form method="post" class="mt-4 flex gap-2 justify-end">
+                <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+                <input type="hidden" name="action" value="delete_chapter_basic">
+                <input type="hidden" name="course_id" value="<?= (int) ($editingCourse['id'] ?? 0) ?>">
+                <input type="hidden" name="chapter_id" value="<?= (int) ($selectedChapter['id'] ?? 0) ?>">
+                <button type="button" id="cancelDeleteChapterButton" class="px-4 py-2 rounded-lg border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50">Batal</button>
+                <button class="px-4 py-2 rounded-lg bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700">Ya, Hapus</button>
+              </form>
+            </div>
+          </div>
+        <?php endif; ?>
+        <?php if ($isChapter): ?>
+          <div class="mt-6"></div>
+          <form method="post" class="rounded-xl border border-slate-200 bg-white p-4 grid lg:grid-cols-2 gap-3">
+            <input type="hidden" name="csrf_token" value="<?= admin_e(admin_csrf_token()) ?>">
+            <input type="hidden" name="action" value="add_chapter_basic">
+            <input type="hidden" name="course_id" value="<?= (int) ($editingCourse['id'] ?? 0) ?>">
+            <div class="lg:col-span-2">
+              <div class="font-semibold text-sm text-slate-700">Tambah Chapter Baru</div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nama Chapter Baru</label>
+              <input type="text" name="chapter_title_new" class="w-full rounded-lg border-slate-300" placeholder="Contoh: Chapter 7" required>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nomor Urut Chapter Baru</label>
+              <input type="number" min="1" name="chapter_order_new" class="w-full rounded-lg border-slate-300" value="<?= max(1, count($moduleRows) + 1) ?>" required>
+            </div>
+            <div class="lg:col-span-2">
+              <button class="px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-semibold">Tambah Chapter</button>
+            </div>
+          </form>
+        <?php endif; ?>
       </div>
     </div>
     <script>
@@ -143,6 +205,33 @@
         url.searchParams.set('mode', 'create');
         <?php endif; ?>
         window.location.href = url.toString();
+      });
+    })();
+    (() => {
+      const openButton = document.getElementById('deleteChapterButton');
+      const modal = document.getElementById('deleteChapterModal');
+      const cancelButton = document.getElementById('cancelDeleteChapterButton');
+      const message = document.getElementById('deleteChapterMessage');
+      if (!openButton || !modal || !cancelButton || !message) return;
+
+      openButton.addEventListener('click', () => {
+        const title = (openButton.getAttribute('data-chapter-title') || '').trim();
+        const suffix = title !== '' ? (' "' + title + '"') : '';
+        message.textContent = 'apakah benar anda ingin menghapus chapter' + suffix + '?';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      });
+
+      cancelButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
       });
     })();
     </script>
