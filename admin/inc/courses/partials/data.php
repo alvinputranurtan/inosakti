@@ -60,6 +60,14 @@ $selectedCourseId = (int) ($_GET['course_id'] ?? 0);
 $mode = (string) ($_GET['mode'] ?? '');
 $isCreateMode = $mode === 'create';
 $editingCourse = null;
+$landingConfig = [
+    'description' => '',
+    'hero_border_preset' => 'border-white',
+    'hero_bg_preset' => 'slate-cyan',
+];
+$moduleRows = [];
+$selectedChapterId = 0;
+$selectedChapter = null;
 $editSections = [];
 $selectedEditSection = (string) ($_GET['edit_section'] ?? 'metadata');
 
@@ -107,7 +115,27 @@ if ($selectedCourseId > 0) {
         }
     }
 
-    $moduleRows = [];
+    if (admin_table_exists('course_page_configs')) {
+        $stmt = admin_db()->prepare("SELECT description, layout_json
+                                     FROM course_page_configs
+                                     WHERE course_id = ? AND page_key = 'landing'
+                                     LIMIT 1");
+        if ($stmt) {
+            $stmt->bind_param('i', $selectedCourseId);
+            $stmt->execute();
+            $rowCfg = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+            if ($rowCfg) {
+                $landingConfig['description'] = (string) ($rowCfg['description'] ?? '');
+                $layout = json_decode((string) ($rowCfg['layout_json'] ?? ''), true);
+                if (is_array($layout)) {
+                    $landingConfig['hero_border_preset'] = (string) ($layout['hero_border_preset'] ?? $landingConfig['hero_border_preset']);
+                    $landingConfig['hero_bg_preset'] = (string) ($layout['hero_bg_preset'] ?? $landingConfig['hero_bg_preset']);
+                }
+            }
+        }
+    }
+
     $lessonRows = [];
     $stmt = admin_db()->prepare("SELECT id, module_order, title
                                  FROM course_modules
@@ -167,6 +195,21 @@ if ($selectedCourseId > 0) {
     }
     $editSections[] = ['value' => 'summary', 'label' => 'Summary'];
     $editSections[] = ['value' => 'certificate', 'label' => 'Certificate'];
+
+    if (strpos($selectedEditSection, 'chapter:') === 0) {
+        $selectedChapterId = (int) substr($selectedEditSection, 8);
+        foreach ($moduleRows as $m) {
+            if ((int) ($m['id'] ?? 0) === $selectedChapterId) {
+                $selectedChapter = $m;
+                break;
+            }
+        }
+        if (!$selectedChapter && $moduleRows) {
+            $selectedChapter = $moduleRows[0];
+            $selectedChapterId = (int) ($selectedChapter['id'] ?? 0);
+            $selectedEditSection = 'chapter:' . $selectedChapterId;
+        }
+    }
 }
 
 if (!$editSections) {

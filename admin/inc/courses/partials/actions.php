@@ -75,6 +75,9 @@ $action = (string) ($_POST['action'] ?? 'status_update');
 if ($action === 'save_course_basic') {
     $id = (int) ($_POST['id'] ?? 0);
     $editSection = (string) ($_POST['edit_section'] ?? 'metadata');
+    $heroBorderPreset = (string) ($_POST['hero_border_preset'] ?? 'border-white');
+    $heroBgPreset = (string) ($_POST['hero_bg_preset'] ?? 'slate-cyan');
+    $landingDescription = trim((string) ($_POST['landing_description'] ?? ''));
     $title = trim((string) ($_POST['title'] ?? ''));
     $slugInput = trim((string) ($_POST['slug'] ?? ''));
     $slug = courses_slugify($slugInput !== '' ? $slugInput : $title);
@@ -103,6 +106,64 @@ if ($action === 'save_course_basic') {
     if (!in_array($status, $allowed, true)) {
         admin_set_flash('error', 'Status tidak valid.');
         header('Location: ' . admin_url('/admin/courses' . ($id > 0 ? '?course_id=' . $id . '&edit_section=' . urlencode($editSection) : '?mode=create&edit_section=' . urlencode($editSection))));
+        exit;
+    }
+
+    if ($editSection === 'landing') {
+        if ($id <= 0) {
+            admin_set_flash('error', 'Simpan metadata kursus dulu sebelum mengatur landing page.');
+            header('Location: ' . admin_url('/admin/courses?mode=create&edit_section=metadata'));
+            exit;
+        }
+        if (!admin_table_exists('course_page_configs')) {
+            admin_set_flash('error', 'Tabel course_page_configs belum tersedia. Jalankan migration 019.');
+            header('Location: ' . admin_url('/admin/courses?course_id=' . $id . '&edit_section=landing'));
+            exit;
+        }
+        $borderAllowed = ['border-white', 'border-cyan', 'border-amber', 'border-emerald'];
+        $bgAllowed = ['slate-cyan', 'indigo-blue', 'emerald-teal', 'amber-rose'];
+        $heroBorderPreset = in_array($heroBorderPreset, $borderAllowed, true) ? $heroBorderPreset : 'border-white';
+        $heroBgPreset = in_array($heroBgPreset, $bgAllowed, true) ? $heroBgPreset : 'slate-cyan';
+        $layoutJson = json_encode([
+            'hero_border_preset' => $heroBorderPreset,
+            'hero_bg_preset' => $heroBgPreset,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        $stmt = admin_db()->prepare("SELECT id, title, subtitle, content_html
+                                     FROM course_page_configs
+                                     WHERE course_id = ? AND page_key = 'landing'
+                                     LIMIT 1");
+        $existing = null;
+        if ($stmt) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $existing = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+        }
+
+        if ($existing) {
+            $up = admin_db()->prepare("UPDATE course_page_configs
+                                       SET description = ?, layout_json = ?, updated_at = NOW()
+                                       WHERE id = ?");
+            if ($up) {
+                $cfgId = (int) ($existing['id'] ?? 0);
+                $up->bind_param('ssi', $landingDescription, $layoutJson, $cfgId);
+                $up->execute();
+                $up->close();
+            }
+        } else {
+            $ins = admin_db()->prepare("INSERT INTO course_page_configs
+                    (course_id, page_key, title, subtitle, description, content_html, layout_json, created_at, updated_at)
+                    VALUES (?, 'landing', NULL, NULL, ?, NULL, ?, NOW(), NOW())");
+            if ($ins) {
+                $ins->bind_param('iss', $id, $landingDescription, $layoutJson);
+                $ins->execute();
+                $ins->close();
+            }
+        }
+
+        admin_set_flash('success', 'Landing page berhasil diperbarui.');
+        header('Location: ' . admin_url('/admin/courses?course_id=' . $id . '&edit_section=landing'));
         exit;
     }
 

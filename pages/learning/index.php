@@ -58,6 +58,7 @@ include __DIR__.'/../../inc/header.php';
           </div>
           <div class="p-5 flex-1 flex flex-col">
             <h3 class="font-bold text-slate-900 dark:text-white mb-2"><?php echo htmlspecialchars((string) $course['title']); ?></h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Instructor: <?php echo htmlspecialchars((string) ($course['instructor_name'] ?? 'InoSakti Learning')); ?></p>
             <p class="text-sm text-slate-500 dark:text-slate-400 mb-4"><?php echo htmlspecialchars((string) $course['short_description']); ?></p>
             <div class="mt-auto flex items-center justify-between gap-3">
               <div class="text-lg font-bold text-slate-900 dark:text-white">

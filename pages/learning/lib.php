@@ -86,9 +86,11 @@ function learning_fetch_published_courses(int $limit = 12): array
     $sql = "SELECT c.id, c.level, c.price, c.featured_image, c.status,
                    COALESCE(ct.slug, CONCAT('course-', c.id)) AS slug,
                    COALESCE(ct.title, CONCAT('Course #', c.id)) AS title,
-                   COALESCE(ct.short_description, '') AS short_description
+                   COALESCE(ct.short_description, '') AS short_description,
+                   COALESCE(i.display_name, 'InoSakti Learning') AS instructor_name
             FROM courses c
             LEFT JOIN course_translations ct ON ct.course_id = c.id" . ($langId ? " AND ct.language_id = " . $langId : '') . "
+            LEFT JOIN instructors i ON i.id = c.instructor_id
             WHERE c.deleted_at IS NULL AND c.status = 'published'
             ORDER BY c.published_at DESC, c.id DESC
             LIMIT " . max(1, $limit);
@@ -118,9 +120,11 @@ function learning_fetch_course_by_slug(string $slug): ?array
                    COALESCE(ct.slug, CONCAT('course-', c.id)) AS slug,
                    COALESCE(ct.title, CONCAT('Course #', c.id)) AS title,
                    COALESCE(ct.short_description, '') AS short_description,
-                   COALESCE(ct.full_description, '') AS full_description
+                   COALESCE(ct.full_description, '') AS full_description,
+                   COALESCE(i.display_name, 'InoSakti Learning') AS instructor_name
             FROM courses c
             LEFT JOIN course_translations ct ON ct.course_id = c.id" . ($langId ? " AND ct.language_id = " . $langId : '') . "
+            LEFT JOIN instructors i ON i.id = c.instructor_id
             WHERE c.deleted_at IS NULL AND ct.slug = ?
             LIMIT 1";
     $stmt = $db->prepare($sql);

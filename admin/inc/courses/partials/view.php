@@ -27,7 +27,42 @@
             <?php $selectedLevel = 'custom'; ?>
           <?php endif; ?>
           <?php $isFrontCard = $selectedEditSection === 'front-card'; ?>
-          <?php if ($isFrontCard): ?>
+          <?php $isLanding = $selectedEditSection === 'landing'; ?>
+          <?php if ($isLanding): ?>
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold mb-1">Deskripsi Landing Page</label>
+              <textarea name="landing_description" rows="4" class="w-full rounded-lg border-slate-300" placeholder="Deskripsi utama landing page kursus..."><?= admin_e((string) ($landingConfig['description'] ?? '')) ?></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Warna Border Hero Image</label>
+              <?php $heroBorderPreset = (string) ($landingConfig['hero_border_preset'] ?? 'border-white'); ?>
+              <select name="hero_border_preset" class="w-full rounded-lg border-slate-300">
+                <option value="border-white" <?= $heroBorderPreset === 'border-white' ? 'selected' : '' ?>>Putih</option>
+                <option value="border-cyan" <?= $heroBorderPreset === 'border-cyan' ? 'selected' : '' ?>>Cyan</option>
+                <option value="border-amber" <?= $heroBorderPreset === 'border-amber' ? 'selected' : '' ?>>Amber</option>
+                <option value="border-emerald" <?= $heroBorderPreset === 'border-emerald' ? 'selected' : '' ?>>Emerald</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Warna Background Hero Section</label>
+              <?php $heroBgPreset = (string) ($landingConfig['hero_bg_preset'] ?? 'slate-cyan'); ?>
+              <select name="hero_bg_preset" class="w-full rounded-lg border-slate-300">
+                <option value="slate-cyan" <?= $heroBgPreset === 'slate-cyan' ? 'selected' : '' ?>>Slate + Cyan</option>
+                <option value="indigo-blue" <?= $heroBgPreset === 'indigo-blue' ? 'selected' : '' ?>>Indigo + Blue</option>
+                <option value="emerald-teal" <?= $heroBgPreset === 'emerald-teal' ? 'selected' : '' ?>>Emerald + Teal</option>
+                <option value="amber-rose" <?= $heroBgPreset === 'amber-rose' ? 'selected' : '' ?>>Amber + Rose</option>
+              </select>
+            </div>
+            <input type="hidden" name="title" value="<?= admin_e((string) ($editingCourse['title'] ?? '')) ?>">
+            <input type="hidden" name="slug" value="<?= admin_e((string) ($editingCourse['slug'] ?? '')) ?>">
+            <input type="hidden" name="price" value="<?= admin_e((string) ($editingCourse['price'] ?? '0')) ?>">
+            <input type="hidden" name="status" value="<?= admin_e($selectedStatus) ?>">
+            <input type="hidden" name="featured_image" value="<?= admin_e((string) ($editingCourse['featured_image'] ?? '')) ?>">
+            <input type="hidden" name="short_description" value="<?= admin_e((string) ($editingCourse['short_description'] ?? '')) ?>">
+            <input type="hidden" name="author_name" value="<?= admin_e((string) ($editingCourse['author_name'] ?? '')) ?>">
+            <input type="hidden" name="level_group" value="<?= admin_e((string) ($editingCourse['level'] ?? 'beginner')) ?>">
+            <input type="hidden" name="level_group_custom" value="<?= admin_e((string) ($editingCourse['level_group_label'] ?? '')) ?>">
+          <?php elseif ($isFrontCard): ?>
             <div class="lg:col-span-2">
               <label class="block text-xs font-semibold mb-1">Hero Image Front Card (URL)</label>
               <input type="text" name="featured_image" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($editingCourse['featured_image'] ?? '')) ?>" placeholder="/assets/uploads/courses/...">
