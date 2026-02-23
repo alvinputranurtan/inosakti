@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/inc/layout.php';
 admin_require_login();
+admin_require_admin_panel_access();
 
 if (!admin_table_exists('posts')) {
     admin_set_flash('error', 'Tabel posts belum tersedia.');

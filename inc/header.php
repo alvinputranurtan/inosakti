@@ -28,8 +28,8 @@ if ($isLoggedIn) {
         $panelHref = $basePath . '/pages/learning';
         $panelText = 'Lanjutkan Belajar';
     } elseif (in_array('instructor', $roleCodes, true)) {
-        $panelHref = $basePath . '/pages/learning';
-        $panelText = 'Masuk Instructor Panel';
+        $panelHref = $basePath . '/admin/courses';
+        $panelText = 'Kelola Kursus';
     } elseif (in_array('employee', $roleCodes, true)) {
         $panelHref = $basePath . '/portal';
         $panelText = 'Masuk Employee Panel';

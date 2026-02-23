@@ -5,7 +5,7 @@ require_once __DIR__ . '/bootstrap.php';
 
 function admin_nav_items(): array
 {
-    return [
+    $items = [
         'dashboard' => ['label' => 'Dashboard', 'icon' => 'dashboard', 'href' => admin_url('/admin/')],
         'posts' => ['label' => 'Blog Posts', 'icon' => 'article', 'href' => admin_url('/admin/posts')],
         'courses' => ['label' => 'Kursus', 'icon' => 'menu_book', 'href' => admin_url('/admin/courses')],
@@ -13,6 +13,14 @@ function admin_nav_items(): array
         'orders' => ['label' => 'Order', 'icon' => 'storefront', 'href' => admin_url('/admin/orders')],
         'users' => ['label' => 'Pengguna', 'icon' => 'group', 'href' => admin_url('/admin/users')],
     ];
+
+    if (admin_can_access_admin_panel()) {
+        return $items;
+    }
+    if (admin_can_manage_courses()) {
+        return ['courses' => $items['courses']];
+    }
+    return [];
 }
 
 function admin_render_start(string $title, string $active): void

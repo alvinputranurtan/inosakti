@@ -2,6 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/inc/layout.php';
 admin_require_login();
+admin_require_admin_panel_access();
 
 $productImageDirRel = 'assets/content/shop/images';
 $productImageDirAbs = dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $productImageDirRel);

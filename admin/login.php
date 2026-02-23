@@ -20,11 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Email dan password wajib diisi.';
         } elseif (!admin_attempt_login($email, $password)) {
             $error = 'Login gagal. Cek kredensial atau status akun.';
-        } elseif (!admin_can_access_admin_panel()) {
+        } elseif (!admin_can_login_admin_area()) {
             admin_logout();
             $error = 'Akun ini tidak punya akses ke Admin Panel.';
         } else {
-            header('Location: ' . admin_url('/admin/'));
+            header('Location: ' . admin_default_home_for_current_user());
             exit;
         }
     }
