@@ -4,6 +4,11 @@ RewriteEngine On
     Require all denied
 </Files>
 
+# Ensure uploaded videos are served inline as playable media, not forced downloads.
+AddType video/mp4 .mp4
+AddType video/webm .webm
+AddType video/ogg .ogg
+
 # Universal rules for localhost subfolder and production root.
 # Avoid RewriteBase so this file works in both environments.
 

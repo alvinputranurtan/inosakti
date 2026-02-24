@@ -70,6 +70,8 @@ $selectedChapterId = 0;
 $selectedChapter = null;
 $selectedModuleLessonId = 0;
 $selectedModuleLesson = null;
+$videoDirectoryFiles = [];
+$selectedModuleVideoFile = '';
 $editSections = [];
 $selectedEditSection = (string) ($_GET['edit_section'] ?? 'metadata');
 
@@ -152,7 +154,7 @@ if ($selectedCourseId > 0) {
 
     $hasLessonVariant = admin_table_has_column('course_lessons', 'lesson_variant');
     $variantSelect = $hasLessonVariant ? "COALESCE(l.lesson_variant, '') AS lesson_variant," : "'' AS lesson_variant,";
-    $stmt = admin_db()->prepare("SELECT l.id, l.module_id, l.lesson_order, l.title, l.lesson_type, $variantSelect m.module_order
+    $stmt = admin_db()->prepare("SELECT l.id, l.module_id, l.lesson_order, l.title, l.lesson_type, $variantSelect l.content_url, l.content_body, l.duration_seconds, l.is_preview, m.module_order
                                  FROM course_lessons l
                                  JOIN course_modules m ON m.id = l.module_id
                                  WHERE m.course_id = ?
@@ -227,6 +229,32 @@ if ($selectedCourseId > 0) {
             $selectedModuleLessonId = (int) ($selectedModuleLesson['id'] ?? 0);
             $selectedEditSection = 'module:' . $selectedModuleLessonId;
         }
+    }
+}
+
+$videoDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/videos';
+if (is_dir($videoDirFs)) {
+    $allFiles = @scandir($videoDirFs);
+    if (is_array($allFiles)) {
+        foreach ($allFiles as $f) {
+            if (!is_string($f) || $f === '.' || $f === '..') {
+                continue;
+            }
+            $ext = strtolower((string) pathinfo($f, PATHINFO_EXTENSION));
+            if (!in_array($ext, ['mp4', 'webm', 'ogg'], true)) {
+                continue;
+            }
+            $videoDirectoryFiles[] = $f;
+        }
+        natcasesort($videoDirectoryFiles);
+        $videoDirectoryFiles = array_values($videoDirectoryFiles);
+    }
+}
+
+if (is_array($selectedModuleLesson)) {
+    $currentVideoUrl = trim((string) ($selectedModuleLesson['content_url'] ?? ''));
+    if ($currentVideoUrl !== '') {
+        $selectedModuleVideoFile = basename(parse_url($currentVideoUrl, PHP_URL_PATH) ?: $currentVideoUrl);
     }
 }
 

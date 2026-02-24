@@ -369,12 +369,15 @@ include __DIR__.'/../../../inc/header.php';
         </div>
 	      </aside>
 	      <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-	        <div id="videoPanel" class="aspect-video bg-slate-900 relative <?php echo $initialType === 'video' ? '' : 'hidden'; ?>">
-	          <img id="videoPoster" class="w-full h-full object-cover opacity-40" src="<?php echo htmlspecialchars($courseImage); ?>" alt="Video"/>
-	          <div id="videoEmbedWrap" class="absolute inset-0 hidden">
-	            <iframe
-	              id="videoFrame"
-	              class="w-full h-full"
+		        <div id="videoPanel" class="aspect-video bg-slate-900 relative <?php echo $initialType === 'video' ? '' : 'hidden'; ?>">
+		          <img id="videoPoster" class="w-full h-full object-cover opacity-40" src="<?php echo htmlspecialchars($courseImage); ?>" alt="Video"/>
+		          <div id="videoNativeWrap" class="absolute inset-0 hidden">
+		            <video id="videoNative" class="w-full h-full" controls playsinline preload="metadata"></video>
+		          </div>
+		          <div id="videoEmbedWrap" class="absolute inset-0 hidden">
+		            <iframe
+		              id="videoFrame"
+		              class="w-full h-full"
 	              src=""
 	              title="Course Video"
 	              loading="lazy"
@@ -407,7 +410,15 @@ include __DIR__.'/../../../inc/header.php';
 	              <p id="lessonModule" class="text-sm text-slate-500 mt-1">
 	                Modul <?php echo (int) ($activeLesson['module_order'] ?? 0); ?> - <?php echo htmlspecialchars((string) ($activeLesson['module_title'] ?? '')); ?>
 	              </p>
-	              <p id="lessonBody" class="text-slate-600 text-sm mt-3 leading-6"><?php echo htmlspecialchars((string) ($activeLesson['content_body'] ?? 'Pilih lesson dari sidebar untuk mulai belajar.')); ?></p>
+	              <div id="lessonBody" class="text-slate-600 text-sm mt-3 leading-6 prose prose-sm max-w-none"><?php
+                  $initialLessonType = strtolower((string) ($activeLesson['lesson_type'] ?? ''));
+                  $initialLessonBody = (string) ($activeLesson['content_body'] ?? 'Pilih lesson dari sidebar untuk mulai belajar.');
+                  if ($initialLessonType === 'article') {
+                      echo $initialLessonBody;
+                  } else {
+                      echo htmlspecialchars($initialLessonBody);
+                  }
+                ?></div>
                 <div id="quizPanel" class="hidden mt-4 rounded-xl border border-slate-200 p-4">
                   <div class="text-sm font-semibold mb-1"><?php echo htmlspecialchars((string) ($quizAssessment['title'] ?? 'Quiz')); ?></div>
                   <p id="quizInstruction" class="text-xs text-slate-500 mb-3"><?php echo htmlspecialchars((string) ($quizAssessment['instruction_text'] ?? '')); ?></p>
@@ -499,11 +510,13 @@ include __DIR__.'/../../../inc/header.php';
   const quizPrevBtn = document.getElementById('quizPrevBtn');
   const quizNextBtn = document.getElementById('quizNextBtn');
   const videoPanel = document.getElementById('videoPanel');
-  const videoPoster = document.getElementById('videoPoster');
-  const videoEmbedWrap = document.getElementById('videoEmbedWrap');
-  const videoFrame = document.getElementById('videoFrame');
-  const videoPlayOverlay = document.getElementById('videoPlayOverlay');
-  const videoPlayBtn = document.getElementById('videoPlayBtn');
+	  const videoPoster = document.getElementById('videoPoster');
+	  const videoNativeWrap = document.getElementById('videoNativeWrap');
+	  const videoNative = document.getElementById('videoNative');
+	  const videoEmbedWrap = document.getElementById('videoEmbedWrap');
+	  const videoFrame = document.getElementById('videoFrame');
+	  const videoPlayOverlay = document.getElementById('videoPlayOverlay');
+	  const videoPlayBtn = document.getElementById('videoPlayBtn');
   let quizCursor = 0;
   const quizAnswers = {};
   const gaugeCirc = 2 * Math.PI * 48;
@@ -607,9 +620,15 @@ include __DIR__.'/../../../inc/header.php';
     }
   }
 
-  function lessonIndexById(lessonId) {
-    return lessons.findIndex((l) => Number(l.id) === Number(lessonId));
-  }
+	  function lessonIndexById(lessonId) {
+	    return lessons.findIndex((l) => Number(l.id) === Number(lessonId));
+	  }
+
+	  function isDirectVideoUrl(url) {
+	    const value = String(url || '').trim().toLowerCase();
+	    if (value === '') return false;
+	    return /\.(mp4|webm|ogg)(\?.*)?$/.test(value);
+	  }
 
   function setActiveButton(lessonId) {
     document.querySelectorAll('[data-lesson-id]').forEach((btn) => {
@@ -678,7 +697,12 @@ include __DIR__.'/../../../inc/header.php';
 
     titleEl.textContent = lesson.title || 'Lesson';
     moduleEl.textContent = 'Modul ' + lesson.module_order + ' - ' + lesson.module_title;
-    bodyEl.textContent = lesson.content_body || 'Belum ada deskripsi lesson.';
+    const lessonBody = lesson.content_body || 'Belum ada deskripsi lesson.';
+    if ((lesson.lesson_type || '').toLowerCase() === 'article') {
+      bodyEl.innerHTML = lessonBody;
+    } else {
+      bodyEl.textContent = lessonBody;
+    }
     badgeType.textContent = (lesson.lesson_type || 'video').toUpperCase();
     badgeDuration.textContent = lesson.duration_label || '-';
     badgePreview.classList.toggle('hidden', !lesson.is_preview);
@@ -693,22 +717,39 @@ include __DIR__.'/../../../inc/header.php';
     if (isQuiz) {
       resetQuiz();
     }
-    if (isVideo) {
-      videoPoster.src = <?php echo json_encode($courseImage, JSON_UNESCAPED_SLASHES); ?>;
-      if (videoUrl !== '') {
-        videoFrame.src = videoUrl;
-        videoEmbedWrap.classList.remove('hidden');
-        videoPlayOverlay.classList.add('hidden');
-      } else {
-        videoFrame.src = '';
-        videoEmbedWrap.classList.add('hidden');
-        videoPlayOverlay.classList.remove('hidden');
-      }
-    } else {
-      videoFrame.src = '';
-      videoEmbedWrap.classList.add('hidden');
-      videoPlayOverlay.classList.add('hidden');
-    }
+	    if (isVideo) {
+	      videoPoster.src = <?php echo json_encode($courseImage, JSON_UNESCAPED_SLASHES); ?>;
+	      if (videoUrl !== '') {
+	        const directVideo = isDirectVideoUrl(videoUrl);
+	        if (directVideo) {
+	          if (videoNative) {
+	            videoNative.src = videoUrl;
+	            videoNative.load();
+	          }
+	          videoNativeWrap?.classList.remove('hidden');
+	          videoEmbedWrap.classList.add('hidden');
+	          videoFrame.src = '';
+	        } else {
+	          videoFrame.src = videoUrl;
+	          videoEmbedWrap.classList.remove('hidden');
+	          videoNativeWrap?.classList.add('hidden');
+	          if (videoNative) videoNative.src = '';
+	        }
+	        videoPlayOverlay.classList.add('hidden');
+	      } else {
+	        videoFrame.src = '';
+	        videoEmbedWrap.classList.add('hidden');
+	        videoNativeWrap?.classList.add('hidden');
+	        if (videoNative) videoNative.src = '';
+	        videoPlayOverlay.classList.remove('hidden');
+	      }
+	    } else {
+	      videoFrame.src = '';
+	      videoEmbedWrap.classList.add('hidden');
+	      videoNativeWrap?.classList.add('hidden');
+	      if (videoNative) videoNative.src = '';
+	      videoPlayOverlay.classList.add('hidden');
+	    }
 
     setActiveButton(lesson.id);
     openModule(lesson.module_id);
@@ -765,18 +806,31 @@ include __DIR__.'/../../../inc/header.php';
     doneBtn.textContent = 'Completed';
   });
 
-  if (videoPlayBtn) {
-    videoPlayBtn.addEventListener('click', () => {
-      const idx = lessonIndexById(currentLessonId);
-      if (idx < 0) return;
-      const lesson = lessons[idx];
-      const videoUrl = (lesson.content_url || '').trim();
-      if (videoUrl === '') return;
-      videoFrame.src = videoUrl;
-      videoEmbedWrap.classList.remove('hidden');
-      videoPlayOverlay.classList.add('hidden');
-    });
-  }
+	  if (videoPlayBtn) {
+	    videoPlayBtn.addEventListener('click', () => {
+	      const idx = lessonIndexById(currentLessonId);
+	      if (idx < 0) return;
+	      const lesson = lessons[idx];
+	      const videoUrl = (lesson.content_url || '').trim();
+	      if (videoUrl === '') return;
+	      if (isDirectVideoUrl(videoUrl)) {
+	        if (videoNative) {
+	          videoNative.src = videoUrl;
+	          videoNative.load();
+	          videoNative.play().catch(() => {});
+	        }
+	        videoNativeWrap?.classList.remove('hidden');
+	        videoFrame.src = '';
+	        videoEmbedWrap.classList.add('hidden');
+	      } else {
+	        videoFrame.src = videoUrl;
+	        videoEmbedWrap.classList.remove('hidden');
+	        videoNativeWrap?.classList.add('hidden');
+	        if (videoNative) videoNative.src = '';
+	      }
+	      videoPlayOverlay.classList.add('hidden');
+	    });
+	  }
 
   if (quizPrevBtn) {
     quizPrevBtn.addEventListener('click', () => {
