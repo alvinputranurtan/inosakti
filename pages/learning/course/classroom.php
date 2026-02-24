@@ -305,6 +305,7 @@ $courseImage = (string) ($course['featured_image'] ?? 'https://images.unsplash.c
 $initialType = (string) ($activeLesson['lesson_type'] ?? 'video');
 $initialVideoUrl = (string) ($activeLesson['content_url'] ?? '');
 $appBasePath = rtrim((string) ($basePath ?? ''), '/');
+$mediaPublicBaseUrl = rtrim((string) inosakti_env_value('MEDIA_PUBLIC_BASE_URL', ''), '/');
 $lessonJson = json_encode($lessonList, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 if (!is_string($lessonJson)) {
     $lessonJson = '[]';
@@ -492,6 +493,7 @@ include __DIR__.'/../../../inc/header.php';
   const quizQuestions = <?php echo $quizJson; ?>;
   const initialDbProgress = <?php echo json_encode($initialProgressMap, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?> || {};
   const appBasePath = <?php echo json_encode($appBasePath, JSON_UNESCAPED_SLASHES); ?>;
+  const mediaPublicBaseUrl = <?php echo json_encode($mediaPublicBaseUrl, JSON_UNESCAPED_SLASHES); ?>;
   if (!Array.isArray(lessons) || lessons.length === 0) return;
 
   const slug = <?php echo json_encode($courseSlug, JSON_UNESCAPED_SLASHES); ?>;
@@ -657,9 +659,22 @@ include __DIR__.'/../../../inc/header.php';
     try {
       const input = String(rawUrl || '').trim();
       if (input === '') return '';
+      if (appBasePath && input.startsWith(appBasePath + '/assets/')) {
+        const trimmed = input.slice(appBasePath.length);
+        return new URL(trimmed, window.location.origin).toString();
+      }
+      if (/^\/assets\//i.test(input) && mediaPublicBaseUrl) {
+        return new URL(input.replace(/^\/+/, ''), mediaPublicBaseUrl.replace(/\/+$/, '') + '/').toString();
+      }
       const parsed = new URL(input, window.location.origin);
+      if (appBasePath && parsed.pathname.startsWith(appBasePath + '/assets/')) {
+        parsed.pathname = parsed.pathname.slice(appBasePath.length);
+      }
       const host = String(parsed.hostname || '').toLowerCase();
       const isLocalHost = host === 'localhost' || host === '127.0.0.1' || host === '::1';
+      if (isLocalHost && /^\/assets\//i.test(parsed.pathname) && mediaPublicBaseUrl) {
+        return new URL(parsed.pathname.replace(/^\/+/, ''), mediaPublicBaseUrl.replace(/\/+$/, '') + '/').toString();
+      }
       if (isLocalHost && appBasePath && parsed.pathname.startsWith('/assets/') && !parsed.pathname.startsWith(appBasePath + '/')) {
         parsed.pathname = appBasePath + parsed.pathname;
       }

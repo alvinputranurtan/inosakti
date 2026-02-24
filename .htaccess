@@ -8,6 +8,12 @@ RewriteEngine On
 AddType video/mp4 .mp4
 AddType video/webm .webm
 AddType video/ogg .ogg
+AddType application/pdf .pdf
+
+# Prefer inline rendering for PDF previews in browser.
+<FilesMatch "\.pdf$">
+    Header set Content-Disposition "inline"
+</FilesMatch>
 
 # Universal rules for localhost subfolder and production root.
 # Avoid RewriteBase so this file works in both environments.

@@ -116,6 +116,11 @@
                 <?php $previewPptUrl = trim((string) ($selectedModuleLesson['content_url'] ?? '')); ?>
                 <?php if ($previewPptUrl !== ''): ?>
                   <?php
+                    $mediaPublicBaseUrl = rtrim((string) inosakti_env_value('MEDIA_PUBLIC_BASE_URL', ''), '/');
+                    $previewPptUrlView = $previewPptUrl;
+                    if ($mediaPublicBaseUrl !== '' && str_starts_with($previewPptUrlView, '/assets/')) {
+                        $previewPptUrlView = $mediaPublicBaseUrl . '/' . ltrim($previewPptUrlView, '/');
+                    }
                     $previewPath = (string) (parse_url($previewPptUrl, PHP_URL_PATH) ?? $previewPptUrl);
                     $previewName = basename($previewPath !== '' ? $previewPath : $previewPptUrl);
                     $previewExt = strtolower((string) pathinfo($previewPath, PATHINFO_EXTENSION));
@@ -126,7 +131,7 @@
                     <?php if ($isPdf): ?>
                       <div class="mt-3 aspect-video rounded-lg overflow-hidden border border-slate-200 bg-white">
                         <iframe
-                          src="<?= admin_e($previewPptUrl) ?>#view=FitH"
+                          src="<?= admin_e($previewPptUrlView) ?>#view=FitH"
                           class="w-full h-full"
                           title="PDF Preview"
                           loading="lazy"
@@ -137,7 +142,7 @@
                         File non-PDF tidak dipreview langsung. Konversi ke PDF untuk preview stabil.
                       </div>
                     <?php endif; ?>
-                    <a class="mt-2 inline-flex items-center px-3 py-2 rounded-lg bg-blue-800 text-white text-xs font-semibold hover:bg-blue-900" href="<?= admin_e($previewPptUrl) ?>" target="_blank" rel="noopener">Buka File</a>
+                    <a class="mt-2 inline-flex items-center px-3 py-2 rounded-lg bg-blue-800 text-white text-xs font-semibold hover:bg-blue-900" href="<?= admin_e($previewPptUrlView) ?>" target="_blank" rel="noopener">Buka File</a>
                   </div>
                 <?php else: ?>
                   <div class="rounded-lg border border-slate-200 bg-slate-100 text-slate-500 text-sm p-4">Belum ada file presentasi/PDF untuk dipreview.</div>

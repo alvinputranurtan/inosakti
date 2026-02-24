@@ -234,7 +234,7 @@ if ($selectedCourseId > 0) {
     }
 }
 
-$videoDirFs = dirname(__DIR__, 5) . '/assets/uploads/courses/videos';
+$videoDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/videos';
 if (is_dir($videoDirFs)) {
     $allFiles = @scandir($videoDirFs);
     if (is_array($allFiles)) {
@@ -253,7 +253,7 @@ if (is_dir($videoDirFs)) {
     }
 }
 
-$pptDirFs = dirname(__DIR__, 5) . '/assets/uploads/courses/presentations';
+$pptDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
 if (is_dir($pptDirFs)) {
     $allFiles = @scandir($pptDirFs);
     if (is_array($allFiles)) {

@@ -206,6 +206,14 @@ if (!function_exists('courses_normalize_media_url')) {
             return '';
         }
 
+        $base = trim((string) (admin_base_path() ?? ''), '/');
+        if ($base !== '' && str_starts_with($value, '/' . $base . '/assets/')) {
+            $value = substr($value, strlen('/' . $base));
+            if ($value === false || $value === '') {
+                $value = '/assets/';
+            }
+        }
+
         if (!preg_match('/^https?:\/\//i', $value)) {
             if ($value[0] !== '/') {
                 $value = '/' . ltrim($value, '/');
@@ -219,6 +227,12 @@ if (!function_exists('courses_normalize_media_url')) {
         $parts = parse_url($value);
         $host = strtolower((string) ($parts['host'] ?? ''));
         $path = '/' . ltrim((string) ($parts['path'] ?? ''), '/');
+        if ($base !== '' && str_starts_with($path, '/' . $base . '/assets/')) {
+            $path = substr($path, strlen('/' . $base));
+            if ($path === false || $path === '') {
+                $path = '/assets/';
+            }
+        }
         $isLocalHost = in_array($host, ['localhost', '127.0.0.1', '::1'], true);
         if ($isLocalHost && str_starts_with($path, '/assets/')) {
             return admin_url($path);
