@@ -6,13 +6,13 @@ if ($action === 'ppt_pick_from_directory') {
     $moduleLessonId = (int) ($_POST['module_lesson_id'] ?? 0);
     $pptFileName = courses_extract_presentation_filename((string) ($_POST['ppt_directory_file'] ?? ''));
     if ($courseId <= 0 || $moduleLessonId <= 0 || $pptFileName === '') {
-        admin_set_flash('error', 'Pilih file PowerPoint dari directory terlebih dahulu.');
+        admin_set_flash('error', 'Pilih file presentasi/PDF dari directory terlebih dahulu.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
     $pptPath = courses_presentation_dir_fs() . '/' . $pptFileName;
     if (!is_file($pptPath)) {
-        admin_set_flash('error', 'File PowerPoint tidak ditemukan di directory.');
+        admin_set_flash('error', 'File presentasi/PDF tidak ditemukan di directory.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
@@ -42,7 +42,7 @@ if ($action === 'ppt_pick_from_directory') {
         $stmt->bind_param('si', $url, $moduleLessonId);
         $ok = $stmt->execute();
         $stmt->close();
-        admin_set_flash($ok ? 'success' : 'error', $ok ? 'PowerPoint dari directory berhasil dipakai.' : 'Gagal mengaitkan file PowerPoint ke modul.');
+        admin_set_flash($ok ? 'success' : 'error', $ok ? 'File presentasi/PDF dari directory berhasil dipakai.' : 'Gagal mengaitkan file presentasi/PDF ke modul.');
     }
     header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
     exit;
@@ -54,7 +54,7 @@ if ($action === 'ppt_rename_file') {
     $oldFileName = courses_extract_presentation_filename((string) ($_POST['ppt_directory_file'] ?? ''));
     $newBaseName = trim((string) ($_POST['ppt_rename_to'] ?? ''));
     if ($courseId <= 0 || $moduleLessonId <= 0 || $oldFileName === '' || $newBaseName === '') {
-        admin_set_flash('error', 'Data rename PowerPoint tidak lengkap.');
+        admin_set_flash('error', 'Data rename presentasi/PDF tidak lengkap.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
@@ -76,7 +76,7 @@ if ($action === 'ppt_rename_file') {
     $oldPath = $dir . '/' . $oldFileName;
     $newPath = $dir . '/' . $newFileName;
     if (!is_file($oldPath)) {
-        admin_set_flash('error', 'File PowerPoint lama tidak ditemukan.');
+        admin_set_flash('error', 'File presentasi/PDF lama tidak ditemukan.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
@@ -86,7 +86,7 @@ if ($action === 'ppt_rename_file') {
         exit;
     }
     if (!@rename($oldPath, $newPath)) {
-        admin_set_flash('error', 'Gagal rename file PowerPoint.');
+        admin_set_flash('error', 'Gagal rename file presentasi/PDF.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
@@ -99,7 +99,7 @@ if ($action === 'ppt_rename_file') {
         $up->execute();
         $up->close();
     }
-    admin_set_flash('success', 'PowerPoint berhasil di-rename.');
+    admin_set_flash('success', 'File presentasi/PDF berhasil di-rename.');
     header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
     exit;
 }
@@ -109,18 +109,18 @@ if ($action === 'ppt_delete_file') {
     $moduleLessonId = (int) ($_POST['module_lesson_id'] ?? 0);
     $fileName = courses_extract_presentation_filename((string) ($_POST['ppt_directory_file'] ?? ''));
     if ($courseId <= 0 || $moduleLessonId <= 0 || $fileName === '') {
-        admin_set_flash('error', 'Pilih file PowerPoint yang akan dihapus.');
+        admin_set_flash('error', 'Pilih file presentasi/PDF yang akan dihapus.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
     $path = courses_presentation_dir_fs() . '/' . $fileName;
     if (!is_file($path)) {
-        admin_set_flash('error', 'File PowerPoint tidak ditemukan.');
+        admin_set_flash('error', 'File presentasi/PDF tidak ditemukan.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
     if (!@unlink($path)) {
-        admin_set_flash('error', 'Gagal menghapus file PowerPoint.');
+        admin_set_flash('error', 'Gagal menghapus file presentasi/PDF.');
         header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
         exit;
     }
@@ -132,7 +132,7 @@ if ($action === 'ppt_delete_file') {
         $up->execute();
         $up->close();
     }
-    admin_set_flash('success', 'PowerPoint berhasil dihapus dari directory.');
+    admin_set_flash('success', 'File presentasi/PDF berhasil dihapus dari directory.');
     header('Location: ' . admin_url('/admin/courses?course_id=' . $courseId . '&edit_section=module:' . $moduleLessonId));
     exit;
 }

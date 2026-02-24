@@ -103,13 +103,13 @@
               </div>
             <?php elseif ($moduleKind === 'powerpoint'): ?>
               <div class="lg:col-span-2">
-                <label class="block text-xs font-semibold mb-1">Link PowerPoint</label>
-                <input type="text" name="module_ppt_url" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($selectedModuleLesson['content_url'] ?? '')) ?>" placeholder="/assets/uploads/courses/presentations/slide.pptx atau link embed">
+                <label class="block text-xs font-semibold mb-1">Link Presentasi / PDF</label>
+                <input type="text" name="module_ppt_url" class="w-full rounded-lg border-slate-300" value="<?= admin_e((string) ($selectedModuleLesson['content_url'] ?? '')) ?>" placeholder="/assets/uploads/courses/presentations/slide.pdf atau URL file publik">
               </div>
               <div class="lg:col-span-2">
-                <label class="block text-xs font-semibold mb-1">Atau Upload PowerPoint</label>
-                <input type="file" name="module_ppt_file" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="w-full rounded-lg border-slate-300">
-                <p class="mt-1 text-xs text-slate-500">Format yang didukung: ppt, pptx.</p>
+                <label class="block text-xs font-semibold mb-1">Atau Upload Presentasi / PDF</label>
+                <input type="file" name="module_ppt_file" accept=".ppt,.pptx,.pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf" class="w-full rounded-lg border-slate-300">
+                <p class="mt-1 text-xs text-slate-500">Format didukung: ppt, pptx, pdf. Untuk viewer paling stabil, gunakan PDF.</p>
               </div>
               <div class="lg:col-span-2">
                 <label class="block text-xs font-semibold mb-1">Preview File</label>
@@ -118,37 +118,29 @@
                   <?php
                     $previewPath = (string) (parse_url($previewPptUrl, PHP_URL_PATH) ?? $previewPptUrl);
                     $previewName = basename($previewPath !== '' ? $previewPath : $previewPptUrl);
-                    $previewAbsolute = preg_match('/^https?:\/\//i', $previewPptUrl)
-                        ? $previewPptUrl
-                        : ((isset($_SERVER['HTTP_HOST']) ? (((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) : '') . '/' . ltrim($previewPptUrl, '/'));
-                    $previewHost = strtolower((string) (parse_url($previewAbsolute, PHP_URL_HOST) ?? ''));
-                    $isLocalHost = in_array($previewHost, ['localhost', '127.0.0.1', '::1'], true);
-                    $isPrivateIpv4 = (bool) preg_match('/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/i', $previewHost);
-                    $isOfficeEmbeddable = (bool) preg_match('/^https?:\/\//i', $previewAbsolute) && !$isLocalHost && !$isPrivateIpv4;
-                    $officeEmbedUrl = $isOfficeEmbeddable
-                        ? 'https://view.officeapps.live.com/op/embed.aspx?src=' . rawurlencode($previewAbsolute)
-                        : '';
+                    $previewExt = strtolower((string) pathinfo($previewPath, PATHINFO_EXTENSION));
+                    $isPdf = $previewExt === 'pdf';
                   ?>
                   <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
                     <div class="text-slate-700">File saat ini: <span class="font-semibold"><?= admin_e($previewName) ?></span></div>
-                    <?php if ($officeEmbedUrl !== ''): ?>
+                    <?php if ($isPdf): ?>
                       <div class="mt-3 aspect-video rounded-lg overflow-hidden border border-slate-200 bg-white">
                         <iframe
-                          src="<?= admin_e($officeEmbedUrl) ?>"
+                          src="<?= admin_e($previewPptUrl) ?>#view=FitH"
                           class="w-full h-full"
-                          title="PowerPoint Preview"
+                          title="PDF Preview"
                           loading="lazy"
                         ></iframe>
                       </div>
                     <?php else: ?>
                       <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 px-3 py-2">
-                        Preview interaktif hanya tersedia untuk URL publik (bukan localhost/private).
+                        File non-PDF tidak dipreview langsung. Konversi ke PDF untuk preview stabil.
                       </div>
                     <?php endif; ?>
                     <a class="mt-2 inline-flex items-center px-3 py-2 rounded-lg bg-blue-800 text-white text-xs font-semibold hover:bg-blue-900" href="<?= admin_e($previewPptUrl) ?>" target="_blank" rel="noopener">Buka File</a>
                   </div>
                 <?php else: ?>
-                  <div class="rounded-lg border border-slate-200 bg-slate-100 text-slate-500 text-sm p-4">Belum ada file PowerPoint untuk dipreview.</div>
+                  <div class="rounded-lg border border-slate-200 bg-slate-100 text-slate-500 text-sm p-4">Belum ada file presentasi/PDF untuk dipreview.</div>
                 <?php endif; ?>
               </div>
             <?php endif; ?>

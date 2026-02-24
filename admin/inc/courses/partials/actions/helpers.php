@@ -88,7 +88,7 @@ if (!function_exists('courses_save_uploaded_video')) {
         if ($mime !== '' && !in_array($mime, $allowedMime, true)) {
             throw new RuntimeException('MIME video tidak didukung.');
         }
-        $uploadDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/videos';
+        $uploadDirFs = dirname(__DIR__, 5) . '/assets/uploads/courses/videos';
         if (!is_dir($uploadDirFs) && !@mkdir($uploadDirFs, 0775, true) && !is_dir($uploadDirFs)) {
             throw new RuntimeException('Gagal membuat folder upload video.');
         }
@@ -104,7 +104,7 @@ if (!function_exists('courses_save_uploaded_video')) {
 if (!function_exists('courses_video_dir_fs')) {
     function courses_video_dir_fs(): string
     {
-        return dirname(__DIR__, 4) . '/assets/uploads/courses/videos';
+        return dirname(__DIR__, 5) . '/assets/uploads/courses/videos';
     }
 }
 
@@ -143,26 +143,26 @@ if (!function_exists('courses_save_uploaded_presentation')) {
             return null;
         }
         if ($err !== UPLOAD_ERR_OK) {
-            throw new RuntimeException('Upload file PowerPoint gagal.');
+            throw new RuntimeException('Upload file presentasi gagal.');
         }
         $tmp = (string) ($file['tmp_name'] ?? '');
         if ($tmp === '' || !is_uploaded_file($tmp)) {
-            throw new RuntimeException('File upload PowerPoint tidak valid.');
+            throw new RuntimeException('File upload presentasi tidak valid.');
         }
         $origName = (string) ($file['name'] ?? '');
         $ext = strtolower((string) pathinfo($origName, PATHINFO_EXTENSION));
-        $allowedExt = ['ppt', 'pptx'];
+        $allowedExt = ['ppt', 'pptx', 'pdf'];
         if (!in_array($ext, $allowedExt, true)) {
-            throw new RuntimeException('Format PowerPoint didukung: .ppt, .pptx');
+            throw new RuntimeException('Format presentasi didukung: .ppt, .pptx, .pdf');
         }
-        $uploadDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
+        $uploadDirFs = dirname(__DIR__, 5) . '/assets/uploads/courses/presentations';
         if (!is_dir($uploadDirFs) && !@mkdir($uploadDirFs, 0775, true) && !is_dir($uploadDirFs)) {
-            throw new RuntimeException('Gagal membuat folder upload PowerPoint.');
+            throw new RuntimeException('Gagal membuat folder upload presentasi.');
         }
         $filename = 'course-presentation-' . date('YmdHis') . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
         $dest = $uploadDirFs . '/' . $filename;
         if (!@move_uploaded_file($tmp, $dest)) {
-            throw new RuntimeException('Gagal menyimpan file PowerPoint.');
+            throw new RuntimeException('Gagal menyimpan file presentasi.');
         }
         return admin_url('/assets/uploads/courses/presentations/' . $filename);
     }
@@ -171,7 +171,7 @@ if (!function_exists('courses_save_uploaded_presentation')) {
 if (!function_exists('courses_presentation_dir_fs')) {
     function courses_presentation_dir_fs(): string
     {
-        return dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
+        return dirname(__DIR__, 5) . '/assets/uploads/courses/presentations';
     }
 }
 
@@ -191,9 +191,38 @@ if (!function_exists('courses_extract_presentation_filename')) {
             return '';
         }
         $ext = strtolower((string) pathinfo($candidate, PATHINFO_EXTENSION));
-        if (!in_array($ext, ['ppt', 'pptx'], true)) {
+        if (!in_array($ext, ['ppt', 'pptx', 'pdf'], true)) {
             return '';
         }
         return $candidate;
+    }
+}
+
+if (!function_exists('courses_normalize_media_url')) {
+    function courses_normalize_media_url(string $value): string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return '';
+        }
+
+        if (!preg_match('/^https?:\/\//i', $value)) {
+            if ($value[0] !== '/') {
+                $value = '/' . ltrim($value, '/');
+            }
+            if (str_starts_with($value, '/assets/')) {
+                return admin_url($value);
+            }
+            return $value;
+        }
+
+        $parts = parse_url($value);
+        $host = strtolower((string) ($parts['host'] ?? ''));
+        $path = '/' . ltrim((string) ($parts['path'] ?? ''), '/');
+        $isLocalHost = in_array($host, ['localhost', '127.0.0.1', '::1'], true);
+        if ($isLocalHost && str_starts_with($path, '/assets/')) {
+            return admin_url($path);
+        }
+        return $value;
     }
 }

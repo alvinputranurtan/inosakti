@@ -148,6 +148,8 @@ if ($action === 'save_module_basic') {
     $moduleVideoIntroText = (string) ($_POST['module_video_intro_text'] ?? '');
     $moduleVideoUrl = trim((string) ($_POST['module_video_url'] ?? ''));
     $modulePowerpointUrl = trim((string) ($_POST['module_ppt_url'] ?? ''));
+    $moduleVideoUrl = courses_normalize_media_url($moduleVideoUrl);
+    $modulePowerpointUrl = courses_normalize_media_url($modulePowerpointUrl);
     $moduleLessonOrder = max(1, (int) ($_POST['module_lesson_order'] ?? 1));
     $moduleDurationMinutes = max(0, (int) ($_POST['module_duration_minutes'] ?? 0));
     $moduleDurationSeconds = $moduleDurationMinutes * 60;
@@ -222,12 +224,12 @@ if ($action === 'save_module_basic') {
         if ($targetType === 'video') {
             $uploadedVideoUrl = courses_save_uploaded_video('module_video_file');
             if (is_string($uploadedVideoUrl) && $uploadedVideoUrl !== '') {
-                $moduleVideoUrl = $uploadedVideoUrl;
+                $moduleVideoUrl = courses_normalize_media_url($uploadedVideoUrl);
             }
         } elseif ($targetType === 'presentation') {
             $uploadedPresentationUrl = courses_save_uploaded_presentation('module_ppt_file');
             if (is_string($uploadedPresentationUrl) && $uploadedPresentationUrl !== '') {
-                $modulePowerpointUrl = $uploadedPresentationUrl;
+                $modulePowerpointUrl = courses_normalize_media_url($uploadedPresentationUrl);
             }
         }
 
