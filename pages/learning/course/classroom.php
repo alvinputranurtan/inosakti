@@ -369,28 +369,6 @@ include __DIR__.'/../../../inc/header.php';
         </div>
 	      </aside>
 	      <section class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-		        <div id="videoPanel" class="aspect-video bg-slate-900 relative <?php echo $initialType === 'video' ? '' : 'hidden'; ?>">
-		          <img id="videoPoster" class="w-full h-full object-cover opacity-40" src="<?php echo htmlspecialchars($courseImage); ?>" alt="Video"/>
-		          <div id="videoNativeWrap" class="absolute inset-0 hidden">
-		            <video id="videoNative" class="w-full h-full" controls playsinline preload="metadata"></video>
-		          </div>
-		          <div id="videoEmbedWrap" class="absolute inset-0 hidden">
-		            <iframe
-		              id="videoFrame"
-		              class="w-full h-full"
-	              src=""
-	              title="Course Video"
-	              loading="lazy"
-	              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-	              allowfullscreen
-	            ></iframe>
-	          </div>
-	          <div id="videoPlayOverlay" class="absolute inset-0 flex items-center justify-center <?php echo $initialVideoUrl !== '' ? '' : 'hidden'; ?>">
-	            <button id="videoPlayBtn" type="button" class="w-20 h-20 rounded-full bg-accent text-white flex items-center justify-center">
-	              <span class="material-symbols-outlined text-5xl">play_arrow</span>
-	            </button>
-	          </div>
-	        </div>
 	        <div class="p-6">
 	          <div class="flex flex-wrap items-center gap-2 mb-3">
 	            <span id="badgeType" class="px-2 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold uppercase">
@@ -419,6 +397,28 @@ include __DIR__.'/../../../inc/header.php';
                       echo htmlspecialchars($initialLessonBody);
                   }
                 ?></div>
+                <div id="videoPanel" class="mt-4 aspect-video bg-slate-900 rounded-xl overflow-hidden relative <?php echo $initialType === 'video' ? '' : 'hidden'; ?>">
+                  <img id="videoPoster" class="absolute inset-0 w-full h-full object-cover opacity-40" src="<?php echo htmlspecialchars($courseImage); ?>" alt="Video"/>
+                  <div id="videoNativeWrap" class="hidden w-full">
+                    <video id="videoNative" class="block mx-auto w-auto max-w-full h-auto max-h-[70vh] bg-transparent" controls playsinline preload="metadata"></video>
+                  </div>
+                  <div id="videoEmbedWrap" class="absolute inset-0 hidden">
+                    <iframe
+                      id="videoFrame"
+                      class="w-full h-full"
+                      src=""
+                      title="Course Video"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                  <div id="videoPlayOverlay" class="absolute inset-0 flex items-center justify-center <?php echo $initialVideoUrl !== '' ? '' : 'hidden'; ?>">
+                    <button id="videoPlayBtn" type="button" class="w-20 h-20 rounded-full bg-accent text-white flex items-center justify-center">
+                      <span class="material-symbols-outlined text-5xl">play_arrow</span>
+                    </button>
+                  </div>
+                </div>
                 <div id="quizPanel" class="hidden mt-4 rounded-xl border border-slate-200 p-4">
                   <div class="text-sm font-semibold mb-1"><?php echo htmlspecialchars((string) ($quizAssessment['title'] ?? 'Quiz')); ?></div>
                   <p id="quizInstruction" class="text-xs text-slate-500 mb-3"><?php echo htmlspecialchars((string) ($quizAssessment['instruction_text'] ?? '')); ?></p>
@@ -719,9 +719,14 @@ include __DIR__.'/../../../inc/header.php';
     }
 	    if (isVideo) {
 	      videoPoster.src = <?php echo json_encode($courseImage, JSON_UNESCAPED_SLASHES); ?>;
+	      videoPoster.classList.add('hidden');
 	      if (videoUrl !== '') {
 	        const directVideo = isDirectVideoUrl(videoUrl);
 	        if (directVideo) {
+	          videoPanel.classList.remove('aspect-video');
+	          videoPanel.classList.add('aspect-auto');
+	          videoPanel.classList.remove('bg-slate-900');
+	          videoPanel.classList.add('bg-transparent');
 	          if (videoNative) {
 	            videoNative.src = videoUrl;
 	            videoNative.load();
@@ -730,6 +735,10 @@ include __DIR__.'/../../../inc/header.php';
 	          videoEmbedWrap.classList.add('hidden');
 	          videoFrame.src = '';
 	        } else {
+	          videoPanel.classList.remove('aspect-auto');
+	          videoPanel.classList.add('aspect-video');
+	          videoPanel.classList.remove('bg-transparent');
+	          videoPanel.classList.add('bg-slate-900');
 	          videoFrame.src = videoUrl;
 	          videoEmbedWrap.classList.remove('hidden');
 	          videoNativeWrap?.classList.add('hidden');
@@ -737,6 +746,11 @@ include __DIR__.'/../../../inc/header.php';
 	        }
 	        videoPlayOverlay.classList.add('hidden');
 	      } else {
+	        videoPanel.classList.remove('aspect-auto');
+	        videoPanel.classList.add('aspect-video');
+	        videoPanel.classList.remove('bg-transparent');
+	        videoPanel.classList.add('bg-slate-900');
+	        videoPoster.classList.remove('hidden');
 	        videoFrame.src = '';
 	        videoEmbedWrap.classList.add('hidden');
 	        videoNativeWrap?.classList.add('hidden');
@@ -744,6 +758,11 @@ include __DIR__.'/../../../inc/header.php';
 	        videoPlayOverlay.classList.remove('hidden');
 	      }
 	    } else {
+	      videoPoster.classList.remove('hidden');
+	      videoPanel.classList.remove('aspect-auto');
+	      videoPanel.classList.add('aspect-video');
+	      videoPanel.classList.remove('bg-transparent');
+	      videoPanel.classList.add('bg-slate-900');
 	      videoFrame.src = '';
 	      videoEmbedWrap.classList.add('hidden');
 	      videoNativeWrap?.classList.add('hidden');
@@ -814,6 +833,10 @@ include __DIR__.'/../../../inc/header.php';
 	      const videoUrl = (lesson.content_url || '').trim();
 	      if (videoUrl === '') return;
 	      if (isDirectVideoUrl(videoUrl)) {
+	        videoPanel.classList.remove('aspect-video');
+	        videoPanel.classList.add('aspect-auto');
+	        videoPanel.classList.remove('bg-slate-900');
+	        videoPanel.classList.add('bg-transparent');
 	        if (videoNative) {
 	          videoNative.src = videoUrl;
 	          videoNative.load();
@@ -823,6 +846,10 @@ include __DIR__.'/../../../inc/header.php';
 	        videoFrame.src = '';
 	        videoEmbedWrap.classList.add('hidden');
 	      } else {
+	        videoPanel.classList.remove('aspect-auto');
+	        videoPanel.classList.add('aspect-video');
+	        videoPanel.classList.remove('bg-transparent');
+	        videoPanel.classList.add('bg-slate-900');
 	        videoFrame.src = videoUrl;
 	        videoEmbedWrap.classList.remove('hidden');
 	        videoNativeWrap?.classList.add('hidden');

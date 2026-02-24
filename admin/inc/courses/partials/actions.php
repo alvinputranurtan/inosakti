@@ -436,6 +436,7 @@ if ($action === 'add_module_basic') {
     $kindMap = [
         'article' => ['lesson_type' => 'article', 'lesson_variant' => 'article'],
         'video' => ['lesson_type' => 'video', 'lesson_variant' => 'video'],
+        'powerpoint' => ['lesson_type' => 'presentation', 'lesson_variant' => 'powerpoint'],
         'quiz_multiple_choice' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_multiple_choice'],
         'quiz_essay' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_essay'],
         'quiz_submit_file' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_submit_file'],
@@ -712,6 +713,7 @@ if ($action === 'save_module_basic') {
     $kindMap = [
         'article' => ['lesson_type' => 'article', 'lesson_variant' => 'article'],
         'video' => ['lesson_type' => 'video', 'lesson_variant' => 'video'],
+        'powerpoint' => ['lesson_type' => 'presentation', 'lesson_variant' => 'powerpoint'],
         'quiz_multiple_choice' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_multiple_choice'],
         'quiz_essay' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_essay'],
         'quiz_submit_file' => ['lesson_type' => 'quiz', 'lesson_variant' => 'quiz_submit_file'],

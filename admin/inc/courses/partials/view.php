@@ -49,6 +49,8 @@
               $moduleKind = 'article';
               if ($moduleLessonType === 'video') {
                   $moduleKind = 'video';
+              } elseif ($moduleLessonType === 'presentation') {
+                  $moduleKind = 'powerpoint';
               } elseif ($moduleLessonType === 'quiz') {
                   $moduleKind = in_array($moduleLessonVariant, ['quiz_multiple_choice', 'quiz_essay', 'quiz_submit_file'], true)
                       ? $moduleLessonVariant
@@ -77,6 +79,7 @@
                 <select id="moduleKindSelect" name="module_kind" class="w-full rounded-lg border-slate-300" data-initial-kind="<?= admin_e($moduleKind) ?>">
                   <option value="article" <?= $moduleKind === 'article' ? 'selected' : '' ?>>Article</option>
                   <option value="video" <?= $moduleKind === 'video' ? 'selected' : '' ?>>Video</option>
+                  <option value="powerpoint" <?= $moduleKind === 'powerpoint' ? 'selected' : '' ?>>Power Point</option>
                   <option value="quiz_multiple_choice" <?= $moduleKind === 'quiz_multiple_choice' ? 'selected' : '' ?>>Quiz Multiple Choice</option>
                   <option value="quiz_essay" <?= $moduleKind === 'quiz_essay' ? 'selected' : '' ?>>Quiz Essay</option>
                   <option value="quiz_submit_file" <?= $moduleKind === 'quiz_submit_file' ? 'selected' : '' ?>>Quiz Submit File</option>
@@ -399,6 +402,7 @@
               <select name="module_kind_new" class="w-full rounded-lg border-slate-300">
                 <option value="article">Article</option>
                 <option value="video">Video</option>
+                <option value="powerpoint">Power Point</option>
                 <option value="quiz_multiple_choice">Quiz Multiple Choice</option>
                 <option value="quiz_essay">Quiz Essay</option>
                 <option value="quiz_submit_file">Quiz Submit File</option>
