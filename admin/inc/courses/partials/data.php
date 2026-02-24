@@ -72,6 +72,8 @@ $selectedModuleLessonId = 0;
 $selectedModuleLesson = null;
 $videoDirectoryFiles = [];
 $selectedModuleVideoFile = '';
+$pptDirectoryFiles = [];
+$selectedModulePptFile = '';
 $editSections = [];
 $selectedEditSection = (string) ($_GET['edit_section'] ?? 'metadata');
 
@@ -251,10 +253,30 @@ if (is_dir($videoDirFs)) {
     }
 }
 
+$pptDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
+if (is_dir($pptDirFs)) {
+    $allFiles = @scandir($pptDirFs);
+    if (is_array($allFiles)) {
+        foreach ($allFiles as $f) {
+            if (!is_string($f) || $f === '.' || $f === '..') {
+                continue;
+            }
+            $ext = strtolower((string) pathinfo($f, PATHINFO_EXTENSION));
+            if (!in_array($ext, ['ppt', 'pptx'], true)) {
+                continue;
+            }
+            $pptDirectoryFiles[] = $f;
+        }
+        natcasesort($pptDirectoryFiles);
+        $pptDirectoryFiles = array_values($pptDirectoryFiles);
+    }
+}
+
 if (is_array($selectedModuleLesson)) {
     $currentVideoUrl = trim((string) ($selectedModuleLesson['content_url'] ?? ''));
     if ($currentVideoUrl !== '') {
         $selectedModuleVideoFile = basename(parse_url($currentVideoUrl, PHP_URL_PATH) ?: $currentVideoUrl);
+        $selectedModulePptFile = $selectedModuleVideoFile;
     }
 }
 

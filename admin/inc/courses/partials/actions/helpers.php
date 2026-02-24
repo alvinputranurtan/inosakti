@@ -130,3 +130,70 @@ if (!function_exists('courses_extract_video_filename')) {
         return $candidate;
     }
 }
+
+if (!function_exists('courses_save_uploaded_presentation')) {
+    function courses_save_uploaded_presentation(string $fieldName = 'module_ppt_file'): ?string
+    {
+        if (!isset($_FILES[$fieldName]) || !is_array($_FILES[$fieldName])) {
+            return null;
+        }
+        $file = $_FILES[$fieldName];
+        $err = (int) ($file['error'] ?? UPLOAD_ERR_NO_FILE);
+        if ($err === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+        if ($err !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('Upload file PowerPoint gagal.');
+        }
+        $tmp = (string) ($file['tmp_name'] ?? '');
+        if ($tmp === '' || !is_uploaded_file($tmp)) {
+            throw new RuntimeException('File upload PowerPoint tidak valid.');
+        }
+        $origName = (string) ($file['name'] ?? '');
+        $ext = strtolower((string) pathinfo($origName, PATHINFO_EXTENSION));
+        $allowedExt = ['ppt', 'pptx'];
+        if (!in_array($ext, $allowedExt, true)) {
+            throw new RuntimeException('Format PowerPoint didukung: .ppt, .pptx');
+        }
+        $uploadDirFs = dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
+        if (!is_dir($uploadDirFs) && !@mkdir($uploadDirFs, 0775, true) && !is_dir($uploadDirFs)) {
+            throw new RuntimeException('Gagal membuat folder upload PowerPoint.');
+        }
+        $filename = 'course-presentation-' . date('YmdHis') . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $dest = $uploadDirFs . '/' . $filename;
+        if (!@move_uploaded_file($tmp, $dest)) {
+            throw new RuntimeException('Gagal menyimpan file PowerPoint.');
+        }
+        return admin_url('/assets/uploads/courses/presentations/' . $filename);
+    }
+}
+
+if (!function_exists('courses_presentation_dir_fs')) {
+    function courses_presentation_dir_fs(): string
+    {
+        return dirname(__DIR__, 4) . '/assets/uploads/courses/presentations';
+    }
+}
+
+if (!function_exists('courses_presentation_public_url')) {
+    function courses_presentation_public_url(string $fileName): string
+    {
+        return admin_url('/assets/uploads/courses/presentations/' . ltrim($fileName, '/'));
+    }
+}
+
+if (!function_exists('courses_extract_presentation_filename')) {
+    function courses_extract_presentation_filename(string $value): string
+    {
+        $candidate = basename(parse_url($value, PHP_URL_PATH) ?: $value);
+        $candidate = trim($candidate);
+        if ($candidate === '' || !preg_match('/^[A-Za-z0-9._-]+$/', $candidate)) {
+            return '';
+        }
+        $ext = strtolower((string) pathinfo($candidate, PATHINFO_EXTENSION));
+        if (!in_array($ext, ['ppt', 'pptx'], true)) {
+            return '';
+        }
+        return $candidate;
+    }
+}

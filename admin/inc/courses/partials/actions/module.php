@@ -147,6 +147,7 @@ if ($action === 'save_module_basic') {
     $moduleArticleHtml = (string) ($_POST['module_article_html'] ?? '');
     $moduleVideoIntroText = (string) ($_POST['module_video_intro_text'] ?? '');
     $moduleVideoUrl = trim((string) ($_POST['module_video_url'] ?? ''));
+    $modulePowerpointUrl = trim((string) ($_POST['module_ppt_url'] ?? ''));
     $moduleLessonOrder = max(1, (int) ($_POST['module_lesson_order'] ?? 1));
     $moduleDurationMinutes = max(0, (int) ($_POST['module_duration_minutes'] ?? 0));
     $moduleDurationSeconds = $moduleDurationMinutes * 60;
@@ -223,6 +224,11 @@ if ($action === 'save_module_basic') {
             if (is_string($uploadedVideoUrl) && $uploadedVideoUrl !== '') {
                 $moduleVideoUrl = $uploadedVideoUrl;
             }
+        } elseif ($targetType === 'presentation') {
+            $uploadedPresentationUrl = courses_save_uploaded_presentation('module_ppt_file');
+            if (is_string($uploadedPresentationUrl) && $uploadedPresentationUrl !== '') {
+                $modulePowerpointUrl = $uploadedPresentationUrl;
+            }
         }
 
         $db->begin_transaction();
@@ -295,6 +301,15 @@ if ($action === 'save_module_basic') {
                         throw new RuntimeException('Gagal menyiapkan simpan modul video.');
                     }
                     $stmt->bind_param('sissssiii', $moduleTitle, $moduleLessonOrder, $targetType, $targetVariant, $moduleVideoIntroText, $moduleVideoUrl, $moduleDurationSeconds, $moduleIsPreview, $moduleLessonId);
+                } elseif ($targetType === 'presentation') {
+                    $stmt->close();
+                    $stmt = $db->prepare("UPDATE course_lessons
+                                          SET title = ?, lesson_order = ?, lesson_type = ?, lesson_variant = ?, content_url = ?, duration_seconds = ?, is_preview = ?, updated_at = NOW()
+                                          WHERE id = ?");
+                    if (!$stmt) {
+                        throw new RuntimeException('Gagal menyiapkan simpan modul PowerPoint.');
+                    }
+                    $stmt->bind_param('sisssiii', $moduleTitle, $moduleLessonOrder, $targetType, $targetVariant, $modulePowerpointUrl, $moduleDurationSeconds, $moduleIsPreview, $moduleLessonId);
                 }
             }
         } else {
@@ -323,6 +338,15 @@ if ($action === 'save_module_basic') {
                         throw new RuntimeException('Gagal menyiapkan simpan modul video.');
                     }
                     $stmt->bind_param('sisssiii', $moduleTitle, $moduleLessonOrder, $targetType, $moduleVideoIntroText, $moduleVideoUrl, $moduleDurationSeconds, $moduleIsPreview, $moduleLessonId);
+                } elseif ($targetType === 'presentation') {
+                    $stmt->close();
+                    $stmt = $db->prepare("UPDATE course_lessons
+                                          SET title = ?, lesson_order = ?, lesson_type = ?, content_url = ?, duration_seconds = ?, is_preview = ?, updated_at = NOW()
+                                          WHERE id = ?");
+                    if (!$stmt) {
+                        throw new RuntimeException('Gagal menyiapkan simpan modul PowerPoint.');
+                    }
+                    $stmt->bind_param('sissiii', $moduleTitle, $moduleLessonOrder, $targetType, $modulePowerpointUrl, $moduleDurationSeconds, $moduleIsPreview, $moduleLessonId);
                 }
             }
         }

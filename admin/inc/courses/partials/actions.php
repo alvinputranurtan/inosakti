@@ -19,6 +19,7 @@ $action = (string) ($_POST['action'] ?? 'status_update');
 require __DIR__ . '/actions/chapter.php';
 require __DIR__ . '/actions/module.php';
 require __DIR__ . '/actions/video_manager.php';
+require __DIR__ . '/actions/presentation_manager.php';
 require __DIR__ . '/actions/course.php';
 
 $id = (int) ($_POST['id'] ?? 0);
