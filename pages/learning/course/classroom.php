@@ -304,6 +304,7 @@ $courseSlug = (string) ($course['slug'] ?? 'basic-iot-esp32');
 $courseImage = (string) ($course['featured_image'] ?? 'https://images.unsplash.com/photo-1553406830-ef2513450d76?q=80&w=1600&auto=format&fit=crop');
 $initialType = (string) ($activeLesson['lesson_type'] ?? 'video');
 $initialVideoUrl = (string) ($activeLesson['content_url'] ?? '');
+$onlyOfficeServer = rtrim((string) inosakti_env_value('ONLYOFFICE_SERVER_URL', ''), '/');
 $lessonJson = json_encode($lessonList, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 if (!is_string($lessonJson)) {
     $lessonJson = '[]';
@@ -419,6 +420,22 @@ include __DIR__.'/../../../inc/header.php';
                     </button>
                   </div>
                 </div>
+                <div id="presentationPanel" class="hidden mt-4 rounded-xl border border-slate-200 overflow-hidden">
+                  <div id="pptOnlyOfficeHost" class="hidden min-h-[560px] bg-slate-100"></div>
+                  <div id="pptEmbedWrap" class="hidden aspect-video bg-slate-100">
+                    <iframe
+                      id="pptFrame"
+                      class="w-full h-full"
+                      src=""
+                      title="PowerPoint Viewer"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+                  <div id="pptFallback" class="hidden p-4 bg-slate-50 text-sm text-slate-600">
+                    <p id="pptFallbackText">Preview PowerPoint belum tersedia untuk URL ini.</p>
+                    <a id="pptOpenLink" class="mt-2 inline-flex items-center px-3 py-1.5 rounded-lg bg-blue-800 text-white text-xs font-semibold hover:bg-blue-900" href="#" target="_blank" rel="noopener">Buka File PowerPoint</a>
+                  </div>
+                </div>
                 <div id="quizPanel" class="hidden mt-4 rounded-xl border border-slate-200 p-4">
                   <div class="text-sm font-semibold mb-1"><?php echo htmlspecialchars((string) ($quizAssessment['title'] ?? 'Quiz')); ?></div>
                   <p id="quizInstruction" class="text-xs text-slate-500 mb-3"><?php echo htmlspecialchars((string) ($quizAssessment['instruction_text'] ?? '')); ?></p>
@@ -470,6 +487,9 @@ include __DIR__.'/../../../inc/header.php';
     </div>
   </div>
 </main>
+<?php if ($onlyOfficeServer !== ''): ?>
+<script src="<?= htmlspecialchars($onlyOfficeServer . '/web-apps/apps/api/documents/api.js', ENT_QUOTES, 'UTF-8') ?>"></script>
+<?php endif; ?>
 <script>
 (() => {
   const lessons = <?php echo $lessonJson; ?>;
@@ -517,6 +537,15 @@ include __DIR__.'/../../../inc/header.php';
 	  const videoFrame = document.getElementById('videoFrame');
 	  const videoPlayOverlay = document.getElementById('videoPlayOverlay');
 	  const videoPlayBtn = document.getElementById('videoPlayBtn');
+  const presentationPanel = document.getElementById('presentationPanel');
+	  const pptEmbedWrap = document.getElementById('pptEmbedWrap');
+  const pptOnlyOfficeHost = document.getElementById('pptOnlyOfficeHost');
+  const pptFrame = document.getElementById('pptFrame');
+  const pptFallback = document.getElementById('pptFallback');
+  const pptFallbackText = document.getElementById('pptFallbackText');
+  const pptOpenLink = document.getElementById('pptOpenLink');
+  const onlyOfficeServer = <?php echo json_encode($onlyOfficeServer, JSON_UNESCAPED_SLASHES); ?>;
+  let onlyOfficeEditor = null;
   let quizCursor = 0;
   const quizAnswers = {};
   const gaugeCirc = 2 * Math.PI * 48;
@@ -630,6 +659,90 @@ include __DIR__.'/../../../inc/header.php';
 	    return /\.(mp4|webm|ogg)(\?.*)?$/.test(value);
 	  }
 
+  function isPrivateIpv4(host) {
+    return /^10\./.test(host)
+      || /^192\.168\./.test(host)
+      || /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+  }
+
+  function isLikelyPublicHttpUrl(rawUrl) {
+    try {
+      const u = new URL(String(rawUrl || '').trim(), window.location.origin);
+      if (!/^https?:$/.test(u.protocol)) return false;
+      const host = String(u.hostname || '').toLowerCase();
+      if (host === '' || host === 'localhost' || host === '127.0.0.1' || host === '::1') return false;
+      if (isPrivateIpv4(host)) return false;
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function normalizeUrl(rawUrl) {
+    try {
+      return new URL(String(rawUrl || '').trim(), window.location.origin).toString();
+    } catch (_) {
+      return String(rawUrl || '').trim();
+    }
+  }
+
+  function toOfficeViewerUrl(rawUrl) {
+    const normalized = normalizeUrl(rawUrl);
+    if (!isLikelyPublicHttpUrl(normalized)) return '';
+    return 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(normalized);
+  }
+
+  function extractFileType(rawUrl) {
+    const normalized = normalizeUrl(rawUrl);
+    const clean = normalized.split('#')[0].split('?')[0].toLowerCase();
+    const m = clean.match(/\.([a-z0-9]+)$/);
+    return m ? m[1] : '';
+  }
+
+  function supportsOnlyOfficeSlide(rawUrl) {
+    const ext = extractFileType(rawUrl);
+    return ext === 'ppt' || ext === 'pptx';
+  }
+
+  function destroyOnlyOfficeEditor() {
+    if (onlyOfficeEditor && typeof onlyOfficeEditor.destroyEditor === 'function') {
+      onlyOfficeEditor.destroyEditor();
+    }
+    onlyOfficeEditor = null;
+    if (pptOnlyOfficeHost) {
+      pptOnlyOfficeHost.innerHTML = '';
+      pptOnlyOfficeHost.classList.add('hidden');
+    }
+  }
+
+  function renderOnlyOffice(rawUrl, lessonId) {
+    if (!onlyOfficeServer || !window.DocsAPI || !pptOnlyOfficeHost) return false;
+    if (!supportsOnlyOfficeSlide(rawUrl)) return false;
+    const fileUrl = normalizeUrl(rawUrl);
+    const ext = extractFileType(fileUrl) || 'pptx';
+    if (fileUrl === '') return false;
+    destroyOnlyOfficeEditor();
+    pptOnlyOfficeHost.classList.remove('hidden');
+    const safeKey = ('lesson_' + String(lessonId || '0') + '_' + btoa(unescape(encodeURIComponent(fileUrl))).replace(/[^a-zA-Z0-9]/g, '')).slice(0, 120);
+    onlyOfficeEditor = new window.DocsAPI.DocEditor('pptOnlyOfficeHost', {
+      width: '100%',
+      height: '560px',
+      documentType: 'slide',
+      type: 'embedded',
+      document: {
+        fileType: ext,
+        key: safeKey,
+        title: 'Presentation.' + ext,
+        url: fileUrl,
+      },
+      editorConfig: {
+        mode: 'view',
+        lang: 'id',
+      },
+    });
+    return true;
+  }
+
   function setActiveButton(lessonId) {
     document.querySelectorAll('[data-lesson-id]').forEach((btn) => {
       const isActive = Number(btn.dataset.lessonId) === Number(lessonId);
@@ -707,13 +820,16 @@ include __DIR__.'/../../../inc/header.php';
     badgeDuration.textContent = lesson.duration_label || '-';
     badgePreview.classList.toggle('hidden', !lesson.is_preview);
 
-    const type = (lesson.lesson_type || '').toLowerCase();
-    const isVideo = type === 'video';
-    const isQuiz = type === 'quiz' || type === 'test';
-    const videoUrl = (lesson.content_url || '').trim();
-    videoPanel.classList.toggle('hidden', !isVideo);
-    bodyEl.classList.toggle('hidden', isQuiz);
-    quizPanel.classList.toggle('hidden', !isQuiz);
+	    const type = (lesson.lesson_type || '').toLowerCase();
+	    const isVideo = type === 'video';
+	    const isQuiz = type === 'quiz' || type === 'test';
+    const isPresentation = type === 'presentation' || type === 'powerpoint';
+	    const videoUrl = (lesson.content_url || '').trim();
+    const presentationUrl = (lesson.content_url || '').trim();
+	    videoPanel.classList.toggle('hidden', !isVideo);
+    presentationPanel.classList.toggle('hidden', !isPresentation);
+	    bodyEl.classList.toggle('hidden', isQuiz);
+	    quizPanel.classList.toggle('hidden', !isQuiz);
     if (isQuiz) {
       resetQuiz();
     }
@@ -734,7 +850,7 @@ include __DIR__.'/../../../inc/header.php';
 	          videoNativeWrap?.classList.remove('hidden');
 	          videoEmbedWrap.classList.add('hidden');
 	          videoFrame.src = '';
-	        } else {
+		    } else {
 	          videoPanel.classList.remove('aspect-auto');
 	          videoPanel.classList.add('aspect-video');
 	          videoPanel.classList.remove('bg-transparent');
@@ -743,7 +859,39 @@ include __DIR__.'/../../../inc/header.php';
 	          videoEmbedWrap.classList.remove('hidden');
 	          videoNativeWrap?.classList.add('hidden');
 	          if (videoNative) videoNative.src = '';
-	        }
+		    }
+
+    if (isPresentation) {
+      const normalizedPptUrl = normalizeUrl(presentationUrl);
+      const renderedOnlyOffice = renderOnlyOffice(presentationUrl, lesson.id);
+      const embedUrl = renderedOnlyOffice ? '' : toOfficeViewerUrl(presentationUrl);
+      if (renderedOnlyOffice) {
+        pptFrame.src = '';
+        pptEmbedWrap.classList.add('hidden');
+        pptFallback.classList.add('hidden');
+      } else if (embedUrl !== '') {
+        destroyOnlyOfficeEditor();
+        pptFrame.src = embedUrl;
+        pptEmbedWrap.classList.remove('hidden');
+        pptFallback.classList.add('hidden');
+      } else {
+        destroyOnlyOfficeEditor();
+        pptFrame.src = '';
+        pptEmbedWrap.classList.add('hidden');
+        pptFallback.classList.remove('hidden');
+        pptOpenLink.href = normalizedPptUrl || '#';
+        pptOpenLink.classList.toggle('hidden', normalizedPptUrl === '');
+        pptFallbackText.textContent = normalizedPptUrl === ''
+          ? 'Belum ada file PowerPoint pada modul ini.'
+          : 'Preview interaktif hanya tersedia untuk URL publik (bukan localhost/private).';
+      }
+    } else {
+      destroyOnlyOfficeEditor();
+      pptFrame.src = '';
+      pptEmbedWrap.classList.add('hidden');
+      pptFallback.classList.add('hidden');
+      pptOpenLink.href = '#';
+    }
 	        videoPlayOverlay.classList.add('hidden');
 	      } else {
 	        videoPanel.classList.remove('aspect-auto');

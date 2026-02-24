@@ -115,8 +115,36 @@
                 <label class="block text-xs font-semibold mb-1">Preview File</label>
                 <?php $previewPptUrl = trim((string) ($selectedModuleLesson['content_url'] ?? '')); ?>
                 <?php if ($previewPptUrl !== ''): ?>
+                  <?php
+                    $previewPath = (string) (parse_url($previewPptUrl, PHP_URL_PATH) ?? $previewPptUrl);
+                    $previewName = basename($previewPath !== '' ? $previewPath : $previewPptUrl);
+                    $previewAbsolute = preg_match('/^https?:\/\//i', $previewPptUrl)
+                        ? $previewPptUrl
+                        : ((isset($_SERVER['HTTP_HOST']) ? (((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://') . $_SERVER['HTTP_HOST']) : '') . '/' . ltrim($previewPptUrl, '/'));
+                    $previewHost = strtolower((string) (parse_url($previewAbsolute, PHP_URL_HOST) ?? ''));
+                    $isLocalHost = in_array($previewHost, ['localhost', '127.0.0.1', '::1'], true);
+                    $isPrivateIpv4 = (bool) preg_match('/^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[0-1])\.)/i', $previewHost);
+                    $isOfficeEmbeddable = (bool) preg_match('/^https?:\/\//i', $previewAbsolute) && !$isLocalHost && !$isPrivateIpv4;
+                    $officeEmbedUrl = $isOfficeEmbeddable
+                        ? 'https://view.officeapps.live.com/op/embed.aspx?src=' . rawurlencode($previewAbsolute)
+                        : '';
+                  ?>
                   <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
-                    <div class="text-slate-700">File saat ini: <span class="font-semibold"><?= admin_e(basename(parse_url($previewPptUrl, PHP_URL_PATH) ?: $previewPptUrl)) ?></span></div>
+                    <div class="text-slate-700">File saat ini: <span class="font-semibold"><?= admin_e($previewName) ?></span></div>
+                    <?php if ($officeEmbedUrl !== ''): ?>
+                      <div class="mt-3 aspect-video rounded-lg overflow-hidden border border-slate-200 bg-white">
+                        <iframe
+                          src="<?= admin_e($officeEmbedUrl) ?>"
+                          class="w-full h-full"
+                          title="PowerPoint Preview"
+                          loading="lazy"
+                        ></iframe>
+                      </div>
+                    <?php else: ?>
+                      <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 text-amber-800 px-3 py-2">
+                        Preview interaktif hanya tersedia untuk URL publik (bukan localhost/private).
+                      </div>
+                    <?php endif; ?>
                     <a class="mt-2 inline-flex items-center px-3 py-2 rounded-lg bg-blue-800 text-white text-xs font-semibold hover:bg-blue-900" href="<?= admin_e($previewPptUrl) ?>" target="_blank" rel="noopener">Buka File</a>
                   </div>
                 <?php else: ?>
