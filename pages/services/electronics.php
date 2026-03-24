@@ -200,7 +200,7 @@ include __DIR__.'/../../inc/header.php';
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25"
-                       href="https://wa.me/+6288207085761">Mulai Konsultasi</a>
+                       href="https://wa.me/+62882007085761">Mulai Konsultasi</a>
                     <a class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20"
                        href="<?php echo $basePath; ?>/index.php#portfolio">Lihat Portfolio Hardware</a>
                 </div>
@@ -211,3 +211,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+

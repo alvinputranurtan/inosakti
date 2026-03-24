@@ -107,7 +107,7 @@ $siteNavLinks = [
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/">Home</a>
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/products/shop?category=all">Belanja</a>
       <a class="hover:text-primary transition-colors" href="<?php echo $basePath; ?>/pages/blog">Blog</a>
-      <a class="hover:text-primary transition-colors" href="https://wa.me/+6288207085761">Konsultasi</a>
+      <a class="hover:text-primary transition-colors" href="https://wa.me/+62882007085761">Konsultasi</a>
       <?php if (!$isLoggedIn): ?>
       <a class="hover:text-primary transition-colors" href="<?php echo $loginHref; ?>">Login</a>
       <?php else: ?>
@@ -164,7 +164,7 @@ $siteNavLinks = [
     <a href="<?php echo $basePath; ?>/" class="block text-lg font-semibold hover:text-primary">Home</a>
     <a href="<?php echo $basePath; ?>/pages/products/shop?category=all" class="block text-lg font-semibold hover:text-primary">Belanja</a>
     <a href="<?php echo $basePath; ?>/pages/blog" class="block text-lg font-semibold hover:text-primary">Blog</a>
-    <a href="https://wa.me/+6288207085761" class="block text-lg font-semibold hover:text-primary">Konsultasi</a>
+    <a href="https://wa.me/+62882007085761" class="block text-lg font-semibold hover:text-primary">Konsultasi</a>
     <?php if (!$isLoggedIn): ?>
     <a href="<?php echo $loginHref; ?>" class="block text-lg font-semibold hover:text-primary">Login</a>
     <?php else: ?>
@@ -224,4 +224,5 @@ $siteNavLinks = [
       });
 	  });
 	</script>
+
 

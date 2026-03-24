@@ -230,7 +230,7 @@ include __DIR__.'/../../inc/header.php';
                 </p>
                 <div class="flex flex-col sm:flex-row gap-5 justify-center">
                     <a class="px-10 py-5 bg-accent hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2"
-                       href="https://wa.me/+6288207085761">
+                       href="https://wa.me/+62882007085761">
                         <span class="material-symbols-outlined">chat</span>
                         Konsultasi Sekarang
                     </a>
@@ -247,4 +247,5 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+
 

@@ -116,10 +116,9 @@
                 <?php $previewPptUrl = trim((string) ($selectedModuleLesson['content_url'] ?? '')); ?>
                 <?php if ($previewPptUrl !== ''): ?>
                   <?php
-                    $mediaPublicBaseUrl = rtrim((string) inosakti_env_value('MEDIA_PUBLIC_BASE_URL', ''), '/');
                     $previewPptUrlView = $previewPptUrl;
-                    if ($mediaPublicBaseUrl !== '' && str_starts_with($previewPptUrlView, '/assets/')) {
-                        $previewPptUrlView = $mediaPublicBaseUrl . '/' . ltrim($previewPptUrlView, '/');
+                    if (str_starts_with($previewPptUrlView, '/assets/')) {
+                        $previewPptUrlView = admin_url($previewPptUrlView);
                     }
                     $previewPath = (string) (parse_url($previewPptUrl, PHP_URL_PATH) ?? $previewPptUrl);
                     $previewName = basename($previewPath !== '' ? $previewPath : $previewPptUrl);

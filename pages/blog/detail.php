@@ -285,7 +285,7 @@ $blogList = $basePath . '/pages/blog';
             <a href="<?= htmlspecialchars($blogList) ?>" class="px-6 py-2 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
               Kembali ke Blog
             </a>
-            <a href="https://wa.me/+6288207085761" class="px-6 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-bold flex items-center gap-2">
+            <a href="https://wa.me/+62882007085761" class="px-6 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-bold flex items-center gap-2">
               <span class="material-symbols-outlined text-lg">chat</span> Konsultasi
             </a>
           </div>
@@ -300,7 +300,7 @@ $blogList = $basePath . '/pages/blog';
             <p class="text-slate-600 dark:text-slate-400 text-sm mb-8 leading-relaxed">
               Konsultasikan kebutuhan implementasi AI, IoT, software, dan hardware bersama tim engineer InoSakti.
             </p>
-            <a href="https://wa.me/+6288207085761" class="w-full bg-primary text-white py-4 rounded-2xl font-bold inline-flex items-center justify-center gap-2 hover:bg-blue-800 transition-all">
+            <a href="https://wa.me/+62882007085761" class="w-full bg-primary text-white py-4 rounded-2xl font-bold inline-flex items-center justify-center gap-2 hover:bg-blue-800 transition-all">
               <span class="material-symbols-outlined">chat</span> Hubungi Kami Sekarang
             </a>
           </div>
@@ -328,4 +328,5 @@ $blogList = $basePath . '/pages/blog';
 </main>
 
 <?php include __DIR__ . '/../../inc/footer.php'; ?>
+
 
