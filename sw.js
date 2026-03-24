@@ -139,6 +139,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Default: network
-  event.respondWith(fetch(req));
+  // Default: network with safe fallback to avoid uncaught fetch errors
+  event.respondWith(
+    fetch(req).catch(() =>
+      caches.match(req).then((cached) => cached || Response.error())
+    )
+  );
 });

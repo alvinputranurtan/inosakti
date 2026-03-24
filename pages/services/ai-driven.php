@@ -188,7 +188,7 @@ include __DIR__.'/../../inc/header.php';
                     Our experts are ready to help you implement state-of-the-art AI solutions. Start your digital transformation with InoSakti today.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25" href="#">Get Started Now</a>
+                    <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25" href="https://wa.me/+62882007085761">Get Started Now</a>
                     <a class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20" href="#">View Case Studies</a>
                 </div>
             </div>

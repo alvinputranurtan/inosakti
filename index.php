@@ -20,7 +20,7 @@ include __DIR__.'/inc/header.php';
 <a class="px-8 py-4 bg-primary text-white rounded-lg font-bold hover:bg-blue-800 transition-colors" href="<?php echo $basePath; ?>/pages/company/about">
                         Kenali lebih lanjut →
                     </a>
-<a class="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-colors shadow-lg" href="#">
+<a class="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-50 transition-colors shadow-lg" href="https://wa.me/+62882007085761">
                         Konsultasi Sekarang
                     </a>
 </div>
@@ -93,7 +93,7 @@ include __DIR__.'/inc/header.php';
 </div>
 </div>
 <div class="text-center">
-<button class="px-12 py-4 bg-primary text-white rounded-lg font-bold text-xl hover:bg-blue-800 transition-all">Konsultasi Sekarang</button>
+<a class="inline-block px-12 py-4 bg-primary text-white rounded-lg font-bold text-xl hover:bg-blue-800 transition-all" href="https://wa.me/+62882007085761">Konsultasi Sekarang</a>
 </div>
 </div>
 </section>

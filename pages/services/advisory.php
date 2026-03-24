@@ -191,7 +191,7 @@ include __DIR__.'/../../inc/header.php';
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a class="px-8 py-4 bg-accent hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25"
-                       href="<?php echo $basePath; ?>/#konsultasi">
+                       href="https://wa.me/+62882007085761">
                         Consult Now
                     </a>
 
