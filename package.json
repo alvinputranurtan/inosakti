@@ -1,0 +1,27 @@
+{
+  "name": "inosakti.com",
+  "version": "1.0.0",
+  "description": "Status: private/internal only. This file is intentionally ignored by Git.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinputranurtan/inosakti.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/alvinputranurtan/inosakti/issues"
+  },
+  "homepage": "https://github.com/alvinputranurtan/inosakti#readme",
+  "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "tailwindcss": "^3.4.17"
+  }
+}

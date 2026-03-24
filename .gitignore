@@ -12,3 +12,6 @@ CHANGELOG.md
 *.bak
 *.tmp
 *.log
+
+# Node.js
+node_modules/
