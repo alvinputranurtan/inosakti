@@ -1,17 +1,5 @@
 <?php
 $pageTitle = 'Checkout | InoSakti - Engineering & Technology Solutions';
-$extraHead = <<<HTML
-<style type="text/tailwindcss">
-@layer components {
-    .form-input { @apply w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all duration-200; }
-    .checkout-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm; }
-    .step-item { @apply flex items-center gap-2 text-sm font-bold transition-colors duration-500; }
-    .step-dot { @apply w-8 h-8 rounded-full flex items-center justify-center text-xs border-2 transition-all duration-500; }
-    .animate-fade-in { opacity: 0; transform: translateY(10px); animation: fadeIn 0.5s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-}
-</style>
-HTML;
 include __DIR__ . '/../../inc/header.php';
 ?>
 
@@ -141,3 +129,4 @@ include __DIR__ . '/../../inc/header.php';
 <?php
 include __DIR__ . '/../../inc/footer.php';
 ?>
+

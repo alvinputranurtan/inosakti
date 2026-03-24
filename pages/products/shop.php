@@ -2,20 +2,6 @@
 declare(strict_types=1);
 
 $pageTitle = 'Belanja | InoSakti - Engineering & Technology Solutions';
-$extraHead = <<<HTML
-<style type="text/tailwindcss">
-@layer components {
-  .product-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1; }
-  .filter-dropdown {
-    @apply border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold shadow-sm;
-    backdrop-filter: blur(8px);
-    background-color: rgba(255,255,255,.9);
-  }
-  .dark .filter-dropdown { background-color: rgba(15,23,42,.9); }
-  .category-badge { @apply absolute bottom-3 left-3 z-10 bg-slate-100/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-200 text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm; }
-}
-</style>
-HTML;
 include __DIR__ . '/../../inc/header.php';
 
 $db = @new mysqli(
@@ -438,3 +424,4 @@ document.addEventListener('DOMContentLoaded', function () {
 HTML;
 include __DIR__ . '/../../inc/footer.php';
 exit;
+

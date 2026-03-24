@@ -317,15 +317,6 @@ if (!is_string($quizJson)) {
 
 $pageTitle = ((string) ($pageCfg['title'] ?? 'Kelas Berjalan')) . ' - ' . (string) ($course['title'] ?? 'Basic IoT ESP32');
 $pageDesc = (string) ($pageCfg['description'] ?? 'Interface belajar online untuk kelas Basic IoT dengan ESP32.');
-$extraHead = <<<'HTML'
-<style type="text/tailwindcss">
-@layer utilities {
-  .lesson-item { @apply flex items-start gap-2 px-3 py-2 rounded-lg text-sm border border-transparent transition; }
-  .lesson-item-active { @apply bg-blue-50 border-blue-200 text-blue-900; }
-  .module-toggle { @apply w-full text-left flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-slate-50 transition; }
-}
-</style>
-HTML;
 include __DIR__.'/../../../inc/header.php';
 ?>
 <main class="pt-20">
@@ -1011,3 +1002,4 @@ include __DIR__.'/../../../inc/header.php';
 })();
 </script>
 <?php include __DIR__.'/../../../inc/footer.php'; ?>
+

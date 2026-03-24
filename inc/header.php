@@ -79,54 +79,7 @@ $siteNavLinks = [
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="InoSakti">
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
-
-  <script>
-    if (window.tailwind) {
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "rgb(var(--primary) / <alpha-value>)",
-              secondary: "rgb(var(--secondary) / <alpha-value>)",
-              accent: "rgb(var(--accent) / <alpha-value>)",
-              "accent-green": "rgb(var(--accent-green) / <alpha-value>)",
-              "accent-red": "rgb(var(--accent-red) / <alpha-value>)",
-              "background-light": "#f8fafc",
-              "background-dark": "#020617",
-            },
-            fontFamily: {
-              display: ["'Plus Jakarta Sans'", "sans-serif"],
-              sans: ["'Plus Jakarta Sans'", "sans-serif"],
-            },
-            borderRadius: { DEFAULT: "0.75rem" },
-          },
-        },
-      };
-    }
-  </script>
-
-  <style type="text/tailwindcss">
-    @layer base {
-      :root {
-        --primary: 30 58 138;
-        --secondary: 15 23 42;
-        --accent: 29 78 216;
-        --accent-green: 22 163 74;
-        --accent-red: 239 68 68;
-      }
-    }
-    @layer components {
-      .service-card { @apply bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1; }
-      .glass-effect { backdrop-filter: blur(8px); background-color: rgba(255,255,255,.9); }
-      .dark .glass-effect { background-color: rgba(15,23,42,.9); }
-      .section-title { @apply text-4xl lg:text-5xl font-extrabold text-center mb-12; }
-      .product-thumb { @apply overflow-hidden rounded-2xl aspect-square bg-slate-100 dark:bg-slate-700; }
-    }
-  </style>
+  <link rel="stylesheet" href="<?php echo $basePath; ?>/assets/css/tailwind.css">
 
   <style>
     .animate-slide-up { animation: slideUp .6s ease-out forwards; opacity: 0; }
@@ -271,3 +224,4 @@ $siteNavLinks = [
       });
 	  });
 	</script>
+

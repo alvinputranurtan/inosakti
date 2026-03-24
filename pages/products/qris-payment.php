@@ -1,18 +1,5 @@
 <?php
 $pageTitle = 'Pembayaran QRIS | InoSakti - Engineering & Technology Solutions';
-$extraHead = <<<HTML
-<style type="text/tailwindcss">
-@layer components {
-    .checkout-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm; }
-    @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
-    .scan-line { height: 2px; background: linear-gradient(to right, transparent, #1d4ed8, transparent); position: absolute; width: 100%; z-index: 10; animation: scan 3s linear infinite; box-shadow: 0 0 8px #1d4ed8; }
-    @keyframes pulse-red { 0%, 100% { color: #dc2626; opacity: 1; } 50% { color: #dc2626; opacity: 0.5; } }
-    .timer-pulse { animation: pulse-red 1s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-    @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-entrance { animation: slide-up 0.5s ease-out forwards; }
-}
-</style>
-HTML;
 include __DIR__ . '/../../inc/header.php';
 ?>
 

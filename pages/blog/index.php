@@ -4,19 +4,6 @@ declare(strict_types=1);
 $pageTitle = 'InoSakti | Blog & Articles - Engineering & Technology Insights';
 $pageDesc = 'InoSakti Blog features the latest insights on AI, IoT, Software, and Hardware Engineering solutions.';
 
-$extraHead = <<<'HTML'
-<style type="text/tailwindcss">
-@layer components {
-  .blog-card {
-    @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
-  }
-  .category-tag {
-    @apply px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs font-bold uppercase tracking-wider;
-  }
-}
-</style>
-HTML;
-
 include __DIR__ . '/../../inc/header.php';
 
 function blog_db_connect(): ?mysqli
@@ -284,3 +271,4 @@ $blogBase = $basePath . '/pages/blog/detail';
 </main>
 
 <?php include __DIR__ . '/../../inc/footer.php'; ?>
+

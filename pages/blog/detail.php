@@ -201,20 +201,6 @@ if (!$db) {
 $pageTitle = $article ? ((string) $article['title'] . ' | InoSakti Blog') : 'Artikel Tidak Ditemukan | InoSakti Blog';
 $pageDesc = $article ? (string) ($article['excerpt'] ?? 'Artikel InoSakti') : 'Artikel blog tidak ditemukan.';
 
-$extraHead = <<<'HTML'
-<style type="text/tailwindcss">
-@layer components {
-  .category-tag {
-    @apply px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-xs font-bold uppercase tracking-wider;
-  }
-  #progress-bar {
-    @apply fixed top-0 left-0 h-1 bg-primary z-[60] transition-all duration-150;
-    width: 0%;
-  }
-}
-</style>
-HTML;
-
 $extraScripts = <<<'HTML'
 <script>
   window.addEventListener('scroll', () => {
@@ -342,3 +328,4 @@ $blogList = $basePath . '/pages/blog';
 </main>
 
 <?php include __DIR__ . '/../../inc/footer.php'; ?>
+

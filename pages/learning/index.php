@@ -7,14 +7,6 @@ $pageDesc = 'Platform pembelajaran online InoSakti untuk kursus engineering, AI,
 $courses = learning_fetch_published_courses(24);
 $resumeCourse = $courses[0] ?? null;
 
-$extraHead = <<<'HTML'
-<style type="text/tailwindcss">
-@layer utilities {
-  .course-card { @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl; }
-}
-</style>
-HTML;
-
 include __DIR__.'/../../inc/header.php';
 ?>
 
@@ -80,3 +72,4 @@ include __DIR__.'/../../inc/header.php';
 </main>
 
 <?php include __DIR__.'/../../inc/footer.php'; ?>
+

@@ -1,18 +1,5 @@
 <?php
 $pageTitle = 'Pembayaran | InoSakti - Engineering & Technology Solutions';
-$extraHead = <<<HTML
-<style type="text/tailwindcss">
-@layer components {
-    .checkout-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 shadow-sm; }
-    .step-item { @apply flex items-center gap-2 text-sm font-bold transition-colors duration-500; }
-    .step-dot { @apply w-8 h-8 rounded-full flex items-center justify-center text-xs border-2 transition-all duration-500; }
-    .accordion-content { display: none; }
-    input:checked ~ .accordion-content { display: block; }
-    .payment-method-label { @apply flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors rounded-xl border border-transparent; }
-    input:checked + .payment-method-label { @apply border-primary bg-primary/5; }
-}
-</style>
-HTML;
 include __DIR__ . '/../../inc/header.php';
 ?>
 
@@ -288,3 +275,4 @@ exit;
 </footer>
 
 </body></html>
+

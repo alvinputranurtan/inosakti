@@ -1,17 +1,5 @@
 <?php
 $pageTitle = 'Keranjang Belanja | InoSakti - Engineering & Technology Solutions';
-$extraHead = <<<HTML
-<style type="text/tailwindcss">
-@layer components {
-    .cart-card { @apply bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden; }
-    .step-item { @apply flex items-center gap-2 text-sm font-bold transition-colors duration-500; }
-    .step-dot { @apply w-8 h-8 rounded-full flex items-center justify-center text-xs border-2 transition-all duration-500; }
-    .quantity-btn { @apply w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-slate-600 dark:text-slate-300; }
-    .animate-fade-in { opacity: 0; transform: translateY(10px); animation: fadeIn 0.5s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
-}
-</style>
-HTML;
 include __DIR__ . '/../../inc/header.php';
 ?>
 
@@ -154,3 +142,4 @@ include __DIR__ . '/../../inc/header.php';
 <?php
 include __DIR__ . '/../../inc/footer.php';
 ?>
+

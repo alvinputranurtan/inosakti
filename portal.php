@@ -22,12 +22,7 @@ $isStudent = in_array('student', $roles, true);
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: { extend: { fontFamily: { sans: ["'Plus Jakarta Sans'", 'sans-serif'] } } }
-    };
-  </script>
+  <link rel="stylesheet" href="<?= admin_e(admin_url('/assets/css/tailwind.css')) ?>">
 </head>
 <body class="min-h-screen bg-slate-100 font-sans text-slate-900">
   <header class="bg-white border-b border-slate-200">
@@ -87,3 +82,4 @@ $isStudent = in_array('student', $roles, true);
   </main>
 </body>
 </html>
+

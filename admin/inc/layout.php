@@ -38,22 +38,7 @@ function admin_render_start(string $title, string $active): void
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200..700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ["'Plus Jakarta Sans'", 'sans-serif'] },
-          colors: {
-            ink: '#0f172a',
-            panel: '#102248',
-            brand: '#1e40af',
-            skyline: '#e2ebff'
-          }
-        }
-      }
-    };
-  </script>
+  <link rel="stylesheet" href="<?= admin_e(admin_url('/assets/css/tailwind.css')) ?>">
   <style>
     .material-symbols-outlined { font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24; }
   </style>
@@ -166,3 +151,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </html>
 <?php
 }
+

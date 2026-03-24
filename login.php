@@ -175,22 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ["'Plus Jakarta Sans'", 'sans-serif'],
-            display: ["'Space Grotesk'", 'sans-serif']
-          },
-          boxShadow: {
-            panel: '0 24px 80px rgba(15, 23, 42, 0.16)'
-          }
-        }
-      }
-    };
-  </script>
+  <link rel="stylesheet" href="<?= admin_e(admin_url('/assets/css/tailwind.css')) ?>">
 </head>
 <body class="min-h-screen bg-slate-950 font-sans text-slate-900">
   <div class="relative min-h-screen overflow-hidden">
@@ -201,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <section class="hidden lg:flex rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm p-12 text-white items-end">
         <div>
           <p class="inline-flex items-center rounded-full border border-white/20 px-4 py-1 text-xs font-semibold tracking-wide uppercase">InoSakti Unified Portal</p>
-          <h1 class="mt-4 font-display text-5xl font-bold leading-tight">One Portal.<br>All Access.</h1>
+          <h1 class="mt-4 font-space-grotesk text-5xl font-bold leading-tight">One Portal.<br>All Access.</h1>
           <p class="mt-5 text-slate-200 max-w-lg">Admin, instructor, employee, dan student masuk dari portal yang sama. Registrasi mandiri hanya untuk student dengan verifikasi OTP email.</p>
         </div>
       </section>
@@ -209,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <section class="flex items-center justify-center">
         <div class="w-full max-w-xl rounded-3xl bg-white p-6 sm:p-8 shadow-panel border border-slate-100">
           <div class="mb-6">
-            <h2 class="text-3xl font-display font-bold text-slate-900">Portal Akun</h2>
+            <h2 class="text-3xl font-space-grotesk font-bold text-slate-900">Portal Akun</h2>
             <p class="text-sm text-slate-500 mt-1">Login, daftar student, dan reset password dalam satu halaman aman.</p>
           </div>
 
@@ -493,3 +478,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 </body>
 </html>
+
